@@ -1,0 +1,12 @@
+flask
+flask_sqlalchemy
+flask_swagger
+flask_swagger_ui
+mysqlclient
+pyjwt
+gunicorn
+cryptography
+flask-cors
+requests
+pandas
+xlrd
