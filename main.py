@@ -19,6 +19,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from flask_cors import CORS
 from http import HTTPStatus
 from xlrd import open_workbook, XLRDError
+from mockup_layout import layout
 
 # Loading Config Parameters
 DB_USER = os.getenv('DB_USER', 'wys')
@@ -40,6 +41,12 @@ SPACES_MODULE_HOST = os.getenv('SPACES_MODULE_IP', '127.0.0.1')
 SPACES_MODULE_PORT = os.getenv('SPACES_MODULE_PORT', 5002)
 SPACES_MODULE_API = os.getenv('SPACES_MODULE_API', '/api/spaces/')
 SPACES_URL = f"http://{SPACES_MODULE_HOST}:{SPACES_MODULE_PORT}"
+
+#Projects module info
+PROJECTS_MODULE_HOST = os.getenv('PROJECTS_MODULE_HOST', '127.0.0.1')
+PROJECTS_MODULE_PORT = os.getenv('PROJECTS_MODULE_PORT', 5000)
+PROJECTS_MODULE_API = os.getenv('PROJECTS_MODULE_API', '/api/projects/')
+PROJECTS_URL = f"http://{PROJECTS_MODULE_HOST}:{PROJECTS_MODULE_PORT}"
 
 app = Flask(__name__)
 CORS(app)
@@ -72,6 +79,7 @@ class LayoutGenerated(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     floor_id = db.Column(db.Integer, nullable=False)
+    project_id = db.Column(db.Integer, nullable=False)
     workspaces = db.relationship(
         "LayoutGeneratedWorkspace",
         backref="layout_generated",
@@ -119,7 +127,7 @@ class LayoutGeneratedWorkspace(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     position_x = db.Column(db.Float, nullable=False)
     position_y =  db.Column(db.Float, nullable=False)
-    rotation = db.Column(db.String(20), nullable=False)
+    rotation = db.Column(db.String(20))
     space_id = db.Column(db.Integer, nullable=False)
     layout_gen_id = db.Column(db.Integer, db.ForeignKey(
         'layout_generated.id'), nullable=False)
@@ -212,6 +220,27 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
+
+def get_project_by_id(project_id, token):
+    headers = {'Authorization': token}
+    api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception("Cannot connect to the projects module")
+    return None
+
+def update_project_by_id(project_id, data, token):
+    headers = {'Authorization': token}
+    api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
+    rv = requests.put(api_url, json=data, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception("Cannot connect to the projects module")
+    return None
+
 def get_space_by_id(space_id, token):
     headers = {'Authorization': token}
     api_url = SPACES_URL + SPACES_MODULE_API + str(space_id)
@@ -219,7 +248,7 @@ def get_space_by_id(space_id, token):
     if rv.status_code == 200:
         return json.loads(rv.text)
     elif rv.status_code == 500:
-      raise Exception("Cannot connect to the spaces module")
+        raise Exception("Cannot connect to the spaces module")
     return None
 
 def get_floor_polygons_by_ids(building_id, floor_id, token):
@@ -229,7 +258,7 @@ def get_floor_polygons_by_ids(building_id, floor_id, token):
     if rv.status_code == 200:
         return json.loads(rv.text)
     elif rv.status_code == 500:
-      raise Exception("Cannot connect to the buildings module")
+        raise Exception("Cannot connect to the buildings module")
     return None
 
 def token_required(f):
@@ -304,6 +333,9 @@ def generate_layout(project_id):
                     id:
                         type: integer
                         description: Unique ID of each building floor.
+                    active:
+                        type: boolean
+                        description: indicate if this floor is active.
                     wys_id:
                         type: string
                         description: Unique internal ID of each building floor.
@@ -321,6 +353,9 @@ def generate_layout(project_id):
                     image_link:
                         type: string
                         description: Link of the floor image.
+                    building_id:
+                        type: integer
+                        description: Unique ID of each building associated to this floor.
             workspaces:
                 type: array
                 items:
@@ -391,11 +426,10 @@ def generate_layout(project_id):
         params = {'selected_floor', 'workspaces'}
         if request.json.keys() != params:
             return "A required field is missing in the body", 400
-
         floor = request.json['selected_floor']
         floor_params = {'id', 'wys_id','rent_value','m2','elevators_number','image_link','active','building_id'}
         if floor.keys() != floor_params:
-             return "A floor data field is missing in the body", 400
+            return "A floor data field is missing in the body", 400
 
         workspaces = request.json['workspaces']
 
@@ -407,13 +441,34 @@ def generate_layout(project_id):
              return "A space data field is missing in the body", 400
 
         token = request.headers.get('Authorization', None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return "The project doesn't exist", 404
         floor_polygons = get_floor_polygons_by_ids(floor['building_id'], floor['id'], token)
         if floor_polygons is None:
             return "The floor doesn't exist or not have a polygons.", 404
         floor['polygons'] = floor_polygons
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
-        
-        return jsonify(layout_data), 201
+
+        layout_workspaces = layout(layout_data)
+
+        layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
+        if layout_gen is not None:
+            db.session.delete(layout_gen)
+            db.session.commit()
+        layout_gen = LayoutGenerated()
+        layout_gen.floor_id = floor['id']
+        layout_gen.project_id = project_id
+        for l_workspace in layout_workspaces:
+            layout_gen_workspace = LayoutGeneratedWorkspace(**l_workspace)
+            layout_gen.workspaces.append(layout_gen_workspace)
+        db.session.add(layout_gen)
+        db.session.commit()
+        project = update_project_by_id(project_id, {'layout_gen_id': layout_gen.id}, token)
+        if project is None:
+            return "The project could not be updated.", 404
+
+        return layout_gen.serialize(), 201
     except SQLAlchemyError as e:
         db.session.rollback()
         return f'Error saving data: {e}', 500
