@@ -107,6 +107,9 @@ def transform_coords(floor_dict: dict, coordinates: [], space_images_url, token)
         space_width_p = space_width_m * floor_loc.x_pixel_m
         space_height_p = space_height_m * floor_loc.y_pixel_m
 
+        space_loc.width_p = space_width_p
+        space_loc.height_p = space_height_p
+
         space_loc.space_id = space_info['id']
 
         if space_name not in img_storage_by_name:
@@ -138,6 +141,8 @@ class SpaceLocation:
     def __init__(self):
         self.position_x = 0
         self.position_y = 0
+        self.width_p = 0
+        self.height_p = 0
         self.rotation = 0
         self.space_id = 0
         self.image = ""
