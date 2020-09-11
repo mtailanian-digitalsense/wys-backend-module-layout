@@ -20,6 +20,8 @@ from flask_cors import CORS
 from http import HTTPStatus
 from xlrd import open_workbook, XLRDError
 from mockup_layout import layout
+from Layout_App.SmartLayout import Smart_Layout
+from lib import transform_coords
 
 # Loading Config Parameters
 DB_USER = os.getenv('DB_USER', 'wys')
@@ -456,7 +458,8 @@ def generate_layout(project_id):
         floor['polygons'] = floor_polygons
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
 
-        layout_workspaces = layout(layout_data)
+        layout_workspaces = Smart_Layout(layout_data)
+        workspaces_coords = transform_coords(layout_data, layout_workspaces, SPACES_URL+SPACES_MODULE_API, token)
 
         layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
         if layout_gen is not None:
@@ -465,8 +468,10 @@ def generate_layout(project_id):
         layout_gen = LayoutGenerated()
         layout_gen.floor_id = floor['id']
         layout_gen.project_id = project_id
-        for l_workspace in layout_workspaces:
-            layout_gen_workspace = LayoutGeneratedWorkspace(**l_workspace)
+        for l_workspace in workspaces_coords:
+            layout_gen_workspace = LayoutGeneratedWorkspace()
+            for key, value in l_workspace.items():
+                setattr(layout_gen_workspace, key, value)
             layout_gen.workspaces.append(layout_gen_workspace)
         db.session.add(layout_gen)
         db.session.commit()
@@ -475,6 +480,7 @@ def generate_layout(project_id):
             return "The project could not be updated.", 404
 
         return layout_gen.serialize(), 201
+
     except SQLAlchemyError as e:
         msg = f'Error saving data: {e}'
         app.logger.error(msg)

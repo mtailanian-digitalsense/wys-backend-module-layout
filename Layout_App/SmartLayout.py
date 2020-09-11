@@ -7,7 +7,7 @@ from shapely.geometry import Point
 from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
 
-import viewer
+#import viewer
 
 
 def get_input(dictionary):
@@ -94,7 +94,7 @@ def makePos(planta, minx, miny, maxx, maxy):
             return mod
 
 
-def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
+def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
     outline, holes, areas, input_list = get_input(dictionary)
 
     voids = []
@@ -329,5 +329,5 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         out.append([mod.name, mod.id, mod.x, mod.y, mod.rot])
         print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness)
-    viewer.show_floor(planta, As, pop[0])
+    #viewer.show_floor(planta, As, pop[0])
     return out
