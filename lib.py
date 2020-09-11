@@ -151,8 +151,8 @@ class SpaceLocation:
         return {
             'position_x': self.position_x,
             'position_y': self.position_y,
-            'width_p': self.width_p,
-            'height_p': self.height_p,
+            'width': self.width_p,
+            'height': self.height_p,
             'rotation': self.rotation,
             'space_id': self.space_id,
             'image': self.image
