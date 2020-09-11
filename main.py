@@ -21,7 +21,7 @@ from http import HTTPStatus
 from xlrd import open_workbook, XLRDError
 from mockup_layout import layout
 from Layout_App.SmartLayout import Smart_Layout
-from lib import transform_coords
+from lib import transform_coords, resize_base64_image
 
 # Loading Config Parameters
 DB_USER = os.getenv('DB_USER', 'wys')
@@ -81,6 +81,7 @@ class LayoutGenerated(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     floor_id = db.Column(db.Integer, nullable=False)
+    building_id = db.Column(db.Integer, nullable=False)
     project_id = db.Column(db.Integer, nullable=False)
     workspaces = db.relationship(
         "LayoutGeneratedWorkspace",
@@ -98,6 +99,7 @@ class LayoutGenerated(db.Model):
 
         dict = {
             'id': self.id,
+            'building_id': self.building_id,
             'floor_id': self.floor_id,
             'workspaces': [workspace.to_dict() for workspace in self.workspaces],
             'zones': [zones.to_dict() for zones in self.zones]
@@ -259,6 +261,16 @@ def get_space_by_id(space_id, token):
         raise Exception("Cannot connect to the spaces module")
     return None
 
+def get_floor_by_ids(building_id, floor_id, token):
+    headers = {'Authorization': token}
+    api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + '/floors/'+ str(floor_id)
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception("Cannot connect to the buildings module")
+    return None
+
 def get_floor_polygons_by_ids(building_id, floor_id, token):
     headers = {'Authorization': token}
     api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + '/floors/'+ str(floor_id) + '/polygons'
@@ -311,7 +323,7 @@ def spec():
     }]
     return jsonify(swag)
 
-@app.route("/api/layout/<project_id>", methods=['POST'])
+@app.route("/api/layouts/<project_id>", methods=['POST'])
 @token_required
 def generate_layout(project_id):
     """
@@ -378,12 +390,6 @@ def generate_layout(project_id):
                         name:
                             type: string
                             description: Name of the space
-                        model_2d:
-                            type: string
-                            description: Base64 file
-                        model_3d:
-                            type: string
-                            description: Base64 file
                         height:
                             type: number
                             description: Height of the space
@@ -447,7 +453,7 @@ def generate_layout(project_id):
 
         if len(workspaces) == 0:
             return "No spaces were entered in the body.", 400
-        workspace_params = {'id','quantity','name','model_2d','model_3d','height','width','active','regular','up_gap','down_gap','left_gap','right_gap','subcategory_id','points'}
+        workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap','right_gap','subcategory_id','points'}
         for workspace in workspaces:
             if workspace.keys() != workspace_params:
              return "A space data field is missing in the body", 400
@@ -471,6 +477,7 @@ def generate_layout(project_id):
             db.session.commit()
         layout_gen = LayoutGenerated()
         layout_gen.floor_id = floor['id']
+        layout_gen.building_id = floor['building_id']
         layout_gen.project_id = project_id
         for l_workspace in workspaces_coords:
             layout_gen_workspace = LayoutGeneratedWorkspace()
@@ -483,7 +490,13 @@ def generate_layout(project_id):
         if project is None:
             return "The project could not be updated.", 404
 
-        return layout_gen.serialize(), 201
+        layout_gen = layout_gen.to_dict()
+        del floor['polygons']
+        layout_gen['selected_floor'] = floor
+        for wk in layout_gen['workspaces']:
+            wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]), None)
+
+        return jsonify(layout_gen), 201
 
     except SQLAlchemyError as e:
         msg = f'Error saving data: {e}'
@@ -494,7 +507,7 @@ def generate_layout(project_id):
         app.logger.error(msg)
         return msg, 500
 
-@app.route("/api/layout/<project_id>", methods=['GET'])
+@app.route("/api/layouts/<project_id>", methods=['GET'])
 @token_required
 def get_layout_by_project(project_id):
     """
@@ -524,7 +537,19 @@ def get_layout_by_project(project_id):
         if layout_gen is None:
             return "The project doesn't have a layout created", 404
 
-        return layout_gen.serialize(), 200
+        layout_gen = layout_gen.to_dict()
+        floor = get_floor_by_ids(layout_gen['building_id'], layout_gen['floor_id'], token)
+        if floor is None:
+            return "A layout floor doesn't exist", 404
+        layout_gen['selected_floor'] = floor
+        for wk in layout_gen['workspaces']:
+            space = get_space_by_id(wk['space_id'], token)
+            if space is None:
+                return "A layout space doesn't exist", 404
+            image = resize_base64_image(space['model_2d'], wk['width'], wk['height'])
+            wk['image'] = image
+
+        return jsonify(layout_gen), 200
     except SQLAlchemyError as e:
         msg = f'Error saving data: {e}'
         app.logger.error(msg)
@@ -534,7 +559,7 @@ def get_layout_by_project(project_id):
         app.logger.error(msg)
         return msg, 500
 
-@app.route("/api/layout/<project_id>", methods=['PUT'])
+@app.route("/api/layouts/<project_id>", methods=['PUT'])
 @token_required
 def update_layout_by_project(project_id):
     """
