@@ -119,6 +119,8 @@ class LayoutGeneratedWorkspace(db.Model):
     id: Represent the unique id of a M2 generated
     position_x: X coordinate of the position of the space figure in the layout.
     position_Y: Y coordinate of the position of the space figure in the layout.
+    height: Height size of the space image in px.
+    width: Width size of the space image in px.
     rotation: Direction of rotation of space.
     space_id: Foreign key of associated space.
     layout_gen_id: Foreign key of associated layout generated.
@@ -127,6 +129,8 @@ class LayoutGeneratedWorkspace(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     position_x = db.Column(db.Float, nullable=False)
     position_y =  db.Column(db.Float, nullable=False)
+    height = db.Column(db.Float, nullable=False)
+    width = db.Column(db.Float, nullable=False)
     rotation = db.Column(db.String(20))
     space_id = db.Column(db.Integer, nullable=False)
     layout_gen_id = db.Column(db.Integer, db.ForeignKey(
@@ -142,6 +146,8 @@ class LayoutGeneratedWorkspace(db.Model):
             'position_x': self.position_x,
             'position_y': self.position_y,
             'rotation': self.rotation,
+            'height': self.height,
+            'width': self.width,
             'space_id': self.space_id,
             'layout_gen_id': self.layout_gen_id
         }
@@ -470,13 +476,145 @@ def generate_layout(project_id):
 
         return layout_gen.serialize(), 201
     except SQLAlchemyError as e:
-        db.session.rollback()
-        return f'Error saving data: {e}', 500
+        msg = f'Error saving data: {e}'
+        app.logger.error(msg)
+        return msg, 500
     except Exception as exp:
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
         return msg, 500
 
+@app.route("/api/layout/<project_id>", methods=['GET'])
+@token_required
+def get_layout_by_project(project_id):
+    """
+        Get latest configuration of the layout by Project ID.
+        ---
+        parameters:
+          - in: path
+            name: project_id
+            type: integer
+            description: Project ID
+        tags:
+        - Layouts
+        responses:
+          200:
+            description: Layout data Object.
+          404:
+            description: Project Not Found or the Proyect doesn't have a Layout created.
+          500:
+            description: "Database error"
+    """
+    try:
+        token = request.headers.get('Authorization', None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return "The project doesn't exist", 404
+        layout_gen = LayoutGenerated.query.get(project['layout_gen_id'])
+        if layout_gen is None:
+            return "The project doesn't have a layout created", 404
+
+        return layout_gen.serialize(), 200
+    except SQLAlchemyError as e:
+        msg = f'Error saving data: {e}'
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f"Error: mesg ->{exp}"
+        app.logger.error(msg)
+        return msg, 500
+
+@app.route("/api/layout/<project_id>", methods=['PUT'])
+@token_required
+def update_layout_by_project(project_id):
+    """
+        Return the information necessary to find floors
+        ---
+        consumes:
+        - "application/json"
+        tags:
+        - Layouts
+        produces:
+        - application/json
+        parameters:
+        - in: path
+          name: project_id
+          type: integer
+          description: Project ID
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: integer
+                        description: Unique ID of each layout workspace.
+                    space_id:
+                        type: integer
+                        description: Unique ID of each space.
+                    rotation:
+                        type: string
+                        description: Rotation of the space in layout.
+                    height:
+                        type: number
+                        format: float
+                        description: Height size of the space image in px.
+                    width:
+                        type: number
+                        format: float
+                        description: Width size of the space image in px.
+                    position_x:
+                        type: number
+                        format: float
+                        description: X coordinate of the space position in layout.
+                    position_y:
+                        type: number
+                        format: float
+                        description: Y coordinate of the space position in layout.
+        responses:
+            200:
+                description: Return Countries, Zones, Regions
+            500:
+                description: Internal Error Server
+    """
+    try:
+        params = {'id', 'space_id', 'rotation','height','width', 'position_x', 'position_y'}
+        if not request.json:
+            return "The body isn\'t application/json", 400
+        elif any(workspace.keys() != params for workspace in request.json):
+            return "A required field is missing in worskpaces data", 400
+        elif len(request.json) == 0:
+            return 'Body data required', 400
+        token = request.headers.get('Authorization', None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return "The project doesn't exist", 404
+        layout_gen = LayoutGenerated.query.get(project['layout_gen_id'])
+        if layout_gen is None:
+            return "The project doesn't have a layout created", 404
+        for data in request.json:
+            workspace = LayoutGeneratedWorkspace.query.filter_by(id=data['id'], layout_gen_id=layout_gen.id).first()
+            if workspace is not None:
+                for key, value in data.items():
+                    setattr(workspace, key, value)
+            else:
+                workspace = LayoutGeneratedWorkspace(**data)
+                layout_gen.workspaces.append(workspace)
+                db.session.add(workspace)
+            db.session.commit()
+        
+        return layout_gen.serialize(), 200
+    except SQLAlchemyError as e:
+        msg = f'Error saving data: {e}'
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f"Error: mesg ->{exp}"
+        app.logger.error(msg)
+        return msg, 500
 
 if __name__ == '__main__':
   app.run(host = APP_HOST, port = APP_PORT, debug = True)
