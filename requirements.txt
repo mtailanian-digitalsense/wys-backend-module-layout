@@ -3,6 +3,7 @@ flask_sqlalchemy
 flask_swagger
 flask_swagger_ui
 mysqlclient
+pillow
 pyjwt
 gunicorn
 cryptography
