@@ -9,3 +9,5 @@ cryptography
 flask-cors
 requests
 xlrd
+deap
+shapely
