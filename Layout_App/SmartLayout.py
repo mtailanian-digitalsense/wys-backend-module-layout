@@ -8,6 +8,7 @@ from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
 
 import viewer
+import restrictions
 
 
 def get_input(dictionary):
@@ -72,19 +73,6 @@ class Module:
         print(self.name, self.x, self.y, self.rot, self.id, self.width, self.length)
 
 
-def set_mod2area_matrix_value(mod_dic, area_dic, matrix, module_name, area_name, value):
-    row, col = mod_dic.get(module_name), area_dic.get(area_name)
-    if row is None or col is None:
-        pass
-    else:
-        matrix[row][col] = value
-
-
-def mod2area(mod_dic, area_dic, matrix, area_name, module_name):
-    row, col = mod_dic[module_name], area_dic[area_name]
-    return matrix[row][col]
-
-
 def makePos(planta, minx, miny, maxx, maxy):
     while True:
         p = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
@@ -117,42 +105,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         As.append([Polygon(a[1]), a[0]])
 
     X_MIN, Y_MIN, X_MAX, Y_MAX = planta.bounds
-
-    module_dictionary = {
-    }
-    cnt = 0
-    for i in range(100):
-        module_dictionary[i] = cnt
-        cnt += 1
-
-    area_dictionary = {
-        'WYS_ENTRANCE': 0,
-        'WYS_FACADE_CRYSTAL': 1,
-        'WYS_FACADE_OPAQUE': 2,
-        'WYS_SHAFT': 3,
-        'WYS_CORE': 4,
-    }
-
-    # create weight matrix
-    mod2area_matrix = []
-
-    for m in range(len(module_dictionary)):
-        mod2area_matrix.append([0] * len(area_dictionary))
-
-    # Add some prefered areas for some modules:
-    for i in range(0, 30):  # All the workbenchs
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_ENTRANCE', -1)
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_FACADE_CRYSTAL', 1)
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_FACADE_OPAQUE', -1)
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_SHAFT', -1)
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_CORE', -1)
-    for i in range(31, 70):  # All the workbenchs
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_ENTRANCE', -1)
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_FACADE_CRYSTAL', -1)
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_FACADE_OPAQUE', 1)
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_SHAFT', -1)
-        set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, i, 'WYS_CORE', -1)
-
+  
     def applysizeandid(pop, in_list):
         for ind in pop:
             cnt = 0
@@ -200,15 +153,15 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                  mod.name])
         for bx in boxes:
             for A in As:
-                if (A[0].contains(bx[0])):
-                    # print('module of id', bx[1], 'is in', A[1], 'it have a weight of:', mod2area(A[1], bx[1]))
-                    a += mod2area(A[1], bx[1])
+                print('module of id', bx[1], 'is in', A[1])
+                a += restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary, restrictions.mod2area_matrix, bx[1], A[1])
         return a
 
     def evaluateInd(ind):
-        fit = []
-        fit.append(modinarea(As, ind))
-        fit.append(distancebtwmods(ind))
+        print('eval')
+        fit_list = []
+        fit_list.append(modinarea(As, ind))
+        fit_list.append(distancebtwmods(ind))
         a = sum(fit)
         return a,
 
