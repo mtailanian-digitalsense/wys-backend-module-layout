@@ -463,11 +463,11 @@ def generate_layout(project_id):
         if project is None:
             return "The project doesn't exist", 404
         floor_polygons = get_floor_polygons_by_ids(floor['building_id'], floor['id'], token)
-        if floor_polygons is None:
+        if floor_polygons is None or len(floor_polygons) == 0:
             return "The floor doesn't exist or not have a polygons.", 404
         floor['polygons'] = floor_polygons
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
-
+ 
         layout_workspaces = Smart_Layout(layout_data)
         workspaces_coords = transform_coords(layout_data, layout_workspaces, SPACES_URL+SPACES_MODULE_API, token)
 
