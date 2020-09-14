@@ -94,7 +94,7 @@ def makePos(planta, minx, miny, maxx, maxy):
             return mod
 
 
-def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
+def Smart_Layout(dictionary, POP_SIZE=75, GENERATIONS=75):
     outline, holes, areas, input_list = get_input(dictionary)
 
     voids = []
