@@ -202,7 +202,8 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
             for A in As:
                 if (A[0].contains(bx[0])):
                     # print('module of id', bx[1], 'is in', A[1], 'it have a weight of:', mod2area(A[1], bx[1]))
-                    a += mod2area(A[1], bx[1])
+                    # a += mod2area(A[1], bx[1])
+                    continue
         return a
 
     def evaluateInd(ind):
@@ -294,13 +295,15 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
 
         # Clone the selected individuals
         offspring = list(map(toolbox.clone, offspring))
-
-        # Apply crossover and mutation on the offspring
-        for child1, child2 in zip(offspring[::2], offspring[1::2]):
-            if random.random() < CXPB:
-                toolbox.mate(child1, child2)
-                del child1.fitness.values
-                del child2.fitness.values
+        try:
+            # Apply crossover and mutation on the offspring
+            for child1, child2 in zip(offspring[::2], offspring[1::2]):
+                if random.random() < CXPB:
+                    toolbox.mate(child1, child2)
+                    del child1.fitness.values
+                    del child2.fitness.values
+        except Exception as e:
+            print(f"Error: {e}")
 
         for mutant in offspring:
             if random.random() < MUTPB:
