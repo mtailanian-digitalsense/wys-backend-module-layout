@@ -214,6 +214,41 @@ class LayoutZone(db.Model):
         """
         return jsonify(self.to_dict())
 
+class LayoutConfig(db.Model):
+    """
+    LayoutConfig.
+    Represents the configuration model of parameters setted for the Smart Layout
+
+    Attributes
+    ----------
+    id: Represent the unique id of a layout config.
+    pop_size: Value of pop size.
+    generations: Value of number of generations.
+    """
+
+    id = db.Column(db.Integer, primary_key=True)
+    pop_size = db.Column(db.Integer, nullable=False)
+    generations = db.Column(db.Integer, nullable=False)
+ 
+    def to_dict(self):
+        """
+        Convert to dictionary
+        """
+
+        obj_dict = {
+            'id': self.id,
+            'pop_size': self.pop_size,
+            'generations': self.generations
+        }
+
+        return obj_dict
+    
+    def serialize(self):
+        """
+        Serialize to json
+        """
+        return jsonify(self.to_dict())
+
 db.create_all() # Create all tables
 
 # Swagger Config
