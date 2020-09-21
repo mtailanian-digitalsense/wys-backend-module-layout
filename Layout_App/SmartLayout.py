@@ -146,7 +146,7 @@ def min_dist_to_area(lista):
         i = j
     return my_output
 
-def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
+def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
     start_time = time.time()
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
