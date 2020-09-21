@@ -1,11 +1,12 @@
 import random
-
+import time
 from deap import base
 from deap import creator
 from deap import tools
 from shapely.geometry import Point
 from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
+import matplotlib.pyplot as plt
 
 from . import viewer
 from . import restrictions
@@ -73,18 +74,82 @@ class Module:
         print(self.name, self.x, self.y, self.rot, self.id, self.width, self.length)
 
 
-def makePos(planta, minx, miny, maxx, maxy):
+
+
+makeposcnt = 0
+curr_bx = []
+
+def makePos(planta, in_list):
+    global makeposcnt
+    global curr_bx
+    in_cnt = 0
+    minx, miny, maxx, maxy = planta.bounds
+
+    mod = Module(0, 0, 0, 0, 0, 0, 0)
+
+    for j in range(len(in_list)):
+        for n in range(in_list[j][1]):
+            if in_cnt == makeposcnt:
+                mod.length = in_list[j][2]
+                mod.width = in_list[j][3]
+                mod.name = in_list[j][0]
+            in_cnt+=1
+
     while True:
         p = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
+        b = box(p.x - mod.width / 2, p.y - mod.length / 2, p.x + mod.width / 2, p.y + mod.length / 2)
+        condition1 = planta.contains(b)
+        condition2 = True
+        if not curr_bx:
+            condition2 = True
+        else:
+            for bx in curr_bx:
+                if b.intersects(bx):
+                    condition2 = False
 
-        if planta.contains(p):
-            mod = Module(p.x, p.y, 0, 0, 0, 0, 0)
+        if condition1 and condition2:
+            mod.x, mod.y = p.x, p.y
+            curr_bx.append(b)
+            #for cb in curr_bx:
+            #    x, y = cb.exterior.xy
+            #    plt.plot(x, y, color='b')
+            makeposcnt+=1
+            if makeposcnt>=in_cnt:
+                makeposcnt = 0
+                curr_bx = []
             return mod
 
 
-def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
-    outline, holes, areas, input_list = get_input(dictionary)
+def min_dist_to_area(lista):
+    my_output = []
+    i = 0
+    curr_min = lista[0]
 
+    for j in range(i+1, len(lista)):
+        B = lista[j]
+        #print(i, j, curr_min, B)
+        if curr_min[0] == B[0]:
+            if B[1] <= curr_min[1]:
+                curr_min = B
+            if j+1 == len(lista):
+                my_output.append(curr_min)
+                #print('append', curr_min)
+
+
+        else:
+            my_output.append(curr_min)
+            #print('append', curr_min)
+            curr_min = B
+            if j+1 == len(lista):
+                my_output.append(curr_min)
+
+        i = j
+    return my_output
+
+def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
+    start_time = time.time()
+    print(round(time.time() - start_time, 2), 'Start!')
+    outline, holes, areas, input_list = get_input(dictionary)
     voids = []
 
     border = outline[0][1]
@@ -95,26 +160,17 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
     N = 0  # number of modules to be placed in total
     for i in input_list:
         N += i[1]
+    print(round(time.time() - start_time, 2), 'Load and compute all the inputs')
     print('Number of modules: ', N)
     # GA PARAMETERS
     IND_SIZE = N  # should be equal or very close to N
 
     planta = Polygon(border, voids)
+
     As = []
     for a in areas:
         As.append([Polygon(a[1]), a[0]])
 
-    X_MIN, Y_MIN, X_MAX, Y_MAX = planta.bounds
-  
-    def applysizeandid(pop, in_list):
-        for ind in pop:
-            cnt = 0
-            for j in range(len(in_list)):
-                for n in range(in_list[j][1]):
-                    ind[cnt].length = in_list[j][2]
-                    ind[cnt].width = in_list[j][3]
-                    ind[cnt].name = in_list[j][0]
-                    cnt += 1
 
     def mutMod(individual, mu, sigma, indpb):
         for i in individual:
@@ -143,26 +199,36 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
                     a = d
         return a
 
-    def modinarea(As, ind):
+    def modtoareas(As, ind):
         a = 0
         # print('Where is every module:')
         boxes = []
+        dist_mod2area = []
+
         for mod in ind:
             boxes.append(
                 [box(mod.x - mod.width / 2, mod.y - mod.length / 2, mod.x + mod.width / 2, mod.y + mod.length / 2),
                  mod.name])
+
+
         for bx in boxes:
+            bx_dist = []
             for A in As:
-                print('module of id', bx[1], 'is in', A[1])
-                a += restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary, restrictions.mod2area_matrix, bx[1], A[1])
+                bx_dist.append([A[1], bx[0].distance(A[0])])
+
+            min_list = min_dist_to_area(bx_dist)
+            for ml in min_list:
+                w = restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary,
+                                        restrictions.mod2area_matrix, bx[1], ml[0])
+                #print(ml[0],w, ml[1])
+                a -= w*ml[1]
         return a
 
     def evaluateInd(ind):
-        print('eval')
         fit_list = []
-        fit_list.append(modinarea(As, ind))
-        fit_list.append(distancebtwmods(ind))
-        a = sum(fit)
+        fit_list.append(modtoareas(As, ind))
+        #fit_list.append(distancebtwmods(ind))
+        a = sum(fit_list)
         return a,
 
     def feasible(ind):  # Need too add if boxes collide
@@ -195,11 +261,9 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
                 area += (boxes[i][0].intersection(boxes[j][0])).area
                 # print('mod', i, 'intersects with mod', j,'in',area)
 
-        # check for bounds collisions:
-
         # get the area of the module and substract the intersection with the building
         for i in range(nb):
-            # print('area of',i,'module is', boxes[i][0].area)
+            #print('area of',i,'module is', boxes[i][0].area)
             area += (boxes[i][0].area - (boxes[i][0].intersection(planta)).area)
         # print (area)
         return area
@@ -208,7 +272,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
     creator.create("Individual", list, fitness=creator.FitnessMax)
 
     toolbox = base.Toolbox()
-    toolbox.register("attr_pos", makePos, planta, X_MIN, Y_MIN, X_MAX, Y_MAX)
+    toolbox.register("attr_pos", makePos, planta, input_list)
     toolbox.register("individual", tools.initRepeat, creator.Individual,
                      (toolbox.attr_pos), n=IND_SIZE)
 
@@ -224,10 +288,8 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
     toolbox.decorate("evaluate", tools.DeltaPenalty(feasible, 0.0, feas_distance))
 
     # Init of the algorithm
-
+    print(round(time.time() - start_time, 2), 'Generate population:')
     pop = toolbox.population(n=POP_SIZE)
-
-    applysizeandid(pop, input_list)
     CXPB, MUTPB, NGEN = 0.5, 0.2, GENERATIONS
 
     # Evaluate the entire population
@@ -236,12 +298,13 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
-    print('Sample individual of Generation', 0, ':')
+    #print('Sample individual of Generation', 0, ':')
     # for mod in pop[0]:
     #    print('(',mod.x,',',mod.y,')','id:', mod.id)
-    print('Fitness = ', pop[0].fitness)
-
+    #print('Fitness = ', pop[0].fitness)
+    print(round(time.time() - start_time, 2),'Start of genetic evolution:')
     for g in range(NGEN):
+        print('generation: ', g)
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
 
@@ -278,11 +341,13 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
         #        print('X = ',mod.x)
         #        print('Y = ',mod.y)
         #    print('Fitness = ',i.fitness)
+        time.time() - start_time,
+    print(round(time.time() - start_time, 2),'Finish')
     print('Best individual of Generation', g, ':')
     out = []
     for mod in pop[0]:
         out.append([mod.name, mod.id, mod.x, mod.y, mod.rot])
-        print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
+        #print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness)
     #viewer.show_floor(planta, As, pop[0])
     return out
