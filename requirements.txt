@@ -12,3 +12,4 @@ requests
 xlrd
 deap
 shapely
+matplotlib

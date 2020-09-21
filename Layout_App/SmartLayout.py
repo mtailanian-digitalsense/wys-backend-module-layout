@@ -7,8 +7,8 @@ from shapely.geometry import Point
 from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
 
-import viewer
-import restrictions
+from . import viewer
+from . import restrictions
 
 
 def get_input(dictionary):
