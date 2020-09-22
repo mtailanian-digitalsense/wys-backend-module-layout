@@ -1004,7 +1004,7 @@ def get_layout():
     """
     req_params = ["project_id", "job_id"]
     for param in req_params:
-        if param in request.json.keys():
+        if param not in request.json.keys():
             abort(400, description=f"{param} isn't in body")
 
     job_id = request.json["job_id"]
