@@ -350,4 +350,4 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
         #print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness)
     #viewer.show_floor(planta, As, pop[0])
-    return out
+    return out, dictionary

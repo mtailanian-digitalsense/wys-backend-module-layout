@@ -13,3 +13,5 @@ xlrd
 deap
 shapely
 matplotlib
+redis
+rq
