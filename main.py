@@ -690,5 +690,87 @@ def update_layout_by_project(project_id):
         app.logger.error(msg)
         return msg, 500
 
+@app.route("/api/layouts/configs", methods=['GET'])
+@token_required
+def get_layout_config():
+    """
+        Get latest configuration for the Smart Layout (parameters values).
+        ---
+        tags:
+        - Layouts/configs
+        responses:
+            200:
+                description: Layout Config data Object.
+            404:
+                description: Layout Config data has not been created.
+            500:
+                description: "Database error"
+    """
+    try:
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        if config is None:
+            return "Layout Config data has not been created.", 404
+        return config.serialize(), 200
+    except Exception as exp:
+        msg = f"Error: mesg ->{exp}"
+        app.logger.error(msg)
+        return msg, 500
+
+@app.route("/api/layouts/configs", methods=['PUT'])
+@token_required
+def update_layout_config():
+    """
+        Update (or Create) the latest configuration for the Smart Layout (parameters values greater than 25).
+        ---
+        tags:
+        - Layouts/configs
+        parameters:
+        - in: "body"
+          name: "body"
+          required:
+          - pop_size
+          - generations
+          properties:
+            pop_size:
+                type: integer
+                description: Value of pop size.
+            generations:
+                type: integer
+                description: Value of number of generations.           
+        responses:
+            200:
+                description: Layout Config data Object.
+            400:
+                description: Data or missing field in body.
+            500:
+                description: "Database error"
+    """
+    try:
+        params = {'pop_size', 'generations'}
+        if not request.json:
+            return "The body isn\'t application/json", 400
+        elif request.json.keys() != params:
+            return "A required field is missing in worskpaces data", 400
+        elif request.json['pop_size'] < 25 or request.json['generations'] < 25:
+            return 'The values must be greater than 25', 400
+
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        if config is None:
+            config = LayoutConfig()
+            db.session.add(config)
+        config.pop_size = request.json['pop_size']
+        config.generations = request.json['generations']
+        db.session.commit()
+
+        return config.serialize(), 200
+    except SQLAlchemyError as e:
+        msg = f'Error saving data: {e}'
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f"Error: mesg ->{exp}"
+        app.logger.error(msg)
+        return msg, 500
+
 if __name__ == '__main__':
-  app.run(host = APP_HOST, port = APP_PORT, debug = True)
+    app.run(host = APP_HOST, port = APP_PORT, debug = True)

@@ -5,7 +5,7 @@ import jwt
 import random
 import pprint
 from io import BytesIO
-from main import LayoutGenerated, LayoutGeneratedWorkspace, LayoutZone
+from main import LayoutGenerated, LayoutGeneratedWorkspace, LayoutZone, LayoutConfig, app, db
 
 class LayoutTest(unittest.TestCase):
     def setUp(self):
@@ -20,8 +20,10 @@ class LayoutTest(unittest.TestCase):
         f.close()
 
         db.create_all()
-
         #Mock layout creation
+        config = LayoutConfig(pop_size=50, generations=50)
+        db.session.add(config)
+        
         db.session.commit()
 
     def tearDown(self):
@@ -42,6 +44,26 @@ class LayoutTest(unittest.TestCase):
             "uid": 23
         }
         return ('Bearer ' + jwt.encode(payload, key, algorithm='RS256').decode('utf-8')).encode('utf-8')
+
+    def test_get_layout_config(self):
+        with app.test_client() as client:
+            client.environ_base['HTTP_AUTHORIZATION'] = self.build_token(self.key)
+            rv = client.get('/api/layouts/configs')
+            resp_dict = json.loads(rv.data.decode("utf-8"))
+            self.assertEqual(rv.status_code, 200)
     
+    def test_update_layout_config(self):
+        with app.test_client() as client:
+            client.environ_base['HTTP_AUTHORIZATION'] = self.build_token(self.key)
+            sent = {'pop_size': 50, 'generations': 70}
+            rv = client.put('/api/layouts/configs', data = json.dumps(sent), content_type='application/json')
+            self.assertEqual(rv.status_code, 200)
+            resp_dict = json.loads(rv.data.decode("utf-8"))
+            self.assertEqual(sent['pop_size'], resp_dict['pop_size'])
+            self.assertEqual(sent['generations'], resp_dict['generations'])
+            sent = {'pop_size': 10, 'generations': 70}
+            rv = client.put('/api/layouts/configs', data = json.dumps(sent), content_type='application/json')
+            self.assertEqual(rv.status_code, 400)
+
 if __name__ == '__main__':
     unittest.main()
