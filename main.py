@@ -501,9 +501,10 @@ def generate_layout(project_id):
         if floor_polygons is None or len(floor_polygons) == 0:
             return "The floor doesn't exist or not have a polygons.", 404
         floor['polygons'] = floor_polygons
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
- 
-        layout_workspaces = Smart_Layout(layout_data)
+
+        layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 50, config.generations if config is not None else 50)
         workspaces_coords = transform_coords(layout_data, layout_workspaces, SPACES_URL+SPACES_MODULE_API, token)
 
         layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
