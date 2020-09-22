@@ -658,7 +658,7 @@ def update_layout_by_project(project_id):
         return msg, 500
 
 
-@app.route("/api/layouts/v2/", methods=['POST'])
+@app.route("/api/layouts/v2", methods=['POST'])
 @token_required
 def generate_layout_async():
     """
@@ -810,7 +810,7 @@ def generate_layout_async():
         return msg, 500
 
 
-@app.route("/api/layouts/v2/status/job/<job_id>", methods=['GET'])
+@app.route("/api/layouts/v2/job/<job_id>", methods=['GET'])
 @token_required
 def check_job(job_id):
     """
@@ -834,12 +834,24 @@ def check_job(job_id):
         job = Job.fetch(job_id, connection=redis_conn)
     except Exception as exception:
         abort(404, description=exception)
-    return jsonify({"job_id": job.id, "job_status": job.get_status()})
+        job.refresh()
+
+    progress = 0.0
+
+    if "progress" in job.meta:
+        progress = job.meta["progress"]
+
+    if job.get_status() == "finished":
+        progress = 100.0
+
+    return jsonify({"job_id": job.id,
+                    "job_status": job.get_status(),
+                    "progress":  progress})
 
 
-@app.route("/api/layouts/v2/<project_id>/job/<job_id>", methods=['POST'])
+@app.route("/api/layouts/v2/job", methods=['POST'])
 @token_required
-def get_layout(project_id, job_id):
+def get_layout():
     """
         Takes a job_id and returns the job's result.
         ---
@@ -851,22 +863,38 @@ def get_layout(project_id, job_id):
         - application/json
 
         parameters:
-        - in: path
-          name: project_id
-          type: integer
-          description: Project ID
-
-        - in: path
-          name: job_id
-          type: string
-          description: Job ID
+        - in: "body"
+          name: "body"
+          required:
+          - job_id
+          - project_id
+          properties:
+            job_id:
+                type: string
+                description: Resultant Job ID.
+            project_id:
+                type: integer
+                description: Project ID of the project that you want to assign the final layout
+        responses:
+            201:
+                description: Return the final layout
+            404:
+                description: Job not found. The job doesn't exist or isn't ready.
 
 
     """
+    req_params = ["project_id", "job_id"]
+    for param in req_params:
+        if param in request.json.keys():
+            abort(400, description=f"{param} isn't in body")
+
+        job_id = request.json["job_id"]
+        project_id = request.json["project_id"]
+
     try:
         job = Job.fetch(job_id, connection=redis_conn)
     except Exception as exception:
-        abort(404, description=exception)
+        abort(500, description=exception)
 
     if not job.result:
         abort(
