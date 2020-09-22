@@ -314,7 +314,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
         print('generation: ', g)
         if IS_ASYNC:
             job = get_current_job()
-            job.meta["progress"] = g * 100.0 / range(NGEN)
+            job.meta["progress"] = g * 100.0 / NGEN
             job.save()
             print(f"Progress: {job.meta['progress']}")
 
