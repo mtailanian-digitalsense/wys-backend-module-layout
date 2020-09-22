@@ -952,7 +952,8 @@ def check_job(job_id):
         job = Job.fetch(job_id, connection=redis_conn)
     except Exception as exception:
         abort(404, description=exception)
-        job.refresh()
+
+    job.refresh()
 
     progress = 0.0
 
@@ -1006,8 +1007,8 @@ def get_layout():
         if param in request.json.keys():
             abort(400, description=f"{param} isn't in body")
 
-        job_id = request.json["job_id"]
-        project_id = request.json["project_id"]
+    job_id = request.json["job_id"]
+    project_id = request.json["project_id"]
 
     try:
         job = Job.fetch(job_id, connection=redis_conn)
