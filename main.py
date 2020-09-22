@@ -20,7 +20,7 @@ from flask_cors import CORS
 from http import HTTPStatus
 from xlrd import open_workbook, XLRDError
 from mockup_layout import layout
-from Layout_App.SmartLayout import Smart_Layout
+from Layout_App.SmartLayout import Smart_Layout, smart_layout_async
 from lib import transform_coords, resize_base64_image
 from rq.job import Job
 from redis_resc import redis_conn, redis_queue
@@ -797,7 +797,7 @@ def generate_layout_async():
             return "The floor doesn't exist or not have a polygons.", 404
         floor['polygons'] = floor_polygons
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
-        job = redis_queue.enqueue(Smart_Layout, layout_data)
+        job = redis_queue.enqueue(smart_layout_async, layout_data, job_timeout=1000)
         return jsonify({'job_id': job.id}), 201
 
     except SQLAlchemyError as e:

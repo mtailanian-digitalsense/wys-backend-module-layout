@@ -146,7 +146,12 @@ def min_dist_to_area(lista):
         i = j
     return my_output
 
-def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
+
+def smart_layout_async(dictionary, POP_SIZE=50, GENERATIONS=50):
+    result = Smart_Layout(dictionary, POP_SIZE, GENERATIONS, IS_ASYNC=True)
+    return result, dictionary
+
+def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
     start_time = time.time()
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
@@ -303,8 +308,16 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
     #    print('(',mod.x,',',mod.y,')','id:', mod.id)
     #print('Fitness = ', pop[0].fitness)
     print(round(time.time() - start_time, 2),'Start of genetic evolution:')
+    if IS_ASYNC:
+        from rq import get_current_job
     for g in range(NGEN):
         print('generation: ', g)
+        if IS_ASYNC:
+            job = get_current_job()
+            job.meta["progress"] = g * 100.0 / range(NGEN)
+            job.save()
+            print(f"Progress: {job.meta['progress']}")
+
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
 
@@ -350,4 +363,4 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50):
         #print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness)
     #viewer.show_floor(planta, As, pop[0])
-    return out, dictionary
+    return out
