@@ -25,7 +25,7 @@ def show_floor(planta, As,  ind):
             plt.fill(xa, ya, color='#ffb1b1')
 
     for mod in ind:
-        boxes.append([box(mod.x - mod.width / 2, mod.y - mod.length / 2, mod.x + mod.width / 2, mod.y + mod.length / 2), mod.name])
+        boxes.append([box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2), mod.name])
 
     for b in boxes:
         x, y = b[0].exterior.xy

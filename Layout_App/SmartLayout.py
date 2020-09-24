@@ -61,23 +61,24 @@ class Floor:
 
 
 class Module:
-    def __init__(self, x, y, rotation, name, identificator, width_value, length_value):
+    def __init__(self, x, y, rotation, name, identificator, width_value, height_value):
         self.x = x
         self.y = y
         self.rot = rotation
         self.name = name
         self.id = identificator
         self.width = width_value
-        self.length = length_value
+        self.height = height_value
 
     def show(self):
-        print(self.name, self.x, self.y, self.rot, self.id, self.width, self.length)
+        print(self.name, self.x, self.y, self.rot, self.id, self.width, self.height)
 
 
 
 
 makeposcnt = 0
 curr_bx = []
+
 
 def makePos(planta, in_list):
     global makeposcnt
@@ -90,14 +91,14 @@ def makePos(planta, in_list):
     for j in range(len(in_list)):
         for n in range(in_list[j][1]):
             if in_cnt == makeposcnt:
-                mod.length = in_list[j][2]
-                mod.width = in_list[j][3]
+                mod.width = in_list[j][2]
+                mod.height = in_list[j][3]
                 mod.name = in_list[j][0]
             in_cnt+=1
 
     while True:
         p = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
-        b = box(p.x - mod.width / 2, p.y - mod.length / 2, p.x + mod.width / 2, p.y + mod.length / 2)
+        b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
         condition1 = planta.contains(b)
         condition2 = True
         if not curr_bx:
@@ -179,7 +180,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
             if random.random() < indpb:
                 i.y += random.gauss(mu, sigma)
             if random.random() < indpb:
-                i.length, i.width = i.width, i.length
+                i.height, i.width = i.width, i.height
                 i.rot += 90
                 if i.rot >= 360:
                     i.rot = 0
@@ -189,7 +190,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         boxes = []
         for mod in ind:
             boxes.append(
-                [box(mod.x - mod.width / 2, mod.y - mod.length / 2, mod.x + mod.width / 2, mod.y + mod.length / 2),
+                [box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2),
                  mod.name])
         nb = len(boxes)
         for i in range(nb):
@@ -207,7 +208,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
 
         for mod in ind:
             boxes.append(
-                [box(mod.x - mod.width / 2, mod.y - mod.length / 2, mod.x + mod.width / 2, mod.y + mod.length / 2),
+                [box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2),
                  mod.name])
 
 
@@ -237,7 +238,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         boxes = []
         for mod in ind:
             boxes.append(
-                box(mod.x - mod.width / 2, mod.y - mod.length / 2, mod.x + mod.width / 2, mod.y + mod.length / 2))
+                box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2))
         for bx1 in boxes:
             if planta.contains(bx1) is False:
                 return False
@@ -253,7 +254,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         boxes = []
         for mod in ind:
             boxes.append(
-                [box(mod.x - mod.width / 2, mod.y - mod.length / 2, mod.x + mod.width / 2, mod.y + mod.length / 2),
+                [box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2),
                  mod.name])
         nb = len(boxes)
         for i in range(nb):
@@ -347,5 +348,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         out.append([mod.name, mod.id, mod.x, mod.y, mod.rot])
         #print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness)
+    for o in out:
+        print(o)
     viewer.show_floor(planta, As, pop[0])
     return out
