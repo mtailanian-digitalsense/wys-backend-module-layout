@@ -363,7 +363,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
         out.append([mod.name, mod.id, mod.x, mod.y, mod.rot])
         #print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness)
-    for o in out:
+    '''for o in out:
         print(o)
-    viewer.show_floor(planta, As, pop[0])
+    viewer.show_floor(planta, As, pop[0])'''
     return out
