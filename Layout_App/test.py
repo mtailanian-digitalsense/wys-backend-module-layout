@@ -8,8 +8,17 @@ import SmartLayout
 def main():
     pop_size = 10
     generations = 10
-    matrix = SmartLayout.restrictions.mod2area_matrix
-    #for row in matrix:
-        #print(row)
+    mod2area_matrix = SmartLayout.restrictions.mod2area_matrix
+    mod2mod_matrix = SmartLayout.restrictions.mod2mod_matrix
+    print('MOD2AREA MATRIX:')
+
+    for row in mod2area_matrix:
+        print(row)
+
+    print('MOD2MOD MATRIX:')
+
+    for row in mod2mod_matrix:
+        print(row)
+
     output = SmartLayout.Smart_Layout(example_data_v3.dict_ex, pop_size, generations)
 main()
