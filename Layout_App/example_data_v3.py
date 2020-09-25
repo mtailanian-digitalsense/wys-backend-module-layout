@@ -2010,7 +2010,7 @@ dict_ex = {'selected_floor': {'active': True,
                  'left_gap': 1,
                  'name': 'WYS_PUESTOTRABAJO_CELL3PERSONAS',
                  'points': [],
-                 'quantity': 10,
+                 'quantity': 20,  #cantidad a modificar para hacer pruebas
                  'regular': True,
                  'right_gap': 1,
                  'subcategory_id': 4,

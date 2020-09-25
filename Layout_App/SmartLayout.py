@@ -81,6 +81,7 @@ curr_bx = []
 
 
 def makePos(planta, in_list):
+    make_time = time.time()
     global makeposcnt
     global curr_bx
     in_cnt = 0
@@ -97,6 +98,8 @@ def makePos(planta, in_list):
             in_cnt+=1
 
     while True:
+        if(time.time() - make_time)>10:
+            print("Se ha demorado mas de 10 segundos!!!!")
         p = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
         b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
         condition1 = planta.contains(b)
@@ -340,7 +343,6 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         #        print('X = ',mod.x)
         #        print('Y = ',mod.y)
         #    print('Fitness = ',i.fitness)
-        time.time() - start_time,
     print(round(time.time() - start_time, 2),'Finish')
     print('Best individual of Generation', g, ':')
     out = []
