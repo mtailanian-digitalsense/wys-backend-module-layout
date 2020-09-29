@@ -241,3 +241,6 @@ set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BA
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA6PERSONAS', 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 0.5)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA6PERSONAS', 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 0.5)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA6PERSONAS', 'WYS_SALAREUNION_DIRECTORIO10PERSONAS', -0.25)
+set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', 'WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', 1)
+set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', 'WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', 1)
+set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', 'WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', 1)
