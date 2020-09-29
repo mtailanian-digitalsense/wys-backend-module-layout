@@ -98,7 +98,7 @@ def makePos(planta, in_list):
                 mod.name = in_list[j][0]
 
             in_cnt+=1
-    print(round(time.time() - start_time, 2), len(curr_bx), mod.name)
+    #print(round(time.time() - start_time, 2), len(curr_bx), mod.name)
     while True:
 
         p = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
@@ -143,6 +143,9 @@ def min_dist_to_area(lista):
     my_output = []
     i = 0
     curr_min = lista[0]
+    if len(lista) is 1:
+        my_output.append(curr_min)
+        return(my_output)
 
     for j in range(i+1, len(lista)):
         B = lista[j]
@@ -153,7 +156,6 @@ def min_dist_to_area(lista):
             if j+1 == len(lista):
                 my_output.append(curr_min)
                 #print('append', curr_min)
-
 
         else:
             my_output.append(curr_min)
@@ -176,14 +178,15 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
 
     input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',            0, 3.37, 3.37],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             4, 3.37, 3.37],
                     ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9],
-                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    0, 3.54, 3.02],
+                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02],
+                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02],
                     ['WYS_SOPORTE_KITCHENETTE',                     0, 1.6, 2.3],
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               0, 1.5, 2.4],
-                    ['WYS_SOPORTE_PRINT1',                          0, 1.5, 1.3],
-                    ['WYS_RECEPCION_1PERSONA',                      2, 2.7, 3.25],
+                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3],
+                    ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01],
                     ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4]]
@@ -230,13 +233,22 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                  mod.name])
         nb = len(boxes)
         for i in range(nb):
-            for j in range(i + 1, nb):
-                curr_first_mod_name = boxes[i][1]
-                curr_sec_mod_name = boxes[j][1]
-                d = boxes[i][0].distance(boxes[j][0])
+            distances = []
+            for j in range(nb):
+                if i is not j:
+                    distances.append([boxes[j][1],boxes[i][0].distance(boxes[j][0])])
+
+            #print('list of', i, 'module')
+            #for d in distances:
+            #    print(d)
+            distances2 = min_dist_to_area(distances)
+            #print('CONSOLIDATED LIST:')
+            #print('list of', i, 'module')
+            for d in distances2:
+                #print(d)
                 w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
-                                         boxes[i][1], boxes[j][1])
-                a+=w*(100-d)
+                                     boxes[i][1], d[0])
+                a += (50-d[1])*w
         return a
 
     def modtoareas(As, ind):
@@ -256,7 +268,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
             for ml in min_list:
                 w = restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary,
                                         restrictions.mod2area_matrix, bx[1], ml[0])
-                a += w*(100-ml[1])
+                a += w*(50-ml[1])
         return a
 
     def evaluateInd(ind):
@@ -312,8 +324,9 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, mu=0, sigma=0.2, indpb=0.2)
+    toolbox.register("mutate", mutMod, mu=0, sigma=0.5, indpb=0.5)
     toolbox.register("select", tools.selBest)
+    #toolbox.register("select", tools.selTournament, tournsize=3)
     toolbox.register("evaluate", evaluateInd)
 
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
@@ -329,7 +342,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         print(i)
     pop = toolbox.population(n=POP_SIZE)
 
-    CXPB, MUTPB, NGEN = 0.5, 0.2, GENERATIONS
+    CXPB, MUTPB, NGEN = 0.9, 0.2, GENERATIONS
 
     # Evaluate the entire population
     fitnesses = map(toolbox.evaluate, pop)
@@ -344,8 +357,9 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
     #print('Fitness = ', pop[0].fitness)
     print(round(time.time() - start_time, 2),'Start of genetic evolution:')
     for g in range(NGEN):
-        if g%25 == 0:
+        if g%2 == 0:
             print(round(time.time() - start_time, 2),': Generation ', g, 'of ', NGEN)
+            #viewer.show_floor(planta, As, pop, g)
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
 
@@ -354,7 +368,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
 
         # Apply crossover and mutation on the offspring
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
-            if random.random() < CXPB:
+            if random.random() < CXPB: #probabilidad de mate?? mejor hacer que hagan mate si o si... linea 381
                 toolbox.mate(child1, child2)
                 del child1.fitness.values
                 del child2.fitness.values
@@ -387,7 +401,9 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         out.append([mod.name, mod.id, mod.x, mod.y, mod.rot])
         #print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness)
+    viewer.show_floor(planta, As, pop,g)
+    plt.show()
     #for o in out:
     #    print(o)
-    viewer.show_floor(planta, As, pop[0])
+    #viewer.show_floor(planta, As, pop)
     return out
