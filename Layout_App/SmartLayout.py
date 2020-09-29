@@ -230,13 +230,19 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                  mod.name])
         nb = len(boxes)
         for i in range(nb):
-            for j in range(i + 1, nb):
-                curr_first_mod_name = boxes[i][1]
-                curr_sec_mod_name = boxes[j][1]
-                d = boxes[i][0].distance(boxes[j][0])
+            '''mod_distances={}
+            for j in range(nb):
+                if(i != j):
+                    curr_first_mod_name = boxes[i][1]
+                    curr_sec_mod_name = boxes[j][1]
+                    if not curr_sec_mod_name in mod_distances.keys():
+                        mod_distances[curr_sec_mod_name] = []
+                    mod_distances[curr_sec_mod_name].append(boxes[i][0].distance(boxes[j][0]))
+            for mod_name, distances in mod_distances.items():
+                d = min(distances)
                 w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
-                                         boxes[i][1], boxes[j][1])
-                a+=w*(100-d)
+                                         boxes[i][1], mod_name)
+                a+=w*(100-d)'''
         return a
 
     def modtoareas(As, ind):
