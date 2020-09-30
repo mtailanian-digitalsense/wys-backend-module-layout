@@ -915,7 +915,10 @@ def generate_layout_async():
             return "The floor doesn't exist or not have a polygons.", 404
         floor['polygons'] = floor_polygons
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
-        job = redis_queue.enqueue(smart_layout_async, layout_data, job_timeout=300)
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        job = redis_queue.enqueue(smart_layout_async,
+                                  args=(layout_data, config.pop_size, config.generations),
+                                  job_timeout=300)
         return jsonify({'job_id': job.id}), 201
 
     except SQLAlchemyError as e:
