@@ -176,20 +176,20 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
     outline, holes, areas, input_list = get_input(dictionary)
 
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05],
-                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             4, 3.37, 3.37],
-                    ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8],
-                    ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9],
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05],
+                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             8, 3.37, 3.37],
+                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8],
+                    ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9],
                     ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02],
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02],
-                    ['WYS_SOPORTE_KITCHENETTE',                     0, 1.6, 2.3],
-                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               0, 1.5, 2.4],
+                    ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3],
+                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4],
                     ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3],
                     ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25],
-                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9],
-                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01],
-                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4]]
+                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    1, 2.05, 1.9],
+                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    1, 2.05, 2.01],
+                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             1, 1.95, 2.4]]
     voids = []
 
     border = outline[0][1]
@@ -258,10 +258,12 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
             #print('CONSOLIDATED LIST:')
             #print('list of', i, 'module')
             for d in distances2:
-                #print(d)
                 w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
-                                     boxes[i][1], d[0])
-                a += (50-d[1])*w
+                                            boxes[i][1], d[0])
+
+                if w != 0:
+                    a -= d[1] * w
+
         return a
 
     def modtoareas(As, ind):
@@ -278,16 +280,18 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                 bx_dist.append([A[1], bx[0].distance(A[0])])
 
             min_list = min_dist_to_area(bx_dist)
-            for ml in min_list:
+            for d in min_list:
                 w = restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary,
-                                        restrictions.mod2area_matrix, bx[1], ml[0])
-                a += w*(50-ml[1])
+                                        restrictions.mod2area_matrix, bx[1], d[0])
+                if w != 0:
+                    a -= d[1] * w
+
         return a
 
     def evaluateInd(ind):
         fit_list = []
         fit_list.append(modtoareas(As, ind))
-        fit_list.append(distancebtwmods(ind))
+        #fit_list.append(distancebtwmods(ind))
         a = sum(fit_list)
         return a,
 
@@ -337,25 +341,22 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, mu=0, sigma=0.5, indpb=0.5)
-    toolbox.register("select", tools.selBest)
-    #toolbox.register("select", tools.selTournament, tournsize=3)
+    toolbox.register("mutate", mutMod, mu=0, sigma=3, indpb=0.5)
+    toolbox.register("select_best", tools.selBest)
+    toolbox.register("select_roulette", tools.selRoulette)
+    #toolbox.register("select", tools.selTournament, tournsize=5)
     toolbox.register("evaluate", evaluateInd)
 
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-
-    # implementar distancia para graduar la infactibilidad
-    # delta -20 parametrizable, gama = factor para multiplicar por area de modulos superpuestos.
     toolbox.decorate("evaluate", tools.DeltaPenalty(feasible, -200.0, feas_distance))
 
     # Init of the algorithm
-    print(round(time.time() - start_time, 2), 'Generate population:')
+    print(round(time.time() - start_time, 1), 'Generate population:')
 
-    for i in input_list:
-        print(i)
     pop = toolbox.population(n=POP_SIZE)
+    print(round(time.time() - start_time, 1), '...Done')
 
-    CXPB, MUTPB, NGEN = 0.9, 0.2, GENERATIONS
+    CXPB, MUTPB, NGEN = 0.1, 0.9, GENERATIONS
 
     # Evaluate the entire population
     fitnesses = map(toolbox.evaluate, pop)
@@ -369,19 +370,28 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
     #    print('(',mod.x,',',mod.y,')','id:', mod.id)
     #print('Fitness = ', pop[0].fitness)
     print(round(time.time() - start_time, 2),'Start of genetic evolution:')
+
     for g in range(NGEN):
-        if g%2 == 0:
-            print(round(time.time() - start_time, 2),': Generation ', g, 'of ', NGEN)
-            #viewer.show_floor(planta, As, pop, g)
+
+        #viewer.show_floor(planta, As, pop, g)
         # Select the next generation individuals
-        offspring = toolbox.select(pop, len(pop))
+        fitn = [o.fitness.values[0] for o in pop]
+
+        print('Time:', round(time.time() - start_time, 1),' Generation ', g, 'of', NGEN, 'POP SIZE:',len(pop),
+              '  Min:', round(min(fitn),1), 'Max:', round(max(fitn),1),'Avg:', round(sum(fitn)/len(fitn),1))
+
+        #if (max(fitn)-min(fitn))/max(fitn) <= 0.001:
+        #    print('Found local max')
+        #    break
+
+        offspring = toolbox.select_roulette(pop, round(len(pop)/2))
 
         # Clone the selected individuals
         offspring = list(map(toolbox.clone, offspring))
 
         # Apply crossover and mutation on the offspring
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
-            if random.random() < CXPB: #probabilidad de mate?? mejor hacer que hagan mate si o si... linea 381
+            if random.random() < CXPB: #probabilidad de mate?? mejor hacer que hagan mate si o si... linea de select
                 toolbox.mate(child1, child2)
                 del child1.fitness.values
                 del child2.fitness.values
@@ -397,26 +407,22 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
 
-        offspring = toolbox.select(offspring + pop, len(pop))
+        N = len(pop) - 1
+        if N < 10:
+            N = 10
+        offspring = toolbox.select_best(offspring + pop, N)
         # The population is entirely replaced by the offspring
         pop[:] = offspring
-        # print('iteration number:',g)
-        # for i in pop:
-        #    print('individual:')
-        #    for mod in i:
-        #        print('X = ',mod.x)
-        #        print('Y = ',mod.y)
-        #    print('Fitness = ',i.fitness)
-    print(round(time.time() - start_time, 2),'Finish')
+        #viewer.show_floor(planta, As, pop, g)
+
+    print(round(time.time() - start_time, 1),'Finish')
     print('Best individual of Generation', g, ':')
     out = []
     for mod in pop[0]:
         out.append([mod.name, mod.id, mod.x, mod.y, mod.rot])
         #print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
-    print('Fitness = ', pop[0].fitness)
-    viewer.show_floor(planta, As, pop,g)
-    plt.show()
-    #for o in out:
-    #    print(o)
-    #viewer.show_floor(planta, As, pop)
+    print('Fitness = ', pop[0].fitness.values)
+    viewer.show_floor(planta, As, pop, g)
+
+
     return out

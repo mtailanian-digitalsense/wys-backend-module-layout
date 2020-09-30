@@ -204,8 +204,8 @@ set_mod2area_val('WYS_SOPORTE_GUARDADOALTO', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_SOPORTE_LOCKERS', [0, 0, 0, 0, 1])
 set_mod2area_val('WYS_SOPORTE_BODEGA', [0, 0, 0, 0, 1])
 
-set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', [0, 0, 0, 1, 0])
-set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', [0, 0, 0, 1, 0])
+set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', [-1, 0, 0, 2, 0])
+set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', [-1, 0, 0, 2, 0])
 
 set_mod2area_val('WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS', [0, 1, 0, 0, 0])
 
@@ -213,7 +213,6 @@ set_mod2area_val('WYS_ESPECIALES_MINDBREAKROOM1PERSONA', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING4PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING7PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING11PERSONAS', [0, 1, 0, 0, 0])
-
 
 
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 0.75)

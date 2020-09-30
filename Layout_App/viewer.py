@@ -16,10 +16,10 @@ def show_floor(planta, As,  pop, g):
     x, y = planta.exterior.xy
     for row in range(n):
         for col in range(m):
-            ax[row,col].plot(x, y, color='black')
-            ax[row,col].axis('equal')
-            ax[row,col].grid(True)
-            ax[row,col].tick_params(axis="x", labelsize=7)
+            ax[row, col].plot(x, y, color='black')
+            ax[row, col].axis('equal')
+            ax[row, col].grid(True)
+            ax[row, col].tick_params(axis="x", labelsize=7)
             ax[row, col].tick_params(axis="y", labelsize=7)
 
     for pi in planta.interiors:
@@ -54,9 +54,13 @@ def show_floor(planta, As,  pop, g):
 
             for b in boxes:
                 x, y = b[0].exterior.xy
-                ax[row, col].set_title('POP:'+str(m*row+col)+' Fitness:'+ str(ind.fitness), fontsize=9)
+                ax[row, col].set_title('POP:'+str(m*row+col)+' Fitness:'+ str(round(ind.fitness.values[0],2)), fontsize=9)
                 ax[row, col].plot(x, y, color='b')
                 ax[row, col].text(x[2] + 0.1, y[2] - 1, b[1], fontsize=6)
+
+    plt.show()
+
+
 
 
 
