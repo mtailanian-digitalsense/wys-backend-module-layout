@@ -143,7 +143,7 @@ def min_dist_to_area(lista):
     my_output = []
     i = 0
     curr_min = lista[0]
-    if len(lista) is 1:
+    if len(lista) == 1:
         my_output.append(curr_min)
         return(my_output)
 
