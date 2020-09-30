@@ -178,7 +178,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
     outline, holes, areas, input_list = get_input(dictionary)
 
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05],
+   ''' input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05],
                     ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             8, 3.37, 3.37],
                     ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8],
@@ -191,7 +191,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
                     ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    1, 2.05, 1.9],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    1, 2.05, 2.01],
-                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             1, 1.95, 2.4]]
+                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             1, 1.95, 2.4]]'''
     voids = []
 
     border = outline[0][1]
