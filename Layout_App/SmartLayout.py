@@ -177,8 +177,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
-
-   ''' input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05],
+    ''' input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05],
                     ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             8, 3.37, 3.37],
                     ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8],
