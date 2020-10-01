@@ -179,7 +179,8 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
 
     ''' input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             8, 3.37, 3.37],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             4, 3.37, 3.37],
+                    #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
                     ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9],
                     ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02],
@@ -342,10 +343,10 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, mu=0, sigma=3, indpb=0.5)
+    toolbox.register("mutate", mutMod, mu=0, sigma=0.5, indpb=0.2)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
-    #toolbox.register("select", tools.selTournament, tournsize=5)
+    toolbox.register("select", tools.selTournament, tournsize=round(POP_SIZE*0.7))
     toolbox.register("evaluate", evaluateInd)
 
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
@@ -357,7 +358,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
     pop = toolbox.population(n=POP_SIZE)
     print(round(time.time() - start_time, 1), '...Done')
 
-    CXPB, MUTPB, NGEN = 0.1, 0.9, GENERATIONS
+    CXPB, MUTPB, NGEN = 0.5, 0.2, GENERATIONS
 
     # Evaluate the entire population
     fitnesses = map(toolbox.evaluate, pop)
@@ -373,6 +374,9 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
     print(round(time.time() - start_time, 2),'Start of genetic evolution:')
     if IS_ASYNC:
         from rq import get_current_job
+
+    max_count = 0
+    max_fit = -9999999
     for g in range(NGEN):
         #print('generation: ', g)
         #viewer.show_floor(planta, As, pop, g)
@@ -385,15 +389,28 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
         #if g%25 == 0:
         #    print(round(time.time() - start_time, 2),': Generation ', g, 'of ', NGEN)
         fitn = [o.fitness.values[0] for o in pop]
+
+        if max_fit == max(fitn):
+            max_count += 1
+        else:
+            max_count = 0
+
+        if max_count > round(NGEN/8):
+            CXPB = 0.9999
+            MUTPB = 0.999
+        else:
+            CXPB = 0.5
+            MUTPB = 0.2
+
+        max_fit = max(fitn)
         print('Time:', round(time.time() - start_time, 1),' Generation ', g, 'of', NGEN, 'POP SIZE:',len(pop),
-              '  Min:', round(min(fitn),1), 'Max:', round(max(fitn),1),'Avg:', round(sum(fitn)/len(fitn),1))
+              '  Min:', round(min(fitn),1), 'Max:', round(max(fitn),1),'Avg:', round(sum(fitn)/len(fitn),1), 'Local sol. count:', max_count)
 
         #if (max(fitn)-min(fitn))/max(fitn) <= 0.001:
         #    print('Found local max')
         #    break
 
-        # Select the next generation individuals
-        offspring = toolbox.select_roulette(pop, round(len(pop)/2))
+        offspring = toolbox.select(pop, len(pop))
 
         # Clone the selected individuals
         offspring = list(map(toolbox.clone, offspring))
@@ -418,10 +435,10 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
 
-        N = len(pop) - 1
-        if N < 10:
-            N = 10
-        offspring = toolbox.select_best(offspring + pop, N)
+        #N = len(pop) - 1
+        #if N < 20:
+        #    N = 20
+        #offspring = toolbox.select_roulette(offspring + pop, POP_SIZE)
         # The population is entirely replaced by the offspring
         pop[:] = offspring
         #viewer.show_floor(planta, As, pop, g)
@@ -429,6 +446,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
     print(round(time.time() - start_time, 1),'Finish')
     print('Best individual of Generation', g, ':')
     out = []
+    pop.sort(key=lambda x: x.fitness, reverse=True)
     for mod in pop[0]:
         out.append([mod.name, mod.id, mod.x, mod.y, mod.rot])
         #print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)

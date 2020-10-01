@@ -128,7 +128,7 @@ def set_mod2area_val(Modulo, valores):
                               'WYS_CORE', valores[4])
 
 # Arreglo restricciones [0, 0, 0, 0, 0] = [WYS_ENTRANCE, WYS_FACADE_CRYSTAL, WYS_FACADE_OPAQUE, WYS_SHAFT, WYS_CORE]
-set_mod2area_val('WYS_PUESTOTRABAJO_RECTO2PERSONAS', [0, 1, 0, 0, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_RECTO2PERSONAS', [0, 1, 1, -1, -1])
 set_mod2area_val('WYS_PUESTOTRABAJO_RECTO4PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_PUESTOTRABAJO_RECTO6PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_PUESTOTRABAJO_ESTRELLA3PERSONAS', [0, 1, 0, 0, 0])
@@ -215,9 +215,10 @@ set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING7PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING11PERSONAS', [0, 1, 0, 0, 0])
 
 
-set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 0.75)
+set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 'WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS', 0.5)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_PUESTOTRABAJO_CELL3PERSONAS', 'WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA', 0.5)
+set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_PUESTOTRABAJO_RECTO2PERSONAS', 'WYS_PUESTOTRABAJO_RECTO2PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SALAREUNION_RECTA6PERSONAS', 'WYS_SALAREUNION_RECTA6PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SALAREUNION_DIRECTORIO10PERSONAS', 'WYS_SALAREUNION_DIRECTORIO10PERSONAS', 0.75)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SALAREUNION_DIRECTORIO10PERSONAS', 'WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', -1)
