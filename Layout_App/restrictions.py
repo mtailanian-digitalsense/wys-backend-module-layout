@@ -128,7 +128,7 @@ def set_mod2area_val(Modulo, valores):
                               'WYS_CORE', valores[4])
 
 # Arreglo restricciones [0, 0, 0, 0, 0] = [WYS_ENTRANCE, WYS_FACADE_CRYSTAL, WYS_FACADE_OPAQUE, WYS_SHAFT, WYS_CORE]
-set_mod2area_val('WYS_PUESTOTRABAJO_RECTO2PERSONAS', [0, 1, 1, -1, -1])
+set_mod2area_val('WYS_PUESTOTRABAJO_RECTO2PERSONAS', [0, 1, 1, 0, 0])
 set_mod2area_val('WYS_PUESTOTRABAJO_RECTO4PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_PUESTOTRABAJO_RECTO6PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_PUESTOTRABAJO_ESTRELLA3PERSONAS', [0, 1, 0, 0, 0])
@@ -143,11 +143,11 @@ set_mod2area_val('WYS_PUESTOTRABAJO_VOLANTE6PERSONAS', [0, 1, 0, 0, 0])
 
 set_mod2area_val('WYS_SALAREUNION_REDONDA4PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_SALAREUNION_REDONDA5PERSONAS', [0, 1, 0, 0, 0])
-set_mod2area_val('WYS_SALAREUNION_RECTA6PERSONAS', [0, 1, 0, 0, 0])
+set_mod2area_val('WYS_SALAREUNION_RECTA6PERSONAS', [-1, 1, 1, -1, -1])
 set_mod2area_val('WYS_SALAREUNION_MEDIATABLE3PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_SALAREUNION_MEDIATABLE5PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_SALAREUNION_RECTA8PERSONAS', [0, 1, 0, 0, 0])
-set_mod2area_val('WYS_SALAREUNION_DIRECTORIO10PERSONAS', [0, 1, 0, 0, 0])
+set_mod2area_val('WYS_SALAREUNION_DIRECTORIO10PERSONAS', [-1, 1, 1, -1, -1])
 set_mod2area_val('WYS_SALAREUNION_DIRECTORIO12PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_SALAREUNION_DIRECTORIO14PERSONAS', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_SALAREUNION_DIRECTORIO16PERSONAS', [0, 1, 0, 0, 0])
@@ -204,8 +204,8 @@ set_mod2area_val('WYS_SOPORTE_GUARDADOALTO', [0, 1, 0, 0, 0])
 set_mod2area_val('WYS_SOPORTE_LOCKERS', [0, 0, 0, 0, 1])
 set_mod2area_val('WYS_SOPORTE_BODEGA', [0, 0, 0, 0, 1])
 
-set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', [-1, 0, 0, 2, 0])
-set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', [-1, 0, 0, 2, 0])
+set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', [-1, -1, -1, 1, 0])
+set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', [-1, -1, -1, 1, 0])
 
 set_mod2area_val('WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS', [0, 1, 0, 0, 0])
 
