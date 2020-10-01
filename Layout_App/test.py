@@ -6,8 +6,8 @@ import example_data_piso3
 import SmartLayout
 
 def main():
-    pop_size = 200
-    generations = 200
+    pop_size = 60
+    generations = 600
     mod2area_matrix = SmartLayout.restrictions.mod2area_matrix
     mod2mod_matrix = SmartLayout.restrictions.mod2mod_matrix
 
