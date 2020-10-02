@@ -3,6 +3,7 @@ import time
 from deap import base
 from deap import creator
 from deap import tools
+from deap import algorithms
 from shapely.geometry import Point
 from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
@@ -11,6 +12,7 @@ import matplotlib.pyplot as plt
 import viewer
 import restrictions
 
+random.seed(100)
 
 def get_input(dictionary):
     Planta = dictionary.get('selected_floor').get('polygons')
@@ -176,21 +178,21 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
     outline, holes, areas, input_list = get_input(dictionary)
 
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              3, 3, 4.05],
-                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37],
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05],
+                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             4, 3.37, 3.37],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8],
-                    ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9],
+                    ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8],
+                    ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9],
                     ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02],
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3],
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4],
-                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3],
+                    ['WYS_SOPORTE_PRINT1',                          0, 1.5, 1.3],
                     ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25],
-                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    3, 2.05, 1.9],
-                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    3, 2.05, 2.01],
-                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             1, 1.95, 2.4]]
+                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9],
+                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01],
+                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4]]
     voids = []
 
     border = outline[0][1]
@@ -292,7 +294,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
     def evaluateInd(ind):
         fit_list = []
         fit_list.append(modtoareas(As, ind))
-        #fit_list.append(distancebtwmods(ind))
+        fit_list.append(distancebtwmods(ind))
         a = sum(fit_list)
         return a,
 
@@ -342,10 +344,11 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, mu=0, sigma=0.5, indpb=0.2)
+    toolbox.register("mutate", mutMod, mu=0, sigma=0.5, indpb=0.1)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
-    toolbox.register("select", tools.selTournament, tournsize=round(POP_SIZE*0.7))
+    toolbox.register("select", tools.selTournament, tournsize=4)
+    #toolbox.register("select", tools.selNSGA2)
     toolbox.register("evaluate", evaluateInd)
 
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
@@ -385,9 +388,9 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         else:
             max_count = 0
 
-        if max_count > round(NGEN/8):
-            CXPB = 0.9999
-            MUTPB = 0.999
+        if max_count > round(NGEN/8) or max_fit < 0:
+            CXPB = 0.1
+            MUTPB = 0.9
         else:
             CXPB = 0.5
             MUTPB = 0.2
