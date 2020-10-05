@@ -178,12 +178,12 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
     outline, holes, areas, input_list = get_input(dictionary)
 
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05],
-                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05],
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05],
+                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05],
                     ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             4, 3.37, 3.37],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-                    ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8],
-                    ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9],
+                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8],
+                    ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9],
                     ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02],
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3],
@@ -226,6 +226,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                 i.rot += 90
                 if i.rot >= 360:
                     i.rot = 0
+        return individual,
 
     def distancebtwmods(ind):
         a = 0
@@ -344,10 +345,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, mu=0, sigma=0.5, indpb=0.1)
+    toolbox.register("mutate", mutMod, mu=0, sigma=0.5, indpb=0.5)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
-    toolbox.register("select", tools.selTournament, tournsize=4)
+    toolbox.register("select", tools.selTournament, tournsize=6)
     #toolbox.register("select", tools.selNSGA2)
     toolbox.register("evaluate", evaluateInd)
 
@@ -429,7 +430,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         #N = len(pop) - 1
         #if N < 20:
         #    N = 20
-        #offspring = toolbox.select_roulette(offspring + pop, POP_SIZE)
+        #offspring = toolbox.select_best(offspring + pop, POP_SIZE)
         # The population is entirely replaced by the offspring
         pop[:] = offspring
         #viewer.show_floor(planta, As, pop, g)
