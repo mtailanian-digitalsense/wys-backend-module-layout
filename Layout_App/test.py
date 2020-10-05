@@ -7,7 +7,7 @@ import SmartLayout
 
 def main():
     pop_size = 150
-    generations = 300
+    generations = 100
     mod2area_matrix = SmartLayout.restrictions.mod2area_matrix
     mod2mod_matrix = SmartLayout.restrictions.mod2mod_matrix
 

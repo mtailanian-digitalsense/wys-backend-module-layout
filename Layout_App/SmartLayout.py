@@ -306,13 +306,13 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         for mod in ind:
             boxes.append(
                 box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2))
-        for bx1 in boxes:
-            if planta.contains(bx1) is False:
+        nb = len(boxes)
+        for i in range(nb):
+            if planta.contains(boxes[i]) is False:
                 return False
-            for bx2 in boxes:
-                if bx1 != bx2:
-                    if bx1.intersects(bx2):
-                        return False
+            for j in range(i + 1, nb):
+                if boxes[i].intersects(boxes[j]):
+                    return False
         return True
 
     def feas_distance(ind):

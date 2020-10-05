@@ -45,7 +45,7 @@ def show_floor(planta, As,  pop, g):
 
     for row in range(n):
         for col in range(m):
-            ind = pop[m*row+col]
+            ind = pop[2*(m*row+col)]
             boxes = []
             for mod in ind:
                 boxes.append(
@@ -54,7 +54,7 @@ def show_floor(planta, As,  pop, g):
 
             for b in boxes:
                 x, y = b[0].exterior.xy
-                ax[row, col].set_title('POP:'+str(m*row+col)+' Fitness:'+ str(round(ind.fitness.values[0],2)), fontsize=9)
+                ax[row, col].set_title('POP:'+str(2*(m*row+col))+' Fitness:'+ str(round(ind.fitness.values[0],2)), fontsize=9)
                 ax[row, col].plot(x, y, color='b')
                 ax[row, col].text(x[2] + 0.1, y[2] - 1, b[1], fontsize=6)
 
