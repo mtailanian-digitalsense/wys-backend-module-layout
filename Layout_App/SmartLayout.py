@@ -3,6 +3,7 @@ import time
 from deap import base
 from deap import creator
 from deap import tools
+from deap import algorithms
 from shapely.geometry import Point
 from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
@@ -11,6 +12,7 @@ import matplotlib.pyplot as plt
 from . import viewer
 from . import restrictions
 
+random.seed(100)
 
 def get_input(dictionary):
     Planta = dictionary.get('selected_floor').get('polygons')
@@ -187,7 +189,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3],
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4],
-                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3],
+                    ['WYS_SOPORTE_PRINT1',                          0, 1.5, 1.3],
                     ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    1, 2.05, 1.9],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    1, 2.05, 2.01],
@@ -225,6 +227,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
                 i.rot += 90
                 if i.rot >= 360:
                     i.rot = 0
+        return individual,
 
     def distancebtwmods(ind):
         a = 0
@@ -293,7 +296,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
     def evaluateInd(ind):
         fit_list = []
         fit_list.append(modtoareas(As, ind))
-        #fit_list.append(distancebtwmods(ind))
+        fit_list.append(distancebtwmods(ind))
         a = sum(fit_list)
         return a,
 
@@ -346,7 +349,8 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
     toolbox.register("mutate", mutMod, mu=0, sigma=0.5, indpb=0.2)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
-    toolbox.register("select", tools.selTournament, tournsize=round(POP_SIZE*0.7))
+    toolbox.register("select", tools.selTournament, tournsize=round(N*0.4))
+    #toolbox.register("select", tools.selNSGA2)
     toolbox.register("evaluate", evaluateInd)
 
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
@@ -395,9 +399,9 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
         else:
             max_count = 0
 
-        if max_count > round(NGEN/8):
-            CXPB = 0.9999
-            MUTPB = 0.999
+        if max_count > round(NGEN/8) or max_fit < 0:
+            CXPB = 0.1
+            MUTPB = 0.9
         else:
             CXPB = 0.5
             MUTPB = 0.2
@@ -438,7 +442,7 @@ def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
         #N = len(pop) - 1
         #if N < 20:
         #    N = 20
-        #offspring = toolbox.select_roulette(offspring + pop, POP_SIZE)
+        #offspring = toolbox.select_best(offspring + pop, POP_SIZE)
         # The population is entirely replaced by the offspring
         pop[:] = offspring
         #viewer.show_floor(planta, As, pop, g)
