@@ -89,10 +89,6 @@ class LayoutGenerated(db.Model):
         "LayoutGeneratedWorkspace",
         backref="layout_generated",
         cascade="all, delete, delete-orphan")
-    zones = db.relationship(
-        "LayoutZone",
-        backref="layout_generated",
-        cascade="all, delete, delete-orphan")
 
     def to_dict(self):
         """
@@ -141,6 +137,8 @@ class LayoutGeneratedWorkspace(db.Model):
     space_id = db.Column(db.Integer, nullable=False)
     layout_gen_id = db.Column(db.Integer, db.ForeignKey(
         'layout_generated.id'), nullable=False)
+    layout_zone_id = db.Column(db.Integer, db.ForeignKey(
+        'layout_zone.id'), nullable=True)
 
     def to_dict(self):
         """
@@ -155,7 +153,8 @@ class LayoutGeneratedWorkspace(db.Model):
             'height': self.height,
             'width': self.width,
             'space_id': self.space_id,
-            'layout_gen_id': self.layout_gen_id
+            'layout_gen_id': self.layout_gen_id,
+            'layout_zone_id': self.layout_zone_id
         }
         return dict
 
@@ -175,37 +174,27 @@ class LayoutZone(db.Model):
     id: Represent the unique id of a Zone.
     name: Name of a Zone.
     color: Name of region where the Zone are located
-    position_x: X coordinate of the position of the space figure in the layout.
-    position_Y: Y coordinate of the position of the space figure in the layout.
-    height: Height of the created Zone by the user.
-    width: Width of the created Zone by the user.
-    layout_gen_id: ID of the Layout Generated associated.
+    spaces_gen: List of spaces associated with this zone
     """
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(45), nullable=False)
     color = db.Column(db.String(20), nullable=False)
-    position_x = db.Column(db.Float, nullable=False)
-    position_y =  db.Column(db.Float, nullable=False)
-    height = db.Column(db.Float, nullable=False)
-    width = db.Column(db.Float, nullable=False)
-    layout_gen_id = db.Column(db.Integer, db.ForeignKey(
-        'layout_generated.id'), nullable=False)
- 
+    spaces_gen = db.relationship(
+        "LayoutGeneratedWorkspace",
+        backref="layout_zone",
+        cascade="all, delete, delete-orphan")
+
     def to_dict(self):
         """
         Convert to dictionary
         """
-
+        space: LayoutGeneratedWorkspace
         obj_dict = {
             'id': self.id,
             'name': self.name,
             'color': self.color,
-            'position_x': self.position_x,
-            'position_y': self.position_y,
-            'height': self.height,
-            'width': self.width,
-            'layout_gen_id': self.layout_gen_id
+            'spaces_gen': [space.to_dict() for space in self.spaces_gen]
         }
 
         return obj_dict
