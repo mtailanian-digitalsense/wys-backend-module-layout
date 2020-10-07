@@ -183,7 +183,7 @@ class LayoutZone(db.Model):
     spaces_gen = db.relationship(
         "LayoutGeneratedWorkspace",
         backref="layout_zone",
-        cascade="all, delete, delete-orphan")
+        cascade="all, delete")
 
     def to_dict(self):
         """
@@ -1135,7 +1135,77 @@ def create_zones():
         abort(500, description=f'Error saving data: {e}')
 
 
+@app.route("/api/layouts/zones/<zone_id>", methods=['PUT'])
+@token_required
+def updated_zone(zone_id: int):
+    """
+        Update Zones
+        ---
 
+        consumes:
+        - "application/json"
+        tags:
+        - Zones
+        produces:
+        - application/json
+
+        parameters:
+        - in: path
+          name: zone_id
+          type: integer
+          description: zone id
+        - in: "body"
+          name: "body"
+          required:
+          - spaces_id
+          - name
+          - color
+          properties:
+            name:
+                type: string
+                description: Zone's name
+            color:
+                type: string
+                description: RGB color code.
+            w_spaces_id:
+                type: array
+                items:
+                    type: number
+                description: Spaces id
+        responses:
+                200
+                    description: Updated
+
+    """
+    try:
+        zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
+        if zone is None:
+            abort(404, description='Layout Zone not found')
+
+        req_params = ['w_spaces_id', 'name', 'color']
+        for param in req_params:
+            if param not in request.json.keys():
+                abort(400, description=f"{param} isn't in body")
+
+        # Empty w_spaces in zone
+        zone.spaces_gen.clear()
+        db.session.commit()
+
+        # Add new w_spaces
+        for w_space_id in request.json["w_spaces_id"]:
+            w_space = db.session.query(LayoutGeneratedWorkspace).filter_by(id=w_space_id).first()
+            if w_space is not None:
+                zone.spaces_gen.append(w_space)
+        # Update name
+        zone.name = request.json["name"]
+        # Update color
+        zone.color = request.json["color"]
+        db.session.commit()
+        return jsonify(zone.to_dict())
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        abort(500, description=f'Database error: {e}')
 
 
 if __name__ == '__main__':
