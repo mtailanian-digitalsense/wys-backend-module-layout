@@ -1061,6 +1061,82 @@ def get_layout():
         app.logger.error(msg)
         return msg, 500
 
+@app.route("/api/layouts/zones", methods=['POST'])
+@token_required
+def create_zones():
+    """
+    Create Zones
+    ---
+
+    consumes:
+    - "application/json"
+    tags:
+    - Zones
+    produces:
+    - application/json
+
+    parameters:
+    - in: "body"
+      name: "body"
+      required:
+      - spaces_id
+      - name
+      - color
+      properties:
+        name:
+            type: string
+            description: Zone's name
+        color:
+            type: string
+            description: RGB color code.
+        w_spaces_id:
+            type: array
+            items:
+                type: number
+            description: Spaces id
+    responses:
+            201:
+                description: Return the final layout
+            404:
+                description: Job not found. The job doesn't exist or isn't ready.
+    """
+
+    req_params = ['w_spaces_id', 'name', 'color']
+    for param in req_params:
+        if param not in request.json.keys():
+            abort(400, description=f"{param} isn't in body")
+
+    w_spaces_id: [] = request.json["w_spaces_id"]
+    name: str = request.json["name"]
+    color: str = request.json["color"]
+
+    zone = LayoutZone()
+    zone.name = name
+    zone.color = color
+
+    try:
+        for w_space_id in w_spaces_id:
+            w_space = db.session.query(LayoutGeneratedWorkspace).filter_by(id=w_space_id).first()
+            if w_space is not None:
+                zone.spaces_gen.append(w_space)
+
+
+        db.session.add(zone)
+        db.session.commit()
+
+        return jsonify(zone.to_dict()), 201
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logging.error(f'Error saving data: {e}')
+        abort(500, description=f'Error saving data: {e}')
+
+    except Exception as e:
+        abort(500, description=f'Error saving data: {e}')
+
+
+
+
 
 if __name__ == '__main__':
     app.run(host = APP_HOST, port = APP_PORT, debug = True)

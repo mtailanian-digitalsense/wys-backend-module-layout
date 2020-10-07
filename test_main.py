@@ -65,5 +65,39 @@ class LayoutTest(unittest.TestCase):
             rv = client.put('/api/layouts/configs', data = json.dumps(sent), content_type='application/json')
             self.assertEqual(rv.status_code, 400)
 
+    def test_create_zone(self):
+        layout = LayoutGenerated(building_id=1,
+                                 project_id=1,
+                                 floor_id=1
+                                 )
+        for i in range(10):
+            w_space_gen = LayoutGeneratedWorkspace()
+            w_space_gen.space_id = 1
+            w_space_gen.rotation = 0
+            w_space_gen.height = 0
+            w_space_gen.width = 0
+            w_space_gen.position_x = 0
+            w_space_gen.position_y = 0
+            layout.workspaces.append(w_space_gen)
+
+        db.session.add(layout)
+        db.session.commit()
+
+        with app.test_client() as client:
+            client.environ_base['HTTP_AUTHORIZATION'] = self.build_token(self.key)
+            test_ids = [1, 2, 3, 4]
+            sent = {
+                'w_spaces_id': test_ids,
+                'name': "Test1",
+                'color': "RGB1234"
+            }
+
+            rv = client.post('/api/layouts/zones', data=json.dumps(sent), content_type='application/json')
+            self.assertEqual(rv.status_code, 201)
+            data = rv.data
+            json_data = json.loads(data)
+            self.assertEqual(len(json_data["spaces_gen"]), len(test_ids))
+
+
 if __name__ == '__main__':
     unittest.main()

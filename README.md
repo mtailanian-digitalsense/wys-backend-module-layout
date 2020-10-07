@@ -651,7 +651,7 @@ If the building's id is 1, then the response will be:
 
 ````json
 {
-  "spaces_ids": [1,2,3,4,5],
+  "w_spaces_id": [1,2,3,4,5],
   "name": "str",
   "color": "RGB_CODE"
   
