@@ -39,7 +39,12 @@ Port: 8086
     - [Success Response](#success-response-7)
     - [Error Responses](#error-responses-7)
     - [Or](#or-11)
-
+  - [Create a Zone](#create-a-zone)
+  - [Update a Zone](#update-a-zone)
+  - [Delete a Zone](#delete-a-zone) 
+  - [Get a Zone](#get-a-zone)
+  - [Get all zones](#get-all-zones)
+  
 ## Get the latest configuration of the spaces in the layout by project ID
 
 **URL** : `/api/layouts/{project_id}`
@@ -581,6 +586,199 @@ If the building's id is 1, then the response will be:
 **Content** : `{error_message}`
 
 ### Or
+
+**Condition** : If an error occurs with the internal server or database connection.
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{error_message}`
+
+## Create a Zone 
+
+**URL** : `/api/layouts/zones`
+
+**Method** : `POST`
+
+**Auth required** : YES
+
+**Required body** :
+
+````json
+{
+  "spaces_ids": [1,2,3,4,5],
+  "name": "str",
+  "color": "RGB_CODE"
+  
+}
+````
+### Success Response
+
+**Code** : `201 CREATED`
+
+**Content example**
+
+```json
+{
+  
+}
+```
+### Error Responses
+
+**Condition** : If required field is missing in the body or the submitted body is not a JSON type.
+
+**Code** : `400 Bad Request`
+
+**Content** : `{error_message}`
+
+### Or
+
+**Condition** : If an error occurs with the internal server or database connection.
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{error_message}`
+
+
+## Update a Zone 
+
+**URL** : `/api/layouts/zones/{id}`
+
+**Method** : `PUT`
+
+**Auth required** : YES
+
+**Required body** :
+
+````json
+{
+  "spaces_ids": [1,2,3,4,5],
+  "name": "str",
+  "color": "RGB_CODE"
+  
+}
+````
+### Success Response
+
+**Code** : `200 OK`
+
+**Content example**
+
+```json
+{
+  
+}
+```
+### Error Responses
+
+**Condition** : If required field is missing in the body or the submitted body is not a JSON type.
+
+**Code** : `400 Bad Request`
+
+**Content** : `{error_message}`
+
+### Or
+
+**Condition** : Zone not found
+
+**Code** : `404 Not Found`
+
+**Content** : `{error_message}`
+
+
+### Or
+
+**Condition** : If an error occurs with the internal server or database connection.
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{error_message}`
+
+## Delete a Zone 
+
+**URL** : `/api/layouts/zones/{id}`
+
+**Method** : `DELETE`
+
+**Auth required** : YES
+
+
+### Success Response
+
+**Code** : `204 NO CONTENT`
+
+**Content example**
+
+### Error Responses
+
+**Condition** : If required field is missing in the body or the submitted body is not a JSON type.
+
+**Code** : `404 Zone Not Found`
+
+**Content** : `{error_message}`
+
+### Or
+
+**Condition** : If an error occurs with the internal server or database connection.
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{error_message}`
+
+## Get a Zone 
+
+**URL** : `/api/layouts/zones/{id}`
+
+**Method** : `GET`
+
+**Auth required** : YES
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Content example**
+
+```json
+{
+  
+}
+```
+### Error Responses
+
+**Condition** : If required field is missing in the body or the submitted body is not a JSON type.
+
+**Code** : `404 Zone Not Found`
+
+**Content** : `{error_message}`
+
+### Or
+
+**Condition** : If an error occurs with the internal server or database connection.
+
+**Code** : `500 Internal Server Error`
+
+**Content** : `{error_message}`
+
+## Get all zones
+
+**URL** : `/api/layouts/zones`
+
+**Method** : `GET`
+
+**Auth required** : YES
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Content example**
+
+```json
+{
+  
+}
+```
+### Error Responses
 
 **Condition** : If an error occurs with the internal server or database connection.
 
