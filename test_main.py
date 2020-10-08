@@ -137,6 +137,14 @@ class LayoutTest(unittest.TestCase):
             json_data = json.loads(rv.data)
             self.assertEqual(zone_id, json_data["id"])
 
+    def test_get_all_zones(self):
+        self.test_create_zone()
+        with app.test_client() as client:
+            client.environ_base['HTTP_AUTHORIZATION'] = self.build_token(self.key)
+            rv = client.get(f'/api/layouts/zones')
+            self.assertEqual(rv.status_code, 200)
+            json_data: [] = json.loads(rv.data)
+            self.assertEqual(len(json_data), 1)
 
 
 if __name__ == '__main__':

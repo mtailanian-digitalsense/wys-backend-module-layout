@@ -1301,6 +1301,41 @@ def get_zone(zone_id: int):
         logging.error(f'Internal error: {e}')
         abort(500, description=f'Internal error: {e}')
 
+@app.route("/api/layouts/zones", methods=['GET'])
+@token_required
+def get_all_zones():
+    """
+        Get All Zones
+        ---
+
+        consumes:
+        - "application/json"
+        tags:
+        - Zones
+        produces:
+        - application/json
+
+        responses:
+            200:
+                description: OK
+            500:
+                description: Internal Error
+    """
+    try:
+        # Get all zones from db
+        zones = LayoutZone.query.all()
+
+        zone: LayoutZone
+        # Return all zones as a list
+        return jsonify([zone.to_dict() for zone in zones])
+
+    except SQLAlchemyError as e:
+        logging.error(f'Database error: {e}')
+        abort(500, description=f'Database error: {e}')
+
+    except Exception as e:
+        logging.error(f'Internal error: {e}')
+        abort(500, description=f'Internal error: {e}')
 
 if __name__ == '__main__':
     app.run(host = APP_HOST, port = APP_PORT, debug = True)
