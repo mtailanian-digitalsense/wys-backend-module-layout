@@ -1173,7 +1173,7 @@ def updated_zone(zone_id: int):
                     type: number
                 description: Spaces id
         responses:
-                200
+                200:
                     description: Updated
 
     """
@@ -1206,6 +1206,55 @@ def updated_zone(zone_id: int):
     except SQLAlchemyError as e:
         db.session.rollback()
         abort(500, description=f'Database error: {e}')
+
+
+@app.route("/api/layouts/zones/<zone_id>", methods=['DELETE'])
+@token_required
+def delete_zone(zone_id: int):
+    """
+        Update Zones
+        ---
+
+        consumes:
+        - "application/json"
+        tags:
+        - Zones
+        produces:
+        - application/json
+
+        parameters:
+        - in: path
+          name: zone_id
+          type: integer
+          description: zone id
+        responses:
+            204:
+                description: Deleted
+            500:
+                description: Internal Error
+    """
+    try:
+        # Verify inputs
+        zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
+        if zone is None:
+            return jsonify({'error': 'Zone Not Found'}), 404
+
+        # Get w_spaces_ids for detach it from LayoutZone
+        zone.spaces_gen.clear()
+
+        # Delete Zone
+        db.session.delete(zone)
+        db.session.commit()
+        return "", 204
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logging.error(f'Database error: {e}')
+        abort(500, description=f'Database error: {e}')
+
+    except Exception as e:
+        logging.error(f'Internal error: {e}')
+        abort(500, description=f'Internal error: {e}')
 
 
 if __name__ == '__main__':

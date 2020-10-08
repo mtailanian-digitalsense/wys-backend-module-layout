@@ -116,5 +116,18 @@ class LayoutTest(unittest.TestCase):
             self.assertEqual(sent['name'], json_data['name'])
             self.assertEqual(len(test_ids), len(json_data['spaces_gen']))
 
+    def test_delete_zones(self):
+        self.test_create_zone()
+        with app.test_client() as client:
+            client.environ_base['HTTP_AUTHORIZATION'] = self.build_token(self.key)
+
+            rv = client.delete('/api/layouts/zones/1')
+            self.assertEqual(rv.status_code, 204)
+
+            rv = client.delete('/api/layouts/zones/1')
+            self.assertEqual(rv.status_code, 404)
+
+
+
 if __name__ == '__main__':
     unittest.main()
