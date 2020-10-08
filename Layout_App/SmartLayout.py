@@ -171,17 +171,16 @@ def min_dist_to_area(lista):
 
 start_time = time.time()
 
-def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
-
+def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False):
 
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05],
-                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05],
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05],
+                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05],
                     ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             15, 3.37, 3.37],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             4, 3.37, 3.37],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
                     ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9],
@@ -189,10 +188,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   0, 3.54, 3.02],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3],
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4],
-                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3],
-                    ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25],
-                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    1, 2.05, 1.9],
-                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    1, 2.05, 2.01],
+                    ['WYS_SOPORTE_PRINT1',                          0, 1.5, 1.3],
+                    ['WYS_RECEPCION_1PERSONA',                      0, 2.7, 3.25],
+                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9],
+                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01],
                     ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4]]
     voids = []
 
@@ -375,6 +374,42 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
     # for mod in pop[0]:
     #    print('(',mod.x,',',mod.y,')','id:', mod.id)
     #print('Fitness = ', pop[0].fitness)
+    if viz:
+        rows = 2
+        cols = 2
+        plt.ion()
+
+        fig, ax = plt.subplots(rows,cols)
+        x, y = planta.exterior.xy
+        for row in range(rows):
+            for col in range(cols):
+                ax[row, col].plot(x, y, color='black')
+                ax[row, col].axis('equal')
+                ax[row, col].grid(True)
+                ax[row, col].tick_params(axis="x", labelsize=7)
+                ax[row, col].tick_params(axis="y", labelsize=7)
+
+        for pi in planta.interiors:
+            x, y = pi.xy
+            for row in range(rows):
+                for col in range(cols):
+                    ax[row, col].plot(x, y, color='black')
+
+        for a in As:
+            xa, ya = a[0].exterior.xy
+            for row in range(rows):
+                for col in range(cols):
+                    if a[1] == 'WYS_ENTRANCE':
+                        ax[row, col].fill(xa, ya, color='#a8e4a0')
+                    if a[1] == 'WYS_FACADE_CRYSTAL':
+                        ax[row, col].fill(xa, ya, color='#89cff0')
+                    if a[1] == 'WYS_FACADE_OPAQUE':
+                        ax[row, col].fill(xa, ya, color='#ffeac4')
+                    if a[1] == 'WYS_SHAFT':
+                        ax[row, col].fill(xa, ya, color='#779ecb')
+                    if a[1] == 'WYS_CORE':
+                        ax[row, col].fill(xa, ya, color='#ffb1b1')
+
     print(round(time.time() - start_time, 2),'Start of genetic evolution:')
 
     max_count = 0
@@ -382,6 +417,29 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
     for g in range(NGEN):
 
         #viewer.show_floor(planta, As, pop, g)
+        if viz and g%100 == 0:
+            fig.suptitle('Generation '+str(g), fontsize=12)
+            boxes = []
+            for row in range(rows):
+                for col in range(cols):
+                    ind = pop[2*(cols*row+col)]
+                    ax[row, col].set_title('POP:'+str(2*(cols*row+col))+' Fitness:'+ str(round(ind.fitness.values[0],2)), fontsize=9)
+                    for mod in ind:
+                        b = box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2)
+                        x, y = b.exterior.xy
+                        b = ax[row, col].plot(x, y, color='b')
+                        labels = ax[row, col].text(x[2]+ 0.1, y[2]- 1, mod.name, fontsize=6, ma='center')
+                        boxes.append([b, labels])
+                    
+                    '''for b in boxes:
+                        x, y = b[0].exterior.xy
+                        ax[row, col].set_title('POP:'+str(2*(cols*row+col))+' Fitness:'+ str(round(ind.fitness.values[0],2)), fontsize=9)
+                        ax[row, col].plot(x, y, color='b')
+                        ax[row, col].text(x[2] + 0.1, y[2] - 1, b[1], fontsize=6)'''
+            fig.canvas.draw()
+            fig.canvas.flush_events()
+            time.sleep(0.0001)
+        
         # Select the next generation individuals
         fitn = [o.fitness.values[0] for o in pop]
 
@@ -435,16 +493,23 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS):
         # The population is entirely replaced by the offspring
         pop[:] = offspring
         #viewer.show_floor(planta, As, pop, g)
+        pop.sort(key=lambda x: x.fitness, reverse=True)
+        if(viz and g < NGEN-1 and g%100 == 0):
+            for el in boxes:
+                el[0][0].remove()
+                el[1].remove()
 
+    plt.ioff()
+    plt.show()
     print(round(time.time() - start_time, 1),'Finish')
     print('Best individual of Generation', g, ':')
     out = []
-    pop.sort(key=lambda x: x.fitness, reverse=True)
+    #pop.sort(key=lambda x: x.fitness, reverse=True)
     for mod in pop[0]:
         out.append([mod.name, mod.id, mod.x, mod.y, mod.rot])
         #print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness.values)
-    viewer.show_floor(planta, As, pop, g)
+    #viewer.show_floor(planta, As, pop, g)
 
 
     return out

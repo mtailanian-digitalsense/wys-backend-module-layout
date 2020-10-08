@@ -6,8 +6,8 @@ import example_data_piso3
 import SmartLayout
 
 def main():
-    pop_size = 150
-    generations = 100
+    pop_size = 8
+    generations = 300
     mod2area_matrix = SmartLayout.restrictions.mod2area_matrix
     mod2mod_matrix = SmartLayout.restrictions.mod2mod_matrix
 
@@ -22,5 +22,5 @@ def main():
         for row in mod2mod_matrix:
             print(row)
 
-    output = SmartLayout.Smart_Layout(example_data_v3.dict_ex, pop_size, generations)
+    output = SmartLayout.Smart_Layout(example_data_v3.dict_ex, pop_size, generations, viz= True)
 main()
