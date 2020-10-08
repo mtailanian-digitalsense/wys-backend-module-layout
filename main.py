@@ -1257,5 +1257,50 @@ def delete_zone(zone_id: int):
         abort(500, description=f'Internal error: {e}')
 
 
+@app.route("/api/layouts/zones/<zone_id>", methods=['GET'])
+@token_required
+def get_zone(zone_id: int):
+    """
+        Get Zones
+        ---
+
+        consumes:
+        - "application/json"
+        tags:
+        - Zones
+        produces:
+        - application/json
+
+        parameters:
+        - in: path
+          name: zone_id
+          type: integer
+          description: zone id
+        responses:
+            200:
+                description: OK
+            500:
+                description: Internal Error
+            404:
+                description: Not Found
+        """
+    # Verify params
+    try:
+        zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
+        if zone is None:
+            return jsonify({'error': 'Zone Not Found'}), 404
+
+        # Return
+        return zone.serialize()
+
+    except SQLAlchemyError as e:
+        logging.error(f'Database error: {e}')
+        abort(500, description=f'Database error: {e}')
+
+    except Exception as e:
+        logging.error(f'Internal error: {e}')
+        abort(500, description=f'Internal error: {e}')
+
+
 if __name__ == '__main__':
     app.run(host = APP_HOST, port = APP_PORT, debug = True)
