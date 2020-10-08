@@ -171,7 +171,7 @@ def min_dist_to_area(lista):
 
 start_time = time.time()
 
-def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False):
+def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10):
 
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
@@ -417,8 +417,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False):
     for g in range(NGEN):
 
         #viewer.show_floor(planta, As, pop, g)
-        if viz and g%100 == 0:
-            fig.suptitle('Generation '+str(g), fontsize=12)
+        if viz and (g+1 if g > 0 else g)%viz_period == 0:
+            fig.suptitle('Generation '+str(g+1), fontsize=12)
             boxes = []
             for row in range(rows):
                 for col in range(cols):
@@ -456,7 +456,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False):
             MUTPB = 0.2
 
         max_fit = max(fitn)
-        print('Time:', round(time.time() - start_time, 1),' Generation ', g, 'of', NGEN, 'POP SIZE:',len(pop),
+        print('Time:', round(time.time() - start_time, 1),' Generation ', g+1, 'of', NGEN, 'POP SIZE:',len(pop),
               '  Min:', round(min(fitn),1), 'Max:', round(max(fitn),1),'Avg:', round(sum(fitn)/len(fitn),1), 'Local sol. count:', max_count)
 
         #if (max(fitn)-min(fitn))/max(fitn) <= 0.001:
@@ -494,7 +494,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False):
         pop[:] = offspring
         #viewer.show_floor(planta, As, pop, g)
         pop.sort(key=lambda x: x.fitness, reverse=True)
-        if(viz and g < NGEN-1 and g%100 == 0):
+        if(viz and g < NGEN-1 and (g+1 if g > 0 else g)%viz_period == 0):
             for el in boxes:
                 el[0][0].remove()
                 el[1].remove()
@@ -502,7 +502,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False):
     plt.ioff()
     plt.show()
     print(round(time.time() - start_time, 1),'Finish')
-    print('Best individual of Generation', g, ':')
+    print('Best individual of Generation', g+1, ':')
     out = []
     #pop.sort(key=lambda x: x.fitness, reverse=True)
     for mod in pop[0]:
