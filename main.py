@@ -99,8 +99,7 @@ class LayoutGenerated(db.Model):
             'id': self.id,
             'building_id': self.building_id,
             'floor_id': self.floor_id,
-            'workspaces': [workspace.to_dict() for workspace in self.workspaces],
-            'zones': [zones.to_dict() for zones in self.zones]
+            'workspaces': [workspace.to_dict() for workspace in self.workspaces]
         }
         return dict
 
@@ -1300,6 +1299,7 @@ def get_zone(zone_id: int):
     except Exception as e:
         logging.error(f'Internal error: {e}')
         abort(500, description=f'Internal error: {e}')
+
 
 @app.route("/api/layouts/zones", methods=['GET'])
 @token_required
