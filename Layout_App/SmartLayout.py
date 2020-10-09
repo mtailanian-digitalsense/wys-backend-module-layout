@@ -225,16 +225,16 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
                 i.x += random.gauss(mu, sigma)
                 if not planta.contains(i.get_box()):
                     if i.x > maxx:
-                        i.x = maxx - i.width
+                        i.x = maxx - i.width/2
                     elif i.x < minx:
-                        i.x = minx + i.width
+                        i.x = minx + i.width/2
             if random.random() < indpb:
                 i.y += random.gauss(mu, sigma)
                 if not planta.contains(i.get_box()):
                     if i.y > maxy:
-                        i.y = maxy - i.height
+                        i.y = maxy - i.height/2
                     elif i.y < miny:
-                        i.y = miny + i.height
+                        i.y = miny + i.height/2
             if random.random() < indpb:
                 i.height, i.width = i.width, i.height
                 i.rot += 90
@@ -363,7 +363,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.5)
+    toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.2)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
     toolbox.register("select", tools.selTournament, tournsize=round(N*0.4))
