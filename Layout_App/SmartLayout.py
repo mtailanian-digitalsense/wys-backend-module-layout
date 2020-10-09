@@ -74,6 +74,9 @@ class Module:
 
     def show(self):
         print(self.name, self.x, self.y, self.rot, self.id, self.width, self.height)
+    
+    def get_box(self):
+        return box(self.x - self.width / 2, self.y - self.height / 2, self.x + self.width / 2, self.y + self.height / 2)
 
 
 
@@ -215,17 +218,32 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
         As.append([Polygon(a[1]), a[0]])
 
 
-    def mutMod(individual, mu, sigma, indpb):
+    def mutMod(individual, planta, mu, sigma, indpb):
+        minx, miny, maxx, maxy = planta.bounds
         for i in individual:
             if random.random() < indpb:
                 i.x += random.gauss(mu, sigma)
+                if not planta.contains(i.get_box()):
+                    if i.x > maxx:
+                        i.x = maxx - i.width
+                    elif i.x < minx:
+                        i.x = minx + i.width
             if random.random() < indpb:
                 i.y += random.gauss(mu, sigma)
+                if not planta.contains(i.get_box()):
+                    if i.y > maxy:
+                        i.y = maxy - i.height
+                    elif i.y < miny:
+                        i.y = miny + i.height
             if random.random() < indpb:
                 i.height, i.width = i.width, i.height
                 i.rot += 90
-                if i.rot >= 360:
-                    i.rot = 0
+                if not planta.contains(i.get_box()):
+                    i.height, i.width = i.width, i.height
+                    i.rot -= 90
+                else:
+                    if i.rot >= 360:
+                        i.rot = 0
         return individual,
 
     def distancebtwmods(ind):
@@ -345,7 +363,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, mu=0, sigma=0.5, indpb=0.2)
+    toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.5)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
     toolbox.register("select", tools.selTournament, tournsize=round(N*0.4))
