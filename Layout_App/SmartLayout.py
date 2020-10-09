@@ -79,11 +79,8 @@ class Module:
         return box(self.x - self.width / 2, self.y - self.height / 2, self.x + self.width / 2, self.y + self.height / 2)
 
 
-
-
 makeposcnt = 0
 curr_bx = []
-
 
 def makePos(planta, in_list):
 
@@ -180,19 +177,19 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
     outline, holes, areas, input_list = get_input(dictionary)
 
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05],
-                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05],
-                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             4, 3.37, 3.37],
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              2, 3, 4.05],
+                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        2, 4, 6.05],
+                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             5, 3.37, 3.37],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8],
-                    ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9],
+                    ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8],
+                    ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9],
                     ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02],
-                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   0, 3.54, 3.02],
-                    ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3],
-                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4],
-                    ['WYS_SOPORTE_PRINT1',                          0, 1.5, 1.3],
-                    ['WYS_RECEPCION_1PERSONA',                      0, 2.7, 3.25],
+                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02],
+                    ['WYS_SOPORTE_KITCHENETTE',                     0, 1.6, 2.3],
+                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               0, 1.5, 2.4],
+                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3],
+                    ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01],
                     ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4]]
@@ -246,16 +243,16 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
                         i.rot = 0
         return individual,
 
-    def distancebtwmods(ind):
+    '''def distancebtwmods(ind):
         a = 0
         boxes = []
         for mod in ind:
             boxes.append(
-                [box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2),
+                [mod.get_box(),
                  mod.name])
         nb = len(boxes)
         for i in range(nb):
-            '''mod_distances={}
+            ''''''mod_distances={}
             for j in range(nb):
                 if(i != j):
                     curr_first_mod_name = boxes[i][1]
@@ -267,7 +264,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
                 d = min(distances)
                 w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
                                          boxes[i][1], mod_name)
-                a+=w*(100-d)'''
+                a+=w*(100-d)''''''
             distances = []
             for j in range(nb):
                 if i is not j:
@@ -286,34 +283,51 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
                 if w != 0:
                     a -= d[1] * w
 
-        return a
+        return a'''
 
     def modtoareas(As, ind):
         a = 0
         boxes = []
         for mod in ind:
             boxes.append(
-                [box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2),
+                [mod.get_box(),
                  mod.name])
-
-        for bx in boxes:
+        nb = len(boxes)
+        for i in range(nb):
             bx_dist = []
             for A in As:
-                bx_dist.append([A[1], bx[0].distance(A[0])])
+                bx_dist.append([A[1], boxes[i][0].distance(A[0])])
 
             min_list = min_dist_to_area(bx_dist)
             for d in min_list:
                 w = restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary,
-                                        restrictions.mod2area_matrix, bx[1], d[0])
+                                        restrictions.mod2area_matrix, boxes[i][1], d[0])
                 if w != 0:
                     a -= d[1] * w
 
+            distances = []
+            for j in range(nb):
+                if i is not j:
+                    distances.append([boxes[j][1],boxes[i][0].distance(boxes[j][0])])
+
+            #print('list of', i, 'module')
+            #for d in distances:
+            #    print(d)
+            distances2 = min_dist_to_area(distances)
+            #print('CONSOLIDATED LIST:')
+            #print('list of', i, 'module')
+            for d in distances2:
+                w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
+                                            boxes[i][1], d[0])
+
+                if w != 0:
+                    a -= d[1] * w
         return a
 
     def evaluateInd(ind):
         fit_list = []
         fit_list.append(modtoareas(As, ind))
-        fit_list.append(distancebtwmods(ind))
+        #fit_list.append(distancebtwmods(ind))
         a = sum(fit_list)
         return a,
 
@@ -322,8 +336,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
         otherwise."""
         boxes = []
         for mod in ind:
-            boxes.append(
-                box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2))
+            boxes.append(mod.get_box())
         nb = len(boxes)
         for i in range(nb):
             if planta.contains(boxes[i]) is False:
@@ -339,7 +352,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
         boxes = []
         for mod in ind:
             boxes.append(
-                [box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2),
+                [mod.get_box(),
                  mod.name])
         nb = len(boxes)
         for i in range(nb):
@@ -363,7 +376,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.2)
+    toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=0.5, indpb=0.2)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
     toolbox.register("select", tools.selTournament, tournsize=round(N*0.4))
@@ -443,7 +456,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
                     ind = pop[2*(cols*row+col)]
                     ax[row, col].set_title('POP:'+str(2*(cols*row+col))+' Fitness:'+ str(round(ind.fitness.values[0],2)), fontsize=9)
                     for mod in ind:
-                        b = box(mod.x - mod.width / 2, mod.y - mod.height / 2, mod.x + mod.width / 2, mod.y + mod.height / 2)
+                        b = mod.get_box()
                         x, y = b.exterior.xy
                         b = ax[row, col].plot(x, y, color='b')
                         labels = ax[row, col].text(x[2]+ 0.1, y[2]- 1, mod.name, fontsize=6, ma='center')
