@@ -82,13 +82,12 @@ class Module:
 makeposcnt = 0
 curr_bx = []
 
-def makePos(planta, in_list):
+def makePos(planta, in_list, zones):
 
     make_time = time.time()
     global makeposcnt
     global curr_bx
     in_cnt = 0
-    minx, miny, maxx, maxy = planta.bounds
 
     mod = Module(0, 0, 0, 0, 0, 0, 0)
 
@@ -98,14 +97,29 @@ def makePos(planta, in_list):
                 mod.width = in_list[j][2]
                 mod.height = in_list[j][3]
                 mod.name = in_list[j][0]
-
+                mod_cat = in_list[j][4]
             in_cnt+=1
+
+    if mod_cat == 2:
+        zone = [z[0] for z in zones if z[1] == 'ZONA PUESTOS DE TRABAJO']
+    elif mod_cat == 4:
+        zone = [z[0] for z in zones if z[1] == 'ZONA SERVICIOS']
+
+    if zone:
+        zone = zone[0]
+        minx, miny, maxx, maxy = zone.bounds
+    else:
+        minx, miny, maxx, maxy = planta.bounds
+    
     #print(round(time.time() - start_time, 2), len(curr_bx), mod.name)
     while True:
-
         p = Point(random.uniform(minx, maxx), random.uniform(miny, maxy))
         b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
-        condition1 = planta.contains(b)
+        if zone:
+            condition1 = zone.contains(b)
+        else:
+            condition1 = planta.contains(b)
+
         if (time.time() - make_time) > 0.5 and condition1:
             mod.x, mod.y = p.x, p.y
             curr_bx.append(b)
@@ -177,22 +191,22 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
     outline, holes, areas, input_list = get_input(dictionary)
 
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              2, 3, 4.05],
-                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        2, 4, 6.05],
-                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             5, 3.37, 3.37],
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
+                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05, 1],
+                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             5, 3.37, 3.37, 2],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-                    ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8],
-                    ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9],
-                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02],
-                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02],
-                    ['WYS_SOPORTE_KITCHENETTE',                     0, 1.6, 2.3],
-                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               0, 1.5, 2.4],
-                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3],
-                    ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25],
-                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9],
-                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01],
-                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4]]
+                    ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8, 3],
+                    ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9, 3],
+                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
+                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
+                    ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
+                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               0, 1.5, 2.4, 4],
+                    ['WYS_SOPORTE_PRINT1',                          0, 1.5, 1.3, 4],
+                    ['WYS_RECEPCION_1PERSONA',                      0, 2.7, 3.25, 5],
+                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 6],
+                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 6],
+                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6]]
     voids = []
 
     border = outline[0][1]
@@ -211,9 +225,25 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
     planta = Polygon(border, voids)
 
     As = []
+    shaft_minx = 99999
     for a in areas:
         As.append([Polygon(a[1]), a[0]])
+        if a[0] == 'WYS_CORE':
+            core = As[-1][0]
+        if a[0] == 'WYS_SHAFT':
+            s_minx, s_miny, s_maxx, s_maxy = As[-1][0].bounds
+            if(shaft_minx > s_minx):
+                shaft_minx = s_minx
+                shaft = As[-1][0]
 
+
+    zones = []
+    p_minx, p_miny, p_maxx, p_maxy = planta.bounds
+    c_minx, c_miny, c_maxx, c_maxy = core.bounds
+    s_minx, s_miny, s_maxx, s_maxy = shaft.bounds
+
+    zones.append([box(p_minx, p_miny, c_minx, p_maxy), "ZONA PUESTOS DE TRABAJO"])
+    zones.append([box(s_minx, p_miny, c_maxx, c_miny), "ZONA SERVICIOS"])
 
     def mutMod(individual, planta, mu, sigma, indpb):
         minx, miny, maxx, maxy = planta.bounds
@@ -371,7 +401,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
     creator.create("Individual", list, fitness=creator.FitnessMax)
 
     toolbox = base.Toolbox()
-    toolbox.register("attr_pos", makePos, planta, input_list)
+    toolbox.register("attr_pos", makePos, planta, input_list, zones)
     toolbox.register("individual", tools.initRepeat, creator.Individual,
                      (toolbox.attr_pos), n=IND_SIZE)
 
@@ -440,6 +470,16 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz = False, viz_period = 10
                         ax[row, col].fill(xa, ya, color='#779ecb')
                     if a[1] == 'WYS_CORE':
                         ax[row, col].fill(xa, ya, color='#ffb1b1')
+        for z in zones:
+            xz, yz = z[0].exterior.xy
+            for row in range(rows):
+                for col in range(cols):
+                    if z[1] == 'ZONA PUESTOS DE TRABAJO':
+                        ax[row, col].plot(xz, yz, color='r')
+                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='r')
+                    elif z[1] == 'ZONA SERVICIOS':
+                        ax[row, col].plot(xz, yz, color='g')
+                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='g')
 
     print(round(time.time() - start_time, 2),'Start of genetic evolution:')
 
