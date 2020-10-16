@@ -1,5 +1,6 @@
 import random
 import time
+import math
 from deap import base
 from deap import creator
 from deap import tools
@@ -51,7 +52,7 @@ class Floor:
 
 
 class Module:
-    def __init__(self, x, y, rotation, name, identificator, width_value, height_value, fitval1, fitval2):
+    def __init__(self, x, y, rotation, name, identificator, width_value, height_value, qty, fitval1, fitval2):
         self.x = x
         self.y = y
         self.rot = rotation
@@ -59,11 +60,12 @@ class Module:
         self.id = identificator
         self.width = width_value
         self.height = height_value
+        self.qty = qty
         self.fitval1 = fitval1
         self.fitval2 = fitval2
 
     def show(self):
-        print(self.name, self.x, self.y, self.rot, self.id, self.width, self.height)
+        print(self.name, self.x, self.y, self.rot, self.id, self.width, self.height, self.qty)
 
     def get_box(self):
         return box(self.x - self.width / 2, self.y - self.height / 2, self.x + self.width / 2, self.y + self.height / 2)
@@ -78,36 +80,27 @@ def makePos(planta, in_list, zones):
     global curr_bx
     in_cnt = 0
 
-    mod = Module(0, 0, 0, 0, 0, 0, 0, 0, 0)
+    mod = Module(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     for j in range(len(in_list)):
         for n in range(in_list[j][1]):
             if in_cnt == makeposcnt:
+                mod.name = in_list[j][0]
+                mod.qty = in_list[j][1]
                 mod.width = round(in_list[j][2], 1)
                 mod.height = round(in_list[j][3], 1)
-                mod.name = in_list[j][0]
                 mod_cat = in_list[j][4]
             in_cnt+=1
 
-    if mod_cat == 2:
-        zone = [z[0] for z in zones if z[1] == 'ZONA PUESTOS DE TRABAJO']
-    elif mod_cat == 4:
-        zone = [z[0] for z in zones if z[1] == 'ZONA SERVICIOS']
 
-    if zone:
-        zone = zone[0]
-        minx, miny, maxx, maxy = zone.bounds
-    else:
-        minx, miny, maxx, maxy = planta.bounds
-    
+    minx, miny, maxx, maxy = planta.bounds
+
     #print(round(time.time() - start_time, 2), len(curr_bx), mod.name)
     while True:
         p = Point(round(random.uniform(minx, maxx), 1), round(random.uniform(miny, maxy), 1))
         b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
-        if zone:
-            condition1 = zone.contains(b)
-        else:
-            condition1 = planta.contains(b)
+
+        condition1 = planta.contains(b)
 
         if (time.time() - make_time) > 0.5 and condition1:
             mod.x, mod.y = p.x, p.y
@@ -176,6 +169,38 @@ start_time = time.time()
 
 
 def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
+
+
+    if False:
+        list_of_mods = []
+        for key in restrictions.module_dictionary.keys():
+            list_of_mods.append(key)
+
+        for lm in list_of_mods:
+            print(lm)
+
+
+        fig, ax = plt.subplots()
+        im = ax.matshow(restrictions.mod2mod_matrix, cmap = "RdYlGn")
+        ax.set_xticks(range(len(list_of_mods)))
+        ax.set_yticks(range(len(list_of_mods)))
+        # ... and label them with the respective list entries
+        ax.set_xticklabels(list_of_mods, fontsize= 5)
+        ax.set_yticklabels(list_of_mods, fontsize= 5)
+        ax.tick_params(top=True, bottom=False,
+                       labeltop=True, labelbottom=False)
+        plt.setp(ax.get_xticklabels(), rotation=-90, ha="right",
+                 rotation_mode="anchor")
+
+        # Loop over data dimensions and create text annotations.
+        for i in range(len(list_of_mods)):
+            for j in range(len(list_of_mods)):
+                text = ax.text(j, i, restrictions.mod2mod_matrix[i][j],
+                               ha="center", va="center", color="black", fontsize = 5)
+        #fig.tight_layout()
+        plt.show()
+
+
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
@@ -183,7 +208,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             5, 3.37, 3.37, 2],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             15, 3.37, 3.37, 2],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
                     ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8, 3],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9, 3],
@@ -191,8 +216,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               0, 1.5, 2.4, 4],
-                    ['WYS_SOPORTE_PRINT1',                          0, 1.5, 1.3, 4],
-                    ['WYS_RECEPCION_1PERSONA',                      0, 2.7, 3.25, 5],
+                    ['WYS_SOPORTE_PRINT1',                          2, 1.5, 1.3, 4],
+                    ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 6],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 6],
                     ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6]]
@@ -268,6 +293,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             i.x, i.y = round(i.x, 1), round(i.y, 1)
         return individual,
 
+    def acond_distance(d):
+        return 10 * math.exp(-d / 3)
+        #return d
+
     def modtoareas(As, ind):
         a = 0
         boxes = []
@@ -284,14 +313,15 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             for A in As:
                 bx_dist.append([A[1], boxes[i][0].distance(A[0])])
 
-            min_list = min_dist_to_area(bx_dist)
+            bx_dist2 = min_dist_to_area(bx_dist)
 
-            for d in min_list:
+            for d in bx_dist2:
                 w = restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary,
                                           restrictions.mod2area_matrix, boxes[i][1], d[0])
                 if w != 0:
-                    ind[i].fitval1 -= round((d[1] * w), 1)
-                    a -= d[1] * w
+
+                    ind[i].fitval1 += round((acond_distance(d[1]) * w)/(ind[i].qty * N), 2)
+                    a += (acond_distance(d[1]) * w)/(ind[i].qty * N)
 
             distances = []
             for j in range(nb):
@@ -303,8 +333,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                 w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
                                          boxes[i][1], d[0])
                 if w != 0:
-                    ind[i].fitval2 -= round((d[1] * w), 1)
-                    a -= d[1] * w
+                    ind[i].fitval2 += round((acond_distance(d[1]) * w)/(ind[i].qty * N), 2)
+                    a += (acond_distance(d[1]) * w)/(ind[i].qty * N)
         return a
 
     def evaluateInd(ind):
@@ -355,15 +385,15 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=0.5, indpb=0.2)
+    toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.2)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
-    toolbox.register("select", tools.selTournament, tournsize=round(N * 0.4))
+    toolbox.register("select", tools.selTournament, tournsize=5)
     # toolbox.register("select", tools.selNSGA2)
     toolbox.register("evaluate", evaluateInd)
 
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-    toolbox.decorate("evaluate", tools.DeltaPenalty(feasible, -200.0, feas_distance))
+    toolbox.decorate("evaluate", tools.DeltaPenalty(feasible, -10.0, feas_distance))
 
     # Init of the algorithm
     print(round(time.time() - start_time, 1), 'Generate population:')
@@ -451,11 +481,11 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                         b = ax[row, col].plot(x, y, color='b')
                         labels = []
 
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1, mod.name, fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.8, round(mod.fitval1, 1), fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 2.6, round(mod.fitval2, 1), fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2], mod.x, fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 2, y[2], mod.y, fontsize=6, ma='center'))
+                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.2, mod.name, fontsize=6, ma='center'))
+                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.8, round(mod.fitval1, 2), fontsize=6, ma='center'))
+                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 2.4, round(mod.fitval2, 2), fontsize=6, ma='center'))
+                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 0.6, mod.x, fontsize=6, ma='center'))
+                        labels.append(ax[row, col].text(x[2] + 2, y[2] - 0.6, mod.y, fontsize=6, ma='center'))
                         boxes.append([b, labels])
 
                     '''for b in boxes:
@@ -470,27 +500,9 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         # Select the next generation individuals
         fitn = [o.fitness.values[0] for o in pop]
 
-        # if max_fit == max(fitn):
-        #     max_count += 1
-        # else:
-        #     max_count = 0
-        #
-        # if max_count > round(NGEN / 8) or max_fit < 0:
-        #     CXPB = 0.1
-        #     MUTPB = 0.9
-        # else:
-        #     CXPB = 0.5
-        #     MUTPB = 0.2
-        #
-        # max_fit = max(fitn)
-
         print('Time:', round(time.time() - start_time, 1), ' Generation ', g + 1, 'of', NGEN, 'POP SIZE:', len(pop),
               '  Min:', round(min(fitn), 1), 'Max:', round(max(fitn), 1), 'Avg:', round(sum(fitn) / len(fitn), 1),
               'Local sol. count:', max_count)
-
-        # if (max(fitn)-min(fitn))/max(fitn) <= 0.001:
-        #    print('Found local max')
-        #    break
 
         offspring = toolbox.select(pop, len(pop))
 
@@ -515,13 +527,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
 
-        # N = len(pop) - 1
-        # if N < 20:
-        #    N = 20
-        # offspring = toolbox.select_best(offspring + pop, POP_SIZE)
-        # The population is entirely replaced by the offspring
+        #offspring = toolbox.select(offspring + pop, POP_SIZE)
+
         pop[:] = offspring
-        # viewer.show_floor(planta, As, pop, g)
+
         pop.sort(key=lambda x: x.fitness, reverse=True)
         if (viz and g < NGEN - 1 and (g + 1 if g > 0 else g) % viz_period == 0):
             for el in boxes:
