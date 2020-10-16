@@ -8,6 +8,7 @@ from deap import algorithms
 from shapely.geometry import Point
 from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
+from shapely.ops import unary_union, polygonize, linemerge
 import matplotlib.pyplot as plt
 
 import viewer
@@ -79,6 +80,7 @@ def makePos(planta, in_list, zones):
     global makeposcnt
     global curr_bx
     in_cnt = 0
+    zone = []
 
     mod = Module(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
@@ -92,9 +94,24 @@ def makePos(planta, in_list, zones):
                 mod_cat = in_list[j][4]
             in_cnt+=1
 
-
-    minx, miny, maxx, maxy = planta.bounds
-
+    if mod_cat == 1:
+        z = [z[0] for z in zones if z[1] == 'ZONA SALAS REUNION']
+    elif mod_cat == 2:
+        z = [z[0] for z in zones if 'ZONA PUESTOS DE TRABAJO' in z[1]]
+    elif mod_cat == 4:
+        z = [z[0] for z in zones if 'ZONA SERVICIOS' in z[1]]
+    elif mod_cat == 5:
+        z = [z[0] for z in zones if 'ZONA SOPORTE' in z[1]]
+    
+    if len(z) > 1 and (makeposcnt % 2) == 0:
+        zone = z[1]
+        minx, miny, maxx, maxy = zone.bounds
+    elif z:
+        zone = z[0]
+        minx, miny, maxx, maxy = zone.bounds
+    else:
+        minx, miny, maxx, maxy = planta.bounds
+    
     #print(round(time.time() - start_time, 2), len(curr_bx), mod.name)
     while True:
         p = Point(round(random.uniform(minx, maxx), 1), round(random.uniform(miny, maxy), 1))
@@ -164,6 +181,98 @@ def min_dist_to_area(lista):
         i = j
     return my_output
 
+def make_zones(planta, shafts, core, entrances, cat_area):
+    zones = []
+    s_zones = []
+    e_zones = []
+    p_minx, p_miny, p_maxx, p_maxy = planta.bounds
+    c_minx, c_miny, c_maxx, c_maxy = core.bounds
+    print(core.bounds)
+
+    # Zona salas de reuniones
+    if 1 in cat_area:
+        dist_x = abs(p_maxx - p_minx)
+        dist_y = abs(p_maxy - p_miny)
+        size_offset = math.sqrt(cat_area[1])
+        factor = 1.2
+        if(dist_x >= dist_y):
+            px_med = (p_maxx + p_minx)/2
+            zsr = box(px_med - factor*size_offset, p_maxy - factor*size_offset, px_med + factor*size_offset, p_maxy + factor*size_offset).intersection(planta)
+        elif(dist_x < dist_y):
+            py_med = (p_maxy + p_miny)/2
+            zsr = box(p_maxx - size_offset, py_med - size_offset, p_maxx + size_offset, py_med + size_offset).intersection(planta)
+        zones.append([zsr, "ZONA SALAS REUNION"])
+        
+    # Zonas puestos de trabajo
+    if 2 in cat_area:
+        dist_x = abs(p_maxx - p_minx)
+        dist_y = abs(p_maxy - p_miny)
+        if(dist_x >= dist_y):
+            zpt = box(p_minx, p_miny, p_minx + dist_x*0.3, p_miny + dist_y*0.7).intersection(planta)
+            zpt2 = box(p_maxx - dist_x*0.3, p_miny, p_maxx, p_miny + dist_y*0.7).intersection(planta)
+        elif(dist_x < dist_y):
+            zpt = box(p_minx, p_miny, p_minx + dist_x*0.7, p_miny + dist_y*0.3).intersection(planta)
+            #zpt2 = box(p_minx, p_miny, p_minx + dist_x*0.3, p_miny + dist_y*0.7).intersection(planta)
+
+        zones.append([zpt, "ZONA PUESTOS DE TRABAJO 1"])
+        zones.append([zpt2, "ZONA PUESTOS DE TRABAJO 2"])
+
+    # Zonas soporte
+    if 5 in cat_area:
+        for en in entrances:
+            size_offset = math.sqrt(cat_area[5])
+            print('e_off:', size_offset)
+            e_minx, e_miny, e_maxx, e_maxy = en.bounds
+            dist_x = abs(e_maxx - e_minx)
+            dist_y = abs(e_maxy - e_miny)
+            px_med = (e_maxx + e_minx)/2
+            py_med = (e_maxy + e_miny)/2
+            e_zone = box(px_med - size_offset, py_med - size_offset, px_med + size_offset, py_med + size_offset)
+            e_zones.append(e_zone.intersection(planta))
+
+        if len(e_zones) > 1:
+            tmp = unary_union(e_zones)
+            if tmp.geom_type == 'MultiPolygon':
+                for i in range(len(tmp)):
+                    zones.append([unary_union(tmp[i]), "ZONA SOPORTE " + str(i)])
+            else:
+                zones.append([tmp, "ZONA SOPORTE"])
+        
+    # Zonas servicios
+    if 4 in cat_area:
+        for sh in shafts:
+            size_offset = math.sqrt(cat_area[4])
+            s_minx, s_miny, s_maxx, s_maxy = sh.bounds
+            px_med = (s_maxx + s_minx)/2
+            py_med = (s_maxy + s_miny)/2
+            factor = 1.1
+            s_zone = box(px_med - factor*size_offset, py_med - factor*size_offset, px_med + factor*size_offset, py_med + factor*size_offset)
+            s_zones.append(s_zone.intersection(planta))
+        # Posibles uniones entre otras areas de servicio y filtro de area en interseccion con otras mas importantes
+        if len(s_zones) > 1:
+            tmp = unary_union(s_zones)
+            if tmp.geom_type == 'MultiPolygon':
+                for i in range(len(tmp)):
+                    pol = tmp[i]
+                    for z in zones:
+                        zone = z[0]
+                        if pol.intersects(zone):
+                            if pol.geom_type == 'MultiPolygon':
+                                pol = max(pol, key=lambda a: a.area)
+                            pol = pol.difference(zone)
+                        if pol.geom_type == 'MultiPolygon':
+                                pol = max(pol, key=lambda a: a.area)
+                    zones.append([pol, "ZONA SERVICIOS " + str(i)])
+            else:
+                for z in zones:
+                    zone = z[0]
+                    if tmp.intersects(zone):
+                        tmp = tmp.difference(zone)
+                        if tmp.geom_type == 'MultiPolygon':
+                            tmp = max(tmp, key=lambda a: a.area)
+                zones.append([tmp, "ZONA SERVICIOS"])
+
+    return zones
 
 start_time = time.time()
 
@@ -205,18 +314,18 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     outline, holes, areas, input_list = get_input(dictionary)
 
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
-                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05, 1],
-                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             15, 3.37, 3.37, 2],
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
+                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
+                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6, 1],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             5, 3.37, 3.37, 2],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
                     ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8, 3],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9, 3],
                     ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
-                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               0, 1.5, 2.4, 4],
-                    ['WYS_SOPORTE_PRINT1',                          2, 1.5, 1.3, 4],
+                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
+                    ['WYS_SOPORTE_PRINT1',                          0, 1.5, 1.3, 4],
                     ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 6],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 6],
@@ -227,10 +336,21 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     for h in holes:
         voids.append(h[1])
 
+    cat_area = {}
+
     # INPUT PARAMETERS
     N = 0  # number of modules to be placed in total
     for i in input_list:
-        N += i[1]
+        qty = i[1]
+        N += qty
+        total_area = qty*i[2]*i[3]
+        cat_id = i[4]
+        if qty > 0:
+            if cat_id in cat_area:
+                cat_area[cat_id] += total_area
+            else:
+                cat_area[cat_id] = total_area
+
     print(round(time.time() - start_time, 2), 'Load and compute all the inputs')
     print('Number of modules: ', N)
     # GA PARAMETERS
@@ -239,25 +359,22 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     planta = Polygon(border, voids)
 
     As = []
-    shaft_minx = 99999
+    shafts = []
+    entrances = []
     for a in areas:
         As.append([Polygon(a[1]), a[0]])
         if a[0] == 'WYS_CORE':
             core = As[-1][0]
         if a[0] == 'WYS_SHAFT':
-            s_minx, s_miny, s_maxx, s_maxy = As[-1][0].bounds
-            if(shaft_minx > s_minx):
+            #s_minx, s_miny, s_maxx, s_maxy = As[-1][0].bounds
+            shafts.append(As[-1][0])
+            '''if(shaft_minx > s_minx):
                 shaft_minx = s_minx
-                shaft = As[-1][0]
+                shaft = As[-1][0]'''
+        if a[0] == 'WYS_ENTRANCE':
+            entrances.append(As[-1][0])
 
-
-    zones = []
-    p_minx, p_miny, p_maxx, p_maxy = planta.bounds
-    c_minx, c_miny, c_maxx, c_maxy = core.bounds
-    s_minx, s_miny, s_maxx, s_maxy = shaft.bounds
-
-    zones.append([box(p_minx, p_miny, c_minx, p_maxy), "ZONA PUESTOS DE TRABAJO"])
-    zones.append([box(s_minx, p_miny, c_maxx, c_miny), "ZONA SERVICIOS"])
+    zones = make_zones(planta, shafts, core, entrances, cat_area)
 
     def mutMod(individual, planta, mu, sigma, indpb):
         minx, miny, maxx, maxy = planta.bounds
@@ -452,12 +569,18 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             xz, yz = z[0].exterior.xy
             for row in range(rows):
                 for col in range(cols):
-                    if z[1] == 'ZONA PUESTOS DE TRABAJO':
+                    if 'ZONA PUESTOS DE TRABAJO' in z[1]:
                         ax[row, col].plot(xz, yz, color='r')
                         ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='r')
-                    elif z[1] == 'ZONA SERVICIOS':
+                    elif 'ZONA SERVICIOS' in z[1]:
                         ax[row, col].plot(xz, yz, color='g')
                         ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='g')
+                    elif 'ZONA SOPORTE' in z[1]:
+                        ax[row, col].plot(xz, yz, color='y')
+                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='y')
+                    elif 'ZONA SALAS REUNION' in z[1]:
+                        ax[row, col].plot(xz, yz, color='indigo')
+                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='indigo')
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
 
@@ -552,7 +675,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         # print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness.values)
     # viewer.show_floor(planta, As, pop, g)
-    for o in out:
-        print(o)
+    '''for o in out:
+        print(o)'''
 
     return out
