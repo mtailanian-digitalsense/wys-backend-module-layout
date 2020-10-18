@@ -41,7 +41,7 @@ def get_input(dictionary):
     input_list = []
 
     for ws in Workspaces:
-        input_list.append([ws.get('name'), ws.get('quantity'), ws.get('width'), ws.get('height')])
+        input_list.append([ws.get('name'), ws.get('quantity'), ws.get('width'), ws.get('height'), ws.get('category_id')])
 
     return outline, holes, areas, input_list
 
