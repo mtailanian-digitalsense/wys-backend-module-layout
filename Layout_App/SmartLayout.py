@@ -189,8 +189,6 @@ def smart_layout_async(dictionary, POP_SIZE=50, GENERATIONS=50):
     result = Smart_Layout(dictionary, POP_SIZE, GENERATIONS, IS_ASYNC=True)
     return result, dictionary
 
-def Smart_Layout(dictionary, POP_SIZE=50, GENERATIONS=50, IS_ASYNC=False):
-    start_time = time.time()
 def make_zones(planta, shafts, core, entrances, cat_area):
     zones = []
     s_zones = []
@@ -287,7 +285,7 @@ def make_zones(planta, shafts, core, entrances, cat_area):
 start_time = time.time()
 
 
-def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
+def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10, IS_ASYNC=False):
 
 
     if False:
