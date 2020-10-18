@@ -117,7 +117,9 @@ def makePos(planta, in_list, zones):
         p = Point(round(random.uniform(minx, maxx), 1), round(random.uniform(miny, maxy), 1))
         b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
 
-        if zone:
+        if zone and (time.time() - make_time) > 0.15:
+            condition1 = zone.intersects(b)
+        elif zone:
             condition1 = zone.contains(b)
         else:
             condition1 = planta.contains(b)
