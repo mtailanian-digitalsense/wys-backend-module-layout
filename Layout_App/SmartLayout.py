@@ -322,22 +322,6 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10, IS
     outline, holes, areas, input_list = get_input(dictionary)
 
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
-                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
-                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6, 1],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             15, 3.37, 3.37, 2],
-                    #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
-                    ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
-                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
-                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
-                    ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
-                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
-                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
-                    ['WYS_RECEPCION_1PERSONA',                      2, 2.7, 3.25, 5],
-                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    1, 2.05, 1.9, 6],
-                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    1, 2.05, 2.01, 6],
-                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6]]
     voids = []
 
     border = outline[0][1]
