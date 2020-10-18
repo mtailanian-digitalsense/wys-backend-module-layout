@@ -306,6 +306,16 @@ def get_floor_polygons_by_ids(building_id, floor_id, token):
         raise Exception("Cannot connect to the buildings module")
     return None
 
+def get_subcategories(token):
+    headers = {'Authorization': token}
+    api_url = SPACES_URL + SPACES_MODULE_API + 'subcategories'
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception("Cannot connect to the buildings module")
+    return None
+
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
@@ -479,11 +489,22 @@ def generate_layout(project_id):
         if len(workspaces) == 0:
             return "No spaces were entered in the body.", 400
         workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap','right_gap','subcategory_id','points'}
+        token = request.headers.get('Authorization', None)
+        subcategories = get_subcategories(token)
         for workspace in workspaces:
             if workspace.keys() != workspace_params:
-             return "A space data field is missing in the body", 400
-
-        token = request.headers.get('Authorization', None)
+                return "A space data field is missing in the body", 400
+            found = False
+            for category in subcategories:
+                for subcategory in category['subcategories']:
+                    if subcategory['id'] == workspace['subcategory_id']:
+                        workspace['category_id'] = category['id']
+                        found = True
+                        break
+                if found:
+                    break
+            if not found:
+                return "A Space subcategory doesn't exist", 404
         project = get_project_by_id(project_id, token)
         if project is None:
             return "The project doesn't exist", 404
@@ -892,11 +913,22 @@ def generate_layout_async():
         if len(workspaces) == 0:
             return "No spaces were entered in the body.", 400
         workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap','right_gap','subcategory_id','points'}
+        token = request.headers.get('Authorization', None)
+        subcategories = get_subcategories(token)
         for workspace in workspaces:
             if workspace.keys() != workspace_params:
-             return "A space data field is missing in the body", 400
-
-        token = request.headers.get('Authorization', None)
+                return "A space data field is missing in the body", 400
+            found = False
+            for category in subcategories:
+                for subcategory in category['subcategories']:
+                    if subcategory['id'] == workspace['subcategory_id']:
+                        workspace['category_id'] = category['id']
+                        found = True
+                        break
+                if found:
+                    break
+            if not found:
+                return "A Space subcategory doesn't exist", 404
 
         floor_polygons = get_floor_polygons_by_ids(floor['building_id'], floor['id'], token)
         if floor_polygons is None or len(floor_polygons) == 0:
