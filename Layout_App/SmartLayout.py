@@ -261,6 +261,8 @@ def make_zones(planta, shafts, core, entrances, cat_area):
                 for i in range(len(tmp)):
                     pol = tmp[i]
                     for z in zones:
+                        if 'ZONA SOPORTE' in z[1]:
+                            continue
                         zone = z[0]
                         if pol.intersects(zone):
                             if pol.geom_type == 'MultiPolygon':
@@ -271,6 +273,8 @@ def make_zones(planta, shafts, core, entrances, cat_area):
                     zones.append([pol, "ZONA SERVICIOS " + str(i)])
             else:
                 for z in zones:
+                    if 'ZONA SOPORTE' in z[1]:
+                        continue
                     zone = z[0]
                     if tmp.intersects(zone):
                         tmp = tmp.difference(zone)
@@ -332,7 +336,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
                     ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
-                    ['WYS_RECEPCION_1PERSONA',                      2, 2.7, 3.25, 5],
+                    ['WYS_RECEPCION_1PERSONA',                      3, 2.7, 3.25, 5],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    1, 2.05, 1.9, 6],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    1, 2.05, 2.01, 6],
                     ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6]]
