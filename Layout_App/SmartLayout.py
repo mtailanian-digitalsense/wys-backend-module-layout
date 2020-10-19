@@ -117,8 +117,8 @@ def makePos(planta, in_list, zones):
         p = Point(round(random.uniform(minx, maxx), 1), round(random.uniform(miny, maxy), 1))
         b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
 
-        if zone and (time.time() - make_time) > 0.15:
-            condition1 = zone.intersects(b)
+        if zone and (time.time() - make_time) > 0.1:
+            condition1 = zone.intersects(b) and planta.contains(b)
         elif zone:
             condition1 = zone.contains(b)
         else:
@@ -499,7 +499,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10, IS
     toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.2)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
-    toolbox.register("select", tools.selTournament, tournsize=5)
+    toolbox.register("select", tools.selTournament, tournsize=round(POP_SIZE*0.4))
     # toolbox.register("select", tools.selNSGA2)
     toolbox.register("evaluate", evaluateInd)
 
