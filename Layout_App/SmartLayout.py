@@ -118,8 +118,8 @@ def makePos(planta, in_list, zones):
         p = Point(round(random.uniform(minx, maxx), 1), round(random.uniform(miny, maxy), 1))
         b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
 
-        if zone and (time.time() - make_time) > 0.15:
-            condition1 = zone.intersects(b)
+        if zone and (time.time() - make_time) > 0.1:
+            condition1 = zone.intersects(b) and planta.contains(b)
         elif zone:
             condition1 = zone.contains(b)
         else:
@@ -325,8 +325,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                     ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6, 1],
                     ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             15, 3.37, 3.37, 2],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
-                    ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
+                    ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8, 3],
+                    ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9, 3],
                     ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
@@ -511,7 +511,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.2)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
-    toolbox.register("select", tools.selTournament, tournsize=5)
+    toolbox.register("select", tools.selTournament, tournsize=round(POP_SIZE*0.4))
     # toolbox.register("select", tools.selNSGA2)
     toolbox.register("evaluate", evaluateInd)
 
