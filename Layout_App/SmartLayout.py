@@ -117,14 +117,14 @@ def makePos(planta, in_list, zones):
         p = Point(round(random.uniform(minx, maxx), 1), round(random.uniform(miny, maxy), 1))
         b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
 
-        if zone and (time.time() - make_time) > 0.1:
+        if zone and (time.time() - make_time) > 1:
             condition1 = zone.intersects(b) and planta.contains(b)
         elif zone:
             condition1 = zone.contains(b)
         else:
             condition1 = planta.contains(b)
 
-        if (time.time() - make_time) > 0.05 and condition1:
+        if (time.time() - make_time) > 0.5 and condition1:
             mod.x, mod.y = p.x, p.y
             curr_bx.append(b)
             # for cb in curr_bx:
@@ -265,6 +265,8 @@ def make_zones(planta, shafts, core, entrances, cat_area):
                 for i in range(len(tmp)):
                     pol = tmp[i]
                     for z in zones:
+                        if 'ZONA SOPORTE' in z[1]:
+                            continue
                         zone = z[0]
                         if pol.intersects(zone):
                             if pol.geom_type == 'MultiPolygon':
@@ -275,6 +277,8 @@ def make_zones(planta, shafts, core, entrances, cat_area):
                     zones.append([pol, "ZONA SERVICIOS " + str(i)])
             else:
                 for z in zones:
+                    if 'ZONA SOPORTE' in z[1]:
+                        continue
                     zone = z[0]
                     if tmp.intersects(zone):
                         tmp = tmp.difference(zone)
@@ -287,7 +291,7 @@ def make_zones(planta, shafts, core, entrances, cat_area):
 start_time = time.time()
 
 
-def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10, IS_ASYNC=False):
+def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=True, viz_period=1, IS_ASYNC=False):
 
 
     if False:
@@ -609,11 +613,11 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10, IS
                         b = ax[row, col].plot(x, y, color='b')
                         labels = []
 
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.2, mod.name, fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.8, round(mod.fitval1, 2), fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 2.4, round(mod.fitval2, 2), fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 0.6, mod.x, fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 2, y[2] - 0.6, mod.y, fontsize=6, ma='center'))
+                        #labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.2, mod.name, fontsize=6, ma='center'))
+                        #labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.8, round(mod.fitval1, 2), fontsize=6, ma='center'))
+                        #labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 2.4, round(mod.fitval2, 2), fontsize=6, ma='center'))
+                        #labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 0.6, mod.x, fontsize=6, ma='center'))
+                        #labels.append(ax[row, col].text(x[2] + 2, y[2] - 0.6, mod.y, fontsize=6, ma='center'))
                         boxes.append([b, labels])
 
                     '''for b in boxes:
