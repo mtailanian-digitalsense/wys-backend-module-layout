@@ -16,7 +16,6 @@ import restrictions
 
 random.seed(100)
 
-
 def get_input(dictionary):
     Planta = dictionary.get('selected_floor').get('polygons')
     Workspaces = dictionary.get('workspaces')
@@ -118,14 +117,14 @@ def makePos(planta, in_list, zones):
         p = Point(round(random.uniform(minx, maxx), 1), round(random.uniform(miny, maxy), 1))
         b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
 
-        if zone and (time.time() - make_time) > 0.1:
+        if zone and (time.time() - make_time) > 0.5:
             condition1 = zone.intersects(b) and planta.contains(b)
         elif zone:
             condition1 = zone.contains(b)
         else:
             condition1 = planta.contains(b)
 
-        if (time.time() - make_time) > 0.05 and condition1:
+        if (time.time() - make_time) > 0.1 and condition1:
             mod.x, mod.y = p.x, p.y
             curr_bx.append(b)
             # for cb in curr_bx:
@@ -327,7 +326,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6, 1],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             15, 3.37, 3.37, 2],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             5, 3.37, 3.37, 2],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
                     ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8, 3],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9, 3],
@@ -335,10 +334,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
-                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
-                    ['WYS_RECEPCION_1PERSONA',                      3, 2.7, 3.25, 5],
-                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    1, 2.05, 1.9, 6],
-                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    1, 2.05, 2.01, 6],
+                    ['WYS_SOPORTE_PRINT1',                          2, 1.5, 1.3, 4],
+                    ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
+                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 6],
+                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 6],
                     ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6]]
     voids = []
 
@@ -447,8 +446,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                                           restrictions.mod2area_matrix, boxes[i][1], d[0])
                 if w != 0:
 
-                    ind[i].fitval1 += round((acond_distance(d[1]) * w)/(ind[i].qty * N), 2)
-                    a += (acond_distance(d[1]) * w)/(ind[i].qty * N)
+                    ind[i].fitval1 += round((acond_distance(d[1]) * w)/(ind[i].qty), 2)
+                    a += (acond_distance(d[1]) * w)/(ind[i].qty)
 
             distances = []
             for j in range(nb):
@@ -460,8 +459,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                 w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
                                          boxes[i][1], d[0])
                 if w != 0:
-                    ind[i].fitval2 += round((acond_distance(d[1]) * w)/(ind[i].qty * N), 2)
-                    a += (acond_distance(d[1]) * w)/(ind[i].qty * N)
+                    ind[i].fitval2 += round((acond_distance(d[1]) * w)/(ind[i].qty), 2)
+                    a += (acond_distance(d[1]) * w)/(ind[i].qty)
         return a
 
     def evaluateInd(ind):
@@ -536,61 +535,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
-    # print('Sample individual of Generation', 0, ':')
-    # for mod in pop[0]:
-    #    print('(',mod.x,',',mod.y,')','id:', mod.id)
-    # print('Fitness = ', pop[0].fitness)
-    if viz:
-        rows = 2
-        cols = 2
-        plt.ion()
-
-        fig, ax = plt.subplots(rows, cols)
-        x, y = planta.exterior.xy
-        for row in range(rows):
-            for col in range(cols):
-                ax[row, col].plot(x, y, color='black')
-                ax[row, col].axis('equal')
-                ax[row, col].grid(True)
-                ax[row, col].tick_params(axis="x", labelsize=7)
-                ax[row, col].tick_params(axis="y", labelsize=7)
-
-        for pi in planta.interiors:
-            x, y = pi.xy
-            for row in range(rows):
-                for col in range(cols):
-                    ax[row, col].plot(x, y, color='black')
-
-        for a in As:
-            xa, ya = a[0].exterior.xy
-            for row in range(rows):
-                for col in range(cols):
-                    if a[1] == 'WYS_ENTRANCE':
-                        ax[row, col].fill(xa, ya, color='#a8e4a0')
-                    if a[1] == 'WYS_FACADE_CRYSTAL':
-                        ax[row, col].fill(xa, ya, color='#89cff0')
-                    if a[1] == 'WYS_FACADE_OPAQUE':
-                        ax[row, col].fill(xa, ya, color='#ffeac4')
-                    if a[1] == 'WYS_SHAFT':
-                        ax[row, col].fill(xa, ya, color='#779ecb')
-                    if a[1] == 'WYS_CORE':
-                        ax[row, col].fill(xa, ya, color='#ffb1b1')
-        for z in zones:
-            xz, yz = z[0].exterior.xy
-            for row in range(rows):
-                for col in range(cols):
-                    if 'ZONA PUESTOS DE TRABAJO' in z[1]:
-                        ax[row, col].plot(xz, yz, color='r')
-                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='r')
-                    elif 'ZONA SERVICIOS' in z[1]:
-                        ax[row, col].plot(xz, yz, color='g')
-                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='g')
-                    elif 'ZONA SOPORTE' in z[1]:
-                        ax[row, col].plot(xz, yz, color='y')
-                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='y')
-                    elif 'ZONA SALAS REUNION' in z[1]:
-                        ax[row, col].plot(xz, yz, color='indigo')
-                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='indigo')
+    fig, ax = viewer.viewer_viz(planta, As, zones, viz)
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
 
@@ -598,47 +543,14 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     max_fit = -9999999
     for g in range(NGEN):
 
-        # viewer.show_floor(planta, As, pop, g)
-        if viz and (g + 1 if g > 0 else g) % viz_period == 0:
-            fig.suptitle('Generation ' + str(g + 1), fontsize=12)
-            boxes = []
-            for row in range(rows):
-                for col in range(cols):
-                    ind = pop[2 * (cols * row + col)]
-                    ax[row, col].set_title(
-                        'POP:' + str(2 * (cols * row + col)) + ' Fitness:' + str(round(ind.fitness.values[0], 2)),
-                        fontsize=9)
-                    for mod in ind:
-                        b = mod.get_box()
-                        x, y = b.exterior.xy
-                        b = ax[row, col].plot(x, y, color='b')
-                        labels = []
-
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.2, mod.name, fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.8, round(mod.fitval1, 2), fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 2.4, round(mod.fitval2, 2), fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 0.6, mod.x, fontsize=6, ma='center'))
-                        labels.append(ax[row, col].text(x[2] + 2, y[2] - 0.6, mod.y, fontsize=6, ma='center'))
-                        boxes.append([b, labels])
-
-                    '''for b in boxes:
-                        x, y = b[0].exterior.xy
-                        ax[row, col].set_title('POP:'+str(2*(cols*row+col))+' Fitness:'+ str(round(ind.fitness.values[0],2)), fontsize=9)
-                        ax[row, col].plot(x, y, color='b')
-                        ax[row, col].text(x[2] + 0.1, y[2] - 1, b[1], fontsize=6)'''
-            fig.canvas.draw()
-            fig.canvas.flush_events()
-            time.sleep(0.0001)
-
-        # Select the next generation individuals
+        boxes = viewer.viz_update(viz, viz_period, g, pop, fig, ax)
         fitn = [o.fitness.values[0] for o in pop]
-
         print('Time:', round(time.time() - start_time, 1), ' Generation ', g + 1, 'of', NGEN, 'POP SIZE:', len(pop),
-              '  Min:', round(min(fitn), 1), 'Max:', round(max(fitn), 1), 'Avg:', round(sum(fitn) / len(fitn), 1),
+              '  Min:', round(min(fitn), 2), 'Max:', round(max(fitn), 2), 'Avg:', round(sum(fitn) / len(fitn), 1),
               'Local sol. count:', max_count)
 
+        # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
-
         # Clone the selected individuals
         offspring = list(map(toolbox.clone, offspring))
 
@@ -665,17 +577,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         pop[:] = offspring
 
         pop.sort(key=lambda x: x.fitness, reverse=True)
-        if (viz and g < NGEN - 1 and (g + 1 if g > 0 else g) % viz_period == 0):
-            for el in boxes:
-                el[0][0].remove()
-                el[1][0].remove()
-                el[1][1].remove()
-                el[1][2].remove()
-                el[1][3].remove()
-                el[1][4].remove()
 
-    plt.ioff()
-    plt.show()
+        viewer.viz_clear(viz, g, NGEN, viz_period, boxes)
+
+    viewer.viz_end()
     print(round(time.time() - start_time, 1), 'Finish')
     print('Best individual of Generation', g + 1, ':')
     out = []
