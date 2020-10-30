@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from shapely.geometry import box
+from shapely.geometry.polygon import Polygon, LineString
 
 
 def viz_end():
@@ -55,7 +56,7 @@ def viz_update(viz, viz_period, g, pop,  fig, ax):
         return boxes
 
 
-def viewer_viz(planta, As, zones, viz):
+def viewer_viz(planta, As, viz, zones=[], areas={}):
 
     if viz:
         rows = 2
@@ -98,16 +99,33 @@ def viewer_viz(planta, As, zones, viz):
                 for col in range(cols):
                     if 'ZONA PUESTOS DE TRABAJO' in z[1]:
                         ax[row, col].plot(xz, yz, color='r')
-                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='r')
+                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='r')
                     elif 'ZONA SERVICIOS' in z[1]:
-                        ax[row, col].plot(xz, yz, color='g')
-                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='g')
+                        ax[row, col].plot(xz, yz, color='darkolivegreen')
+                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='darkolivegreen')
                     elif 'ZONA SOPORTE' in z[1]:
                         ax[row, col].plot(xz, yz, color='y')
-                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='y')
-                    elif 'ZONA SALAS REUNION' in z[1]:
+                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='y')
+                    elif 'ZONA SALAS REUNION FORMAL' in z[1]:
                         ax[row, col].plot(xz, yz, color='indigo')
-                        ax[row, col].text(xz[1], yz[1], z[1], weight='bold', fontsize=6, ma='center', color='indigo')
+                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='indigo')
+                    elif 'ZONA TRABAJO PRIVADO' in z[1]:
+                        ax[row, col].plot(xz, yz, color='brown')
+                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='brown')
+                    elif 'ZONA ESPECIALES' in z[1]:
+                        ax[row, col].plot(xz, yz, color='darkturquoise')
+                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='darkturquoise')
+                    elif 'ZONA REUNIONES INFORMALES' in z[1]:
+                        ax[row, col].plot(xz, yz, color='orangered')
+                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='orangered')
+
+        for key, value in areas.items():
+            xz, yz = value.exterior.xy
+            for row in range(rows):
+                for col in range(cols):
+                    ax[row, col].plot(xz, yz, 'g', linewidth=2)
+                    ax[row, col].text(value.centroid.x, value.centroid.y, 'area: '+ str(key), weight='bold', fontsize=6, ma='center', color='g')
+
         return fig, ax
     return 0, 0
 
@@ -165,6 +183,36 @@ def show_floor(planta, As,  pop, g):
     plt.show()
 
 
+def simple_show(outline, holes, areas, pols):
+    voids = []
+    border = outline[0][1]
+    As = []
+    for a in areas:
+        As.append([Polygon(a[1]), a[0]])
+    for h in holes:
+        voids.append(h[1])
+    planta = Polygon(border, voids)
+    x, y = planta.exterior.xy
+    plt.plot(x, y, color='black')
+    for pi in planta.interiors:
+        x, y = pi.xy
+        plt.plot(x, y, color='black')
+    for a in As:
+        xa, ya = a[0].exterior.xy
+        if a[1] == 'WYS_ENTRANCE':
+            plt.fill(xa, ya, color='#a8e4a0')
+        if a[1] == 'WYS_FACADE_CRYSTAL':
+            plt.fill(xa, ya, color='#89cff0')
+        if a[1] == 'WYS_FACADE_OPAQUE':
+            plt.fill(xa, ya, color='#ffeac4')
+        if a[1] == 'WYS_SHAFT':
+            plt.fill(xa, ya, color='#779ecb')
+        if a[1] == 'WYS_CORE':
+            plt.fill(xa, ya, color='#ffb1b1')
+    for p in pols:
+        x, y = p.exterior.xy
+        plt.plot(x, y)
+    plt.show()
 
 
 

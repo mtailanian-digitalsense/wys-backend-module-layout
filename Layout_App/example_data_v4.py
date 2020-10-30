@@ -1,839 +1,1132 @@
 dict_ex= {
-  'selected_floor': {
-    'active': True,
-    'building_id': 9,
-    'elevators_number': 4,
-    'id': 17,
-    'image_link': 'http://wysdev.ac3eplatforms.com/api/filestorage/Zmxvb3IucG5nMTU5NTAyNTgzNy43Njg0NDU=.png',
-    'm2': 642.72,
-    'rent_value': 5353,
-    'wys_id': 'CL17',
-    'polygons': [{
-      'floor_id': 17,
-      'id': 175,
-      'is_external': False,
-      'is_internal': False,
-      'name': 'WYS_AREA_UTIL',
-      'points': [{
-        'id': 6436,
-        'order': 0,
-        'polygon_id': 175,
-        'x': -3268.1,
-        'y': 1047.91
-      }, {
-        'id': 6437,
-        'order': 1,
-        'polygon_id': 175,
-        'x': -6834.6,
-        'y': 1047.91
-      }, {
-        'id': 6438,
-        'order': 2,
-        'polygon_id': 175,
-        'x': -6834.6,
-        'y': -1048.09
-      }, {
-        'id': 6439,
-        'order': 3,
-        'polygon_id': 175,
-        'x': -3268.1,
-        'y': -1048.09
-      }, {
-        'id': 6440,
-        'order': 4,
-        'polygon_id': 175,
-        'x': -3268.1,
-        'y': 357.117
-      }, {
-        'id': 6441,
-        'order': 5,
-        'polygon_id': 175,
-        'x': -3268.1,
-        'y': 1047.91
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 176,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6442,
-        'order': 0,
-        'polygon_id': 176,
-        'x': -4500.1,
-        'y': 566.16
-      }, {
-        'id': 6443,
-        'order': 1,
-        'polygon_id': 176,
-        'x': -4500.1,
-        'y': 58.405
-      }, {
-        'id': 6444,
-        'order': 2,
-        'polygon_id': 176,
-        'x': -4500.1,
-        'y': -106.845
-      }, {
-        'id': 6445,
-        'order': 3,
-        'polygon_id': 176,
-        'x': -4554.6,
-        'y': -106.845
-      }, {
-        'id': 6446,
-        'order': 4,
-        'polygon_id': 176,
-        'x': -4554.6,
-        'y': -371.845
-      }, {
-        'id': 6447,
-        'order': 5,
-        'polygon_id': 176,
-        'x': -5514.6,
-        'y': -371.845
-      }, {
-        'id': 6448,
-        'order': 6,
-        'polygon_id': 176,
-        'x': -5514.6,
-        'y': -106.845
-      }, {
-        'id': 6449,
-        'order': 7,
-        'polygon_id': 176,
-        'x': -5569.1,
-        'y': -106.845
-      }, {
-        'id': 6450,
-        'order': 8,
-        'polygon_id': 176,
-        'x': -5569.1,
-        'y': 58.405
-      }, {
-        'id': 6451,
-        'order': 9,
-        'polygon_id': 176,
-        'x': -5569.1,
-        'y': 566.16
-      }, {
-        'id': 6452,
-        'order': 10,
-        'polygon_id': 176,
-        'x': -4500.1,
-        'y': 566.16
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 177,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6453,
-        'order': 0,
-        'polygon_id': 177,
-        'x': -4169.6,
-        'y': 52.405
-      }, {
-        'id': 6454,
-        'order': 1,
-        'polygon_id': 177,
-        'x': -4250.6,
-        'y': 52.405
-      }, {
-        'id': 6455,
-        'order': 2,
-        'polygon_id': 177,
-        'x': -4250.6,
-        'y': 133.405
-      }, {
-        'id': 6456,
-        'order': 3,
-        'polygon_id': 177,
-        'x': -4169.6,
-        'y': 133.405
-      }, {
-        'id': 6457,
-        'order': 4,
-        'polygon_id': 177,
-        'x': -4169.6,
-        'y': 52.405
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 178,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6458,
-        'order': 0,
-        'polygon_id': 178,
-        'x': -3394.6,
-        'y': 52.4052
-      }, {
-        'id': 6459,
-        'order': 1,
-        'polygon_id': 178,
-        'x': -3394.6,
-        'y': 123.405
-      }, {
-        'id': 6460,
-        'order': 2,
-        'polygon_id': 178,
-        'x': -3323.6,
-        'y': 123.405
-      }, {
-        'id': 6461,
-        'order': 3,
-        'polygon_id': 178,
-        'x': -3323.6,
-        'y': 52.4052
-      }, {
-        'id': 6462,
-        'order': 4,
-        'polygon_id': 178,
-        'x': -3394.6,
-        'y': 52.4052
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 179,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6463,
-        'order': 0,
-        'polygon_id': 179,
-        'x': -3323.1,
-        'y': -1030.59
-      }, {
-        'id': 6464,
-        'order': 1,
-        'polygon_id': 179,
-        'x': -3394.6,
-        'y': -1030.59
-      }, {
-        'id': 6465,
-        'order': 2,
-        'polygon_id': 179,
-        'x': -3394.6,
-        'y': -959.595
-      }, {
-        'id': 6466,
-        'order': 3,
-        'polygon_id': 179,
-        'x': -3323.1,
-        'y': -959.595
-      }, {
-        'id': 6467,
-        'order': 4,
-        'polygon_id': 179,
-        'x': -3323.1,
-        'y': -1030.59
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 180,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6468,
-        'order': 0,
-        'polygon_id': 180,
-        'x': -4173.6,
-        'y': -1030.59
-      }, {
-        'id': 6469,
-        'order': 1,
-        'polygon_id': 180,
-        'x': -4245.6,
-        'y': -1030.59
-      }, {
-        'id': 6470,
-        'order': 2,
-        'polygon_id': 180,
-        'x': -4245.6,
-        'y': -958.595
-      }, {
-        'id': 6471,
-        'order': 3,
-        'polygon_id': 180,
-        'x': -4173.6,
-        'y': -958.595
-      }, {
-        'id': 6472,
-        'order': 4,
-        'polygon_id': 180,
-        'x': -4173.6,
-        'y': -1030.59
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 181,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6473,
-        'order': 0,
-        'polygon_id': 181,
-        'x': -5023.6,
-        'y': -1030.59
-      }, {
-        'id': 6474,
-        'order': 1,
-        'polygon_id': 181,
-        'x': -5094.6,
-        'y': -1030.59
-      }, {
-        'id': 6475,
-        'order': 2,
-        'polygon_id': 181,
-        'x': -5094.6,
-        'y': -959.595
-      }, {
-        'id': 6476,
-        'order': 3,
-        'polygon_id': 181,
-        'x': -5023.6,
-        'y': -959.595
-      }, {
-        'id': 6477,
-        'order': 4,
-        'polygon_id': 181,
-        'x': -5023.6,
-        'y': -1030.59
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 182,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6478,
-        'order': 0,
-        'polygon_id': 182,
-        'x': -5872.6,
-        'y': -1030.59
-      }, {
-        'id': 6479,
-        'order': 1,
-        'polygon_id': 182,
-        'x': -5943.6,
-        'y': -1030.59
-      }, {
-        'id': 6480,
-        'order': 2,
-        'polygon_id': 182,
-        'x': -5943.6,
-        'y': -959.595
-      }, {
-        'id': 6481,
-        'order': 3,
-        'polygon_id': 182,
-        'x': -5872.6,
-        'y': -959.595
-      }, {
-        'id': 6482,
-        'order': 4,
-        'polygon_id': 182,
-        'x': -5872.6,
-        'y': -1030.59
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 183,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6483,
-        'order': 0,
-        'polygon_id': 183,
-        'x': -6718.6,
-        'y': -1030.59
-      }, {
-        'id': 6484,
-        'order': 1,
-        'polygon_id': 183,
-        'x': -6794.6,
-        'y': -1030.59
-      }, {
-        'id': 6485,
-        'order': 2,
-        'polygon_id': 183,
-        'x': -6794.6,
-        'y': -959.595
-      }, {
-        'id': 6486,
-        'order': 3,
-        'polygon_id': 183,
-        'x': -6718.6,
-        'y': -959.595
-      }, {
-        'id': 6487,
-        'order': 4,
-        'polygon_id': 183,
-        'x': -6718.6,
-        'y': -1030.59
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 184,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6488,
-        'order': 0,
-        'polygon_id': 184,
-        'x': -5948.6,
-        'y': 133.405
-      }, {
-        'id': 6489,
-        'order': 1,
-        'polygon_id': 184,
-        'x': -5867.6,
-        'y': 133.405
-      }, {
-        'id': 6490,
-        'order': 2,
-        'polygon_id': 184,
-        'x': -5867.6,
-        'y': 52.4052
-      }, {
-        'id': 6491,
-        'order': 3,
-        'polygon_id': 184,
-        'x': -5948.6,
-        'y': 52.4052
-      }, {
-        'id': 6492,
-        'order': 4,
-        'polygon_id': 184,
-        'x': -5948.6,
-        'y': 133.405
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 185,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6493,
-        'order': 0,
-        'polygon_id': 185,
-        'x': -6723.6,
-        'y': 52.4052
-      }, {
-        'id': 6494,
-        'order': 1,
-        'polygon_id': 185,
-        'x': -6794.6,
-        'y': 52.4052
-      }, {
-        'id': 6495,
-        'order': 2,
-        'polygon_id': 185,
-        'x': -6794.6,
-        'y': 123.405
-      }, {
-        'id': 6496,
-        'order': 3,
-        'polygon_id': 185,
-        'x': -6723.6,
-        'y': 123.405
-      }, {
-        'id': 6497,
-        'order': 4,
-        'polygon_id': 185,
-        'x': -6723.6,
-        'y': 52.4052
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 186,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6498,
-        'order': 0,
-        'polygon_id': 186,
-        'x': -6794.6,
-        'y': 744.405
-      }, {
-        'id': 6499,
-        'order': 1,
-        'polygon_id': 186,
-        'x': -6723.6,
-        'y': 744.405
-      }, {
-        'id': 6500,
-        'order': 2,
-        'polygon_id': 186,
-        'x': -6723.6,
-        'y': 673.405
-      }, {
-        'id': 6501,
-        'order': 3,
-        'polygon_id': 186,
-        'x': -6794.6,
-        'y': 673.405
-      }, {
-        'id': 6502,
-        'order': 4,
-        'polygon_id': 186,
-        'x': -6794.6,
-        'y': 744.405
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 187,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6503,
-        'order': 0,
-        'polygon_id': 187,
-        'x': -5943.6,
-        'y': 1031.91
-      }, {
-        'id': 6504,
-        'order': 1,
-        'polygon_id': 187,
-        'x': -5871.6,
-        'y': 1031.91
-      }, {
-        'id': 6505,
-        'order': 2,
-        'polygon_id': 187,
-        'x': -5871.6,
-        'y': 959.905
-      }, {
-        'id': 6506,
-        'order': 3,
-        'polygon_id': 187,
-        'x': -5943.6,
-        'y': 959.905
-      }, {
-        'id': 6507,
-        'order': 4,
-        'polygon_id': 187,
-        'x': -5943.6,
-        'y': 1031.91
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 188,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6508,
-        'order': 0,
-        'polygon_id': 188,
-        'x': -5022.6,
-        'y': 1030.91
-      }, {
-        'id': 6509,
-        'order': 1,
-        'polygon_id': 188,
-        'x': -5022.6,
-        'y': 959.905
-      }, {
-        'id': 6510,
-        'order': 2,
-        'polygon_id': 188,
-        'x': -5093.6,
-        'y': 959.905
-      }, {
-        'id': 6511,
-        'order': 3,
-        'polygon_id': 188,
-        'x': -5093.6,
-        'y': 1030.91
-      }, {
-        'id': 6512,
-        'order': 4,
-        'polygon_id': 188,
-        'x': -5022.6,
-        'y': 1030.91
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 189,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6513,
-        'order': 0,
-        'polygon_id': 189,
-        'x': -4244.6,
-        'y': 1030.91
-      }, {
-        'id': 6514,
-        'order': 1,
-        'polygon_id': 189,
-        'x': -4173.6,
-        'y': 1030.91
-      }, {
-        'id': 6515,
-        'order': 2,
-        'polygon_id': 189,
-        'x': -4173.6,
-        'y': 959.905
-      }, {
-        'id': 6516,
-        'order': 3,
-        'polygon_id': 189,
-        'x': -4244.6,
-        'y': 959.905
-      }, {
-        'id': 6517,
-        'order': 4,
-        'polygon_id': 189,
-        'x': -4244.6,
-        'y': 1030.91
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 190,
-      'is_external': False,
-      'is_internal': True,
-      'name': 'WYS_HOLE',
-      'points': [{
-        'id': 6518,
-        'order': 0,
-        'polygon_id': 190,
-        'x': -3323.1,
-        'y': 1030.91
-      }, {
-        'id': 6519,
-        'order': 1,
-        'polygon_id': 190,
-        'x': -3323.1,
-        'y': 959.905
-      }, {
-        'id': 6520,
-        'order': 2,
-        'polygon_id': 190,
-        'x': -3394.6,
-        'y': 959.905
-      }, {
-        'id': 6521,
-        'order': 3,
-        'polygon_id': 190,
-        'x': -3394.6,
-        'y': 1030.91
-      }, {
-        'id': 6522,
-        'order': 4,
-        'polygon_id': 190,
-        'x': -3323.1,
-        'y': 1030.91
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 191,
-      'is_external': True,
-      'is_internal': False,
-      'name': 'WYS_FACADE_CRYSTAL',
-      'points': [{
-        'id': 6523,
-        'order': 0,
-        'polygon_id': 191,
-        'x': -3243.1,
-        'y': 1072.91
-      }, {
-        'id': 6524,
-        'order': 1,
-        'polygon_id': 191,
-        'x': -6847.6,
-        'y': 1072.91
-      }, {
-        'id': 6525,
-        'order': 2,
-        'polygon_id': 191,
-        'x': -6847.6,
-        'y': -1073.09
-      }, {
-        'id': 6526,
-        'order': 3,
-        'polygon_id': 191,
-        'x': -3243.1,
-        'y': -1073.09
-      }, {
-        'id': 6527,
-        'order': 4,
-        'polygon_id': 191,
-        'x': -3243.1,
-        'y': -610.304
-      }, {
-        'id': 6528,
-        'order': 5,
-        'polygon_id': 191,
-        'x': -3243.1,
-        'y': 1072.91
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 192,
-      'is_external': True,
-      'is_internal': False,
-      'name': 'WYS_ENTRANCE',
-      'points': [{
-        'id': 6529,
-        'order': 0,
-        'polygon_id': 192,
-        'x': -4554.6,
-        'y': 58.405
-      }, {
-        'id': 6530,
-        'order': 1,
-        'polygon_id': 192,
-        'x': -4554.6,
-        'y': -106.845
-      }, {
-        'id': 6531,
-        'order': 2,
-        'polygon_id': 192,
-        'x': -4500.1,
-        'y': -106.845
-      }, {
-        'id': 6532,
-        'order': 3,
-        'polygon_id': 192,
-        'x': -4500.1,
-        'y': 58.405
-      }, {
-        'id': 6533,
-        'order': 4,
-        'polygon_id': 192,
-        'x': -4554.6,
-        'y': 58.405
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 193,
-      'is_external': True,
-      'is_internal': False,
-      'name': 'WYS_ENTRANCE',
-      'points': [{
-        'id': 6534,
-        'order': 0,
-        'polygon_id': 193,
-        'x': -5514.6,
-        'y': -106.845
-      }, {
-        'id': 6535,
-        'order': 1,
-        'polygon_id': 193,
-        'x': -5514.6,
-        'y': 58.405
-      }, {
-        'id': 6536,
-        'order': 2,
-        'polygon_id': 193,
-        'x': -5569.1,
-        'y': 58.405
-      }, {
-        'id': 6537,
-        'order': 3,
-        'polygon_id': 193,
-        'x': -5569.1,
-        'y': -106.845
-      }, {
-        'id': 6538,
-        'order': 4,
-        'polygon_id': 193,
-        'x': -5514.6,
-        'y': -106.845
-      }]
-    }, {
-      'floor_id': 17,
-      'id': 194,
-      'is_external': True,
-      'is_internal': False,
-      'name': 'WYS_CORE',
-      'points': [{
-        'id': 6539,
-        'order': 0,
-        'polygon_id': 194,
-        'x': -4500.1,
-        'y': 58.405
-      }, {
-        'id': 6540,
-        'order': 1,
-        'polygon_id': 194,
-        'x': -4500.1,
-        'y': 566.16
-      }, {
-        'id': 6541,
-        'order': 2,
-        'polygon_id': 194,
-        'x': -5569.1,
-        'y': 566.16
-      }, {
-        'id': 6542,
-        'order': 3,
-        'polygon_id': 194,
-        'x': -5569.1,
-        'y': 58.405
-      }, {
-        'id': 6543,
-        'order': 4,
-        'polygon_id': 194,
-        'x': -5514.6,
-        'y': 58.405
-      }, {
-        'id': 6544,
-        'order': 5,
-        'polygon_id': 194,
-        'x': -5514.6,
-        'y': -106.845
-      }, {
-        'id': 6545,
-        'order': 6,
-        'polygon_id': 194,
-        'x': -5514.6,
-        'y': -371.845
-      }, {
-        'id': 6546,
-        'order': 7,
-        'polygon_id': 194,
-        'x': -4554.6,
-        'y': -371.845
-      }, {
-        'id': 6547,
-        'order': 8,
-        'polygon_id': 194,
-        'x': -4554.6,
-        'y': -106.845
-      }, {
-        'id': 6548,
-        'order': 9,
-        'polygon_id': 194,
-        'x': -4554.6,
-        'y': 58.405
-      }, {
-        'id': 6549,
-        'order': 10,
-        'polygon_id': 194,
-        'x': -4500.1,
-        'y': 58.405
-      }]
-    }]
-  },
+  'selected_floor': {'active': True,
+                    'building_id': 1,
+                    'elevators_number': 4,
+                    'id': 1,
+                    'image_link': 'http://wysapi.ac3eplatforms.com/api/filestorage/Zmxvb3IucG5nMTU5NTAyNTgzNy43Njg0NDU=.png',
+                    'm2': 650.6,
+                    'rent_value': 16430,
+                    'wys_id': 'CL1',
+                    'polygons': 
+                        [
+                            {
+                                'floor_id': 17,
+                                'id': 236,
+                                'is_external': False,
+                                'is_internal': False,
+                                'name': 'WYS_AREA_UTIL',
+                                'points': [
+                                {
+                                    'id': 6757,
+                                    'order': 0,
+                                    'polygon_id': 236,
+                                    'x': -3268.1,
+                                    'y': 1047.91
+                                },
+                                {
+                                    'id': 6758,
+                                    'order': 1,
+                                    'polygon_id': 236,
+                                    'x': -6834.6,
+                                    'y': 1047.91
+                                },
+                                {
+                                    'id': 6759,
+                                    'order': 2,
+                                    'polygon_id': 236,
+                                    'x': -6834.6,
+                                    'y': -1048.09
+                                },
+                                {
+                                    'id': 6760,
+                                    'order': 3,
+                                    'polygon_id': 236,
+                                    'x': -3268.1,
+                                    'y': -1048.09
+                                },
+                                {
+                                    'id': 6761,
+                                    'order': 4,
+                                    'polygon_id': 236,
+                                    'x': -3268.1,
+                                    'y': 357.117
+                                },
+                                {
+                                    'id': 6762,
+                                    'order': 5,
+                                    'polygon_id': 236,
+                                    'x': -3268.1,
+                                    'y': 1047.91
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 237,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6763,
+                                    'order': 0,
+                                    'polygon_id': 237,
+                                    'x': -4500.1,
+                                    'y': 566.16
+                                },
+                                {
+                                    'id': 6764,
+                                    'order': 1,
+                                    'polygon_id': 237,
+                                    'x': -4500.1,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6765,
+                                    'order': 2,
+                                    'polygon_id': 237,
+                                    'x': -4500.1,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6766,
+                                    'order': 3,
+                                    'polygon_id': 237,
+                                    'x': -4554.6,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6767,
+                                    'order': 4,
+                                    'polygon_id': 237,
+                                    'x': -4554.6,
+                                    'y': -371.845
+                                },
+                                {
+                                    'id': 6768,
+                                    'order': 5,
+                                    'polygon_id': 237,
+                                    'x': -5514.6,
+                                    'y': -371.845
+                                },
+                                {
+                                    'id': 6769,
+                                    'order': 6,
+                                    'polygon_id': 237,
+                                    'x': -5514.6,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6770,
+                                    'order': 7,
+                                    'polygon_id': 237,
+                                    'x': -5569.1,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6771,
+                                    'order': 8,
+                                    'polygon_id': 237,
+                                    'x': -5569.1,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6772,
+                                    'order': 9,
+                                    'polygon_id': 237,
+                                    'x': -5569.1,
+                                    'y': 566.16
+                                },
+                                {
+                                    'id': 6773,
+                                    'order': 10,
+                                    'polygon_id': 237,
+                                    'x': -4500.1,
+                                    'y': 566.16
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 238,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6774,
+                                    'order': 0,
+                                    'polygon_id': 238,
+                                    'x': -4169.6,
+                                    'y': 52.405
+                                },
+                                {
+                                    'id': 6775,
+                                    'order': 1,
+                                    'polygon_id': 238,
+                                    'x': -4250.6,
+                                    'y': 52.405
+                                },
+                                {
+                                    'id': 6776,
+                                    'order': 2,
+                                    'polygon_id': 238,
+                                    'x': -4250.6,
+                                    'y': 133.405
+                                },
+                                {
+                                    'id': 6777,
+                                    'order': 3,
+                                    'polygon_id': 238,
+                                    'x': -4169.6,
+                                    'y': 133.405
+                                },
+                                {
+                                    'id': 6778,
+                                    'order': 4,
+                                    'polygon_id': 238,
+                                    'x': -4169.6,
+                                    'y': 52.405
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 239,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6779,
+                                    'order': 0,
+                                    'polygon_id': 239,
+                                    'x': -3394.6,
+                                    'y': 52.4052
+                                },
+                                {
+                                    'id': 6780,
+                                    'order': 1,
+                                    'polygon_id': 239,
+                                    'x': -3394.6,
+                                    'y': 123.405
+                                },
+                                {
+                                    'id': 6781,
+                                    'order': 2,
+                                    'polygon_id': 239,
+                                    'x': -3323.6,
+                                    'y': 123.405
+                                },
+                                {
+                                    'id': 6782,
+                                    'order': 3,
+                                    'polygon_id': 239,
+                                    'x': -3323.6,
+                                    'y': 52.4052
+                                },
+                                {
+                                    'id': 6783,
+                                    'order': 4,
+                                    'polygon_id': 239,
+                                    'x': -3394.6,
+                                    'y': 52.4052
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 240,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6784,
+                                    'order': 0,
+                                    'polygon_id': 240,
+                                    'x': -3323.1,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6785,
+                                    'order': 1,
+                                    'polygon_id': 240,
+                                    'x': -3394.6,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6786,
+                                    'order': 2,
+                                    'polygon_id': 240,
+                                    'x': -3394.6,
+                                    'y': -959.595
+                                },
+                                {
+                                    'id': 6787,
+                                    'order': 3,
+                                    'polygon_id': 240,
+                                    'x': -3323.1,
+                                    'y': -959.595
+                                },
+                                {
+                                    'id': 6788,
+                                    'order': 4,
+                                    'polygon_id': 240,
+                                    'x': -3323.1,
+                                    'y': -1030.59
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 241,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6789,
+                                    'order': 0,
+                                    'polygon_id': 241,
+                                    'x': -4173.6,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6790,
+                                    'order': 1,
+                                    'polygon_id': 241,
+                                    'x': -4245.6,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6791,
+                                    'order': 2,
+                                    'polygon_id': 241,
+                                    'x': -4245.6,
+                                    'y': -958.595
+                                },
+                                {
+                                    'id': 6792,
+                                    'order': 3,
+                                    'polygon_id': 241,
+                                    'x': -4173.6,
+                                    'y': -958.595
+                                },
+                                {
+                                    'id': 6793,
+                                    'order': 4,
+                                    'polygon_id': 241,
+                                    'x': -4173.6,
+                                    'y': -1030.59
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 242,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6794,
+                                    'order': 0,
+                                    'polygon_id': 242,
+                                    'x': -5023.6,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6795,
+                                    'order': 1,
+                                    'polygon_id': 242,
+                                    'x': -5094.6,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6796,
+                                    'order': 2,
+                                    'polygon_id': 242,
+                                    'x': -5094.6,
+                                    'y': -959.595
+                                },
+                                {
+                                    'id': 6797,
+                                    'order': 3,
+                                    'polygon_id': 242,
+                                    'x': -5023.6,
+                                    'y': -959.595
+                                },
+                                {
+                                    'id': 6798,
+                                    'order': 4,
+                                    'polygon_id': 242,
+                                    'x': -5023.6,
+                                    'y': -1030.59
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 243,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6799,
+                                    'order': 0,
+                                    'polygon_id': 243,
+                                    'x': -5872.6,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6800,
+                                    'order': 1,
+                                    'polygon_id': 243,
+                                    'x': -5943.6,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6801,
+                                    'order': 2,
+                                    'polygon_id': 243,
+                                    'x': -5943.6,
+                                    'y': -959.595
+                                },
+                                {
+                                    'id': 6802,
+                                    'order': 3,
+                                    'polygon_id': 243,
+                                    'x': -5872.6,
+                                    'y': -959.595
+                                },
+                                {
+                                    'id': 6803,
+                                    'order': 4,
+                                    'polygon_id': 243,
+                                    'x': -5872.6,
+                                    'y': -1030.59
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 244,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6804,
+                                    'order': 0,
+                                    'polygon_id': 244,
+                                    'x': -6718.6,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6805,
+                                    'order': 1,
+                                    'polygon_id': 244,
+                                    'x': -6794.6,
+                                    'y': -1030.59
+                                },
+                                {
+                                    'id': 6806,
+                                    'order': 2,
+                                    'polygon_id': 244,
+                                    'x': -6794.6,
+                                    'y': -959.595
+                                },
+                                {
+                                    'id': 6807,
+                                    'order': 3,
+                                    'polygon_id': 244,
+                                    'x': -6718.6,
+                                    'y': -959.595
+                                },
+                                {
+                                    'id': 6808,
+                                    'order': 4,
+                                    'polygon_id': 244,
+                                    'x': -6718.6,
+                                    'y': -1030.59
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 245,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6809,
+                                    'order': 0,
+                                    'polygon_id': 245,
+                                    'x': -5948.6,
+                                    'y': 133.405
+                                },
+                                {
+                                    'id': 6810,
+                                    'order': 1,
+                                    'polygon_id': 245,
+                                    'x': -5867.6,
+                                    'y': 133.405
+                                },
+                                {
+                                    'id': 6811,
+                                    'order': 2,
+                                    'polygon_id': 245,
+                                    'x': -5867.6,
+                                    'y': 52.4052
+                                },
+                                {
+                                    'id': 6812,
+                                    'order': 3,
+                                    'polygon_id': 245,
+                                    'x': -5948.6,
+                                    'y': 52.4052
+                                },
+                                {
+                                    'id': 6813,
+                                    'order': 4,
+                                    'polygon_id': 245,
+                                    'x': -5948.6,
+                                    'y': 133.405
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 246,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6814,
+                                    'order': 0,
+                                    'polygon_id': 246,
+                                    'x': -6723.6,
+                                    'y': 52.4052
+                                },
+                                {
+                                    'id': 6815,
+                                    'order': 1,
+                                    'polygon_id': 246,
+                                    'x': -6794.6,
+                                    'y': 52.4052
+                                },
+                                {
+                                    'id': 6816,
+                                    'order': 2,
+                                    'polygon_id': 246,
+                                    'x': -6794.6,
+                                    'y': 123.405
+                                },
+                                {
+                                    'id': 6817,
+                                    'order': 3,
+                                    'polygon_id': 246,
+                                    'x': -6723.6,
+                                    'y': 123.405
+                                },
+                                {
+                                    'id': 6818,
+                                    'order': 4,
+                                    'polygon_id': 246,
+                                    'x': -6723.6,
+                                    'y': 52.4052
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 247,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6819,
+                                    'order': 0,
+                                    'polygon_id': 247,
+                                    'x': -6794.6,
+                                    'y': 744.405
+                                },
+                                {
+                                    'id': 6820,
+                                    'order': 1,
+                                    'polygon_id': 247,
+                                    'x': -6723.6,
+                                    'y': 744.405
+                                },
+                                {
+                                    'id': 6821,
+                                    'order': 2,
+                                    'polygon_id': 247,
+                                    'x': -6723.6,
+                                    'y': 673.405
+                                },
+                                {
+                                    'id': 6822,
+                                    'order': 3,
+                                    'polygon_id': 247,
+                                    'x': -6794.6,
+                                    'y': 673.405
+                                },
+                                {
+                                    'id': 6823,
+                                    'order': 4,
+                                    'polygon_id': 247,
+                                    'x': -6794.6,
+                                    'y': 744.405
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 248,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6824,
+                                    'order': 0,
+                                    'polygon_id': 248,
+                                    'x': -5943.6,
+                                    'y': 1031.91
+                                },
+                                {
+                                    'id': 6825,
+                                    'order': 1,
+                                    'polygon_id': 248,
+                                    'x': -5871.6,
+                                    'y': 1031.91
+                                },
+                                {
+                                    'id': 6826,
+                                    'order': 2,
+                                    'polygon_id': 248,
+                                    'x': -5871.6,
+                                    'y': 959.905
+                                },
+                                {
+                                    'id': 6827,
+                                    'order': 3,
+                                    'polygon_id': 248,
+                                    'x': -5943.6,
+                                    'y': 959.905
+                                },
+                                {
+                                    'id': 6828,
+                                    'order': 4,
+                                    'polygon_id': 248,
+                                    'x': -5943.6,
+                                    'y': 1031.91
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 249,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6829,
+                                    'order': 0,
+                                    'polygon_id': 249,
+                                    'x': -5022.6,
+                                    'y': 1030.91
+                                },
+                                {
+                                    'id': 6830,
+                                    'order': 1,
+                                    'polygon_id': 249,
+                                    'x': -5022.6,
+                                    'y': 959.905
+                                },
+                                {
+                                    'id': 6831,
+                                    'order': 2,
+                                    'polygon_id': 249,
+                                    'x': -5093.6,
+                                    'y': 959.905
+                                },
+                                {
+                                    'id': 6832,
+                                    'order': 3,
+                                    'polygon_id': 249,
+                                    'x': -5093.6,
+                                    'y': 1030.91
+                                },
+                                {
+                                    'id': 6833,
+                                    'order': 4,
+                                    'polygon_id': 249,
+                                    'x': -5022.6,
+                                    'y': 1030.91
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 250,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6834,
+                                    'order': 0,
+                                    'polygon_id': 250,
+                                    'x': -4244.6,
+                                    'y': 1030.91
+                                },
+                                {
+                                    'id': 6835,
+                                    'order': 1,
+                                    'polygon_id': 250,
+                                    'x': -4173.6,
+                                    'y': 1030.91
+                                },
+                                {
+                                    'id': 6836,
+                                    'order': 2,
+                                    'polygon_id': 250,
+                                    'x': -4173.6,
+                                    'y': 959.905
+                                },
+                                {
+                                    'id': 6837,
+                                    'order': 3,
+                                    'polygon_id': 250,
+                                    'x': -4244.6,
+                                    'y': 959.905
+                                },
+                                {
+                                    'id': 6838,
+                                    'order': 4,
+                                    'polygon_id': 250,
+                                    'x': -4244.6,
+                                    'y': 1030.91
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 251,
+                                'is_external': False,
+                                'is_internal': True,
+                                'name': 'WYS_HOLE',
+                                'points': [
+                                {
+                                    'id': 6839,
+                                    'order': 0,
+                                    'polygon_id': 251,
+                                    'x': -3323.1,
+                                    'y': 1030.91
+                                },
+                                {
+                                    'id': 6840,
+                                    'order': 1,
+                                    'polygon_id': 251,
+                                    'x': -3323.1,
+                                    'y': 959.905
+                                },
+                                {
+                                    'id': 6841,
+                                    'order': 2,
+                                    'polygon_id': 251,
+                                    'x': -3394.6,
+                                    'y': 959.905
+                                },
+                                {
+                                    'id': 6842,
+                                    'order': 3,
+                                    'polygon_id': 251,
+                                    'x': -3394.6,
+                                    'y': 1030.91
+                                },
+                                {
+                                    'id': 6843,
+                                    'order': 4,
+                                    'polygon_id': 251,
+                                    'x': -3323.1,
+                                    'y': 1030.91
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 252,
+                                'is_external': True,
+                                'is_internal': False,
+                                'name': 'WYS_FACADE_CRYSTAL',
+                                'points': [
+                                {
+                                    'id': 6844,
+                                    'order': 0,
+                                    'polygon_id': 252,
+                                    'x': -6834.6,
+                                    'y': 1047.91
+                                },
+                                {
+                                    'id': 6845,
+                                    'order': 1,
+                                    'polygon_id': 252,
+                                    'x': -3268.1,
+                                    'y': 1047.91
+                                },
+                                {
+                                    'id': 6846,
+                                    'order': 2,
+                                    'polygon_id': 252,
+                                    'x': -3243.1,
+                                    'y': 1072.91
+                                },
+                                {
+                                    'id': 6847,
+                                    'order': 3,
+                                    'polygon_id': 252,
+                                    'x': -6847.6,
+                                    'y': 1072.91
+                                },
+                                {
+                                    'id': 6848,
+                                    'order': 4,
+                                    'polygon_id': 252,
+                                    'x': -6834.6,
+                                    'y': 1047.91
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 253,
+                                'is_external': True,
+                                'is_internal': False,
+                                'name': 'WYS_FACADE_CRYSTAL',
+                                'points': [
+                                {
+                                    'id': 6849,
+                                    'order': 0,
+                                    'polygon_id': 253,
+                                    'x': -3268.1,
+                                    'y': 1047.91
+                                },
+                                {
+                                    'id': 6850,
+                                    'order': 1,
+                                    'polygon_id': 253,
+                                    'x': -3268.1,
+                                    'y': 357.117
+                                },
+                                {
+                                    'id': 6851,
+                                    'order': 2,
+                                    'polygon_id': 253,
+                                    'x': -3268.1,
+                                    'y': -1048.09
+                                },
+                                {
+                                    'id': 6852,
+                                    'order': 3,
+                                    'polygon_id': 253,
+                                    'x': -3243.1,
+                                    'y': -1073.09
+                                },
+                                {
+                                    'id': 6853,
+                                    'order': 4,
+                                    'polygon_id': 253,
+                                    'x': -3243.1,
+                                    'y': -610.304
+                                },
+                                {
+                                    'id': 6854,
+                                    'order': 5,
+                                    'polygon_id': 253,
+                                    'x': -3243.1,
+                                    'y': 1072.91
+                                },
+                                {
+                                    'id': 6855,
+                                    'order': 6,
+                                    'polygon_id': 253,
+                                    'x': -3268.1,
+                                    'y': 1047.91
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 254,
+                                'is_external': True,
+                                'is_internal': False,
+                                'name': 'WYS_FACADE_CRYSTAL',
+                                'points': [
+                                {
+                                    'id': 6856,
+                                    'order': 0,
+                                    'polygon_id': 254,
+                                    'x': -6847.6,
+                                    'y': -1073.09
+                                },
+                                {
+                                    'id': 6857,
+                                    'order': 1,
+                                    'polygon_id': 254,
+                                    'x': -3243.1,
+                                    'y': -1073.09
+                                },
+                                {
+                                    'id': 6858,
+                                    'order': 2,
+                                    'polygon_id': 254,
+                                    'x': -3268.1,
+                                    'y': -1048.09
+                                },
+                                {
+                                    'id': 6859,
+                                    'order': 3,
+                                    'polygon_id': 254,
+                                    'x': -6834.6,
+                                    'y': -1048.09
+                                },
+                                {
+                                    'id': 6860,
+                                    'order': 4,
+                                    'polygon_id': 254,
+                                    'x': -6847.6,
+                                    'y': -1073.09
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 255,
+                                'is_external': True,
+                                'is_internal': False,
+                                'name': 'WYS_FACADE_CRYSTAL',
+                                'points': [
+                                {
+                                    'id': 6861,
+                                    'order': 0,
+                                    'polygon_id': 255,
+                                    'x': -6834.6,
+                                    'y': -1048.09
+                                },
+                                {
+                                    'id': 6862,
+                                    'order': 1,
+                                    'polygon_id': 255,
+                                    'x': -6834.6,
+                                    'y': 1047.91
+                                },
+                                {
+                                    'id': 6863,
+                                    'order': 2,
+                                    'polygon_id': 255,
+                                    'x': -6847.6,
+                                    'y': 1072.91
+                                },
+                                {
+                                    'id': 6864,
+                                    'order': 3,
+                                    'polygon_id': 255,
+                                    'x': -6847.6,
+                                    'y': -1073.09
+                                },
+                                {
+                                    'id': 6865,
+                                    'order': 4,
+                                    'polygon_id': 255,
+                                    'x': -6834.6,
+                                    'y': -1048.09
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 256,
+                                'is_external': True,
+                                'is_internal': False,
+                                'name': 'WYS_ENTRANCE',
+                                'points': [
+                                {
+                                    'id': 6866,
+                                    'order': 0,
+                                    'polygon_id': 256,
+                                    'x': -4554.6,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6867,
+                                    'order': 1,
+                                    'polygon_id': 256,
+                                    'x': -4554.6,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6868,
+                                    'order': 2,
+                                    'polygon_id': 256,
+                                    'x': -4500.1,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6869,
+                                    'order': 3,
+                                    'polygon_id': 256,
+                                    'x': -4500.1,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6870,
+                                    'order': 4,
+                                    'polygon_id': 256,
+                                    'x': -4554.6,
+                                    'y': 58.405
+                                }
+                                ]
+                            },
+                            { 
+                                'floor_id': 17,
+                                'id': 257,
+                                'is_external': True,
+                                'is_internal': False,
+                                'name': 'WYS_ENTRANCE',
+                                'points': [
+                                {
+                                    'id': 6871,
+                                    'order': 0,
+                                    'polygon_id': 257,
+                                    'x': -5514.6,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6872,
+                                    'order': 1,
+                                    'polygon_id': 257,
+                                    'x': -5514.6,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6873,
+                                    'order': 2,
+                                    'polygon_id': 257,
+                                    'x': -5569.1,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6874,
+                                    'order': 3,
+                                    'polygon_id': 257,
+                                    'x': -5569.1,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6875,
+                                    'order': 4,
+                                    'polygon_id': 257,
+                                    'x': -5514.6,
+                                    'y': -106.845
+                                }
+                                ]
+                            },
+                            {
+                                'floor_id': 17,
+                                'id': 258,
+                                'is_external': True,
+                                'is_internal': False,
+                                'name': 'WYS_CORE',
+                                'points': [
+                                {
+                                    'id': 6876,
+                                    'order': 0,
+                                    'polygon_id': 258,
+                                    'x': -4500.1,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6877,
+                                    'order': 1,
+                                    'polygon_id': 258,
+                                    'x': -4500.1,
+                                    'y': 566.16
+                                },
+                                {
+                                    'id': 6878,
+                                    'order': 2,
+                                    'polygon_id': 258,
+                                    'x': -5569.1,
+                                    'y': 566.16
+                                },
+                                {
+                                    'id': 6879,
+                                    'order': 3,
+                                    'polygon_id': 258,
+                                    'x': -5569.1,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6880,
+                                    'order': 4,
+                                    'polygon_id': 258,
+                                    'x': -5514.6,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6881,
+                                    'order': 5,
+                                    'polygon_id': 258,
+                                    'x': -5514.6,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6882,
+                                    'order': 6,
+                                    'polygon_id': 258,
+                                    'x': -5514.6,
+                                    'y': -371.845
+                                },
+                                {
+                                    'id': 6883,
+                                    'order': 7,
+                                    'polygon_id': 258,
+                                    'x': -4554.6,
+                                    'y': -371.845
+                                },
+                                {
+                                    'id': 6884,
+                                    'order': 8,
+                                    'polygon_id': 258,
+                                    'x': -4554.6,
+                                    'y': -106.845
+                                },
+                                {
+                                    'id': 6885,
+                                    'order': 9,
+                                    'polygon_id': 258,
+                                    'x': -4554.6,
+                                    'y': 58.405
+                                },
+                                {
+                                    'id': 6886,
+                                    'order': 10,
+                                    'polygon_id': 258,
+                                    'x': -4500.1,
+                                    'y': 58.405
+                                }
+                                ]
+                            }
+                        ]},
   'workspaces': [{
     'active': True,
     'down_gap': 2,
