@@ -14,7 +14,9 @@ import matplotlib.pyplot as plt
 
 from . import viewer
 from . import restrictions
-from . import lines_areas_test.get_pol_zones
+from . import lines_areas_test as lat
+
+
 
 random.seed(100)
 
@@ -867,7 +869,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=True, viz_period=1, IS_A
         if a[0] == 'WYS_FACADE_CRYSTAL':
             crystal_facs.append(As[-1][0])
 
-    areas = get_pol_zones(outline, holes, min_area=2, min_dim=2, boundbox_on_outline=False, boundbox_on_holes=False)
+    areas = lat.get_pol_zones(outline, holes, min_area=2, min_dim=2, boundbox_on_outline=False, boundbox_on_holes=False)
     zones = make_zones(planta, shafts, core, entrances, cat_area, areas, crystal_facs)
 
     def mutMod(individual, planta, mu, sigma, indpb):
