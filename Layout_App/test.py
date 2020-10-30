@@ -5,22 +5,9 @@ import example_data_piso2
 import example_data_piso3
 import SmartLayout
 
+
 def main():
-    pop_size = 8
-    generations = 1
-    '''mod2area_matrix = SmartLayout.restrictions.mod2area_matrix
-    mod2mod_matrix = SmartLayout.restrictions.mod2mod_matrix
-
-    if 0:
-        print('MOD2AREA MATRIX:')
-
-        for row in mod2area_matrix:
-            print(row)
-
-        print('MOD2MOD MATRIX:')
-
-        for row in mod2mod_matrix:
-            print(row)'''
-
-    output = SmartLayout.Smart_Layout(example_data_v3.dict_ex, pop_size, generations, viz= True, viz_period=1)
+    pop_size = 50
+    generations = 50
+    output = SmartLayout.Smart_Layout(example_data_v4.dict_ex, pop_size, generations, viz= True, viz_period=50)
 main()
