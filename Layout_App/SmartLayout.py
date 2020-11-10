@@ -500,7 +500,7 @@ def make_zones(planta, shafts, core, entrances, cat_area, areas, crystal_facs):
                     sp_selected_zone_idx = max(sp_candidate_zones_areas, key=sp_candidate_zones_areas.get)
                 else:
                     core_nearest = list(map(lambda x: tuple(x.bbox), list(elements_idx.nearest(entrances_bounds, objects=True))))
-                    core_nearest_idx = [k for k,v in areas.items() if v.bounds in entrances_nearest]
+                    core_nearest_idx = [k for k,v in areas.items() if v.bounds in core_nearest]
                     sp_candidate_zones_areas = {idx: core_bounds.intersection(areas[idx]).length for idx in core_nearest_idx}
                     sp_selected_zone_idx = max(sp_candidate_zones_areas, key=sp_candidate_zones_areas.get)
 
