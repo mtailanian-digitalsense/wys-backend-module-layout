@@ -56,7 +56,7 @@ def viz_update(viz, viz_period, g, pop,  fig, ax):
         return boxes
 
 
-def viewer_viz(planta, As, viz, zones=[], areas={}):
+def viewer_viz(planta, As, viz, zones={}, areas={}):
 
     if viz:
         rows = 2
@@ -93,31 +93,32 @@ def viewer_viz(planta, As, viz, zones=[], areas={}):
                         ax[row, col].fill(xa, ya, color='#779ecb')
                     if a[1] == 'WYS_CORE':
                         ax[row, col].fill(xa, ya, color='#ffb1b1')
-        for z in zones:
-            xz, yz = z[0].exterior.xy
+                        
+        for z_name, zone in zones.items():
+            xz, yz = zone.exterior.xy
             for row in range(rows):
                 for col in range(cols):
-                    if 'ZONA PUESTOS DE TRABAJO' in z[1]:
+                    if 'ZONA PUESTOS DE TRABAJO' in z_name:
                         ax[row, col].plot(xz, yz, color='r')
-                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='r')
-                    elif 'ZONA SERVICIOS' in z[1]:
+                        ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='r')
+                    elif z_name == 'ZONA SERVICIOS':
                         ax[row, col].plot(xz, yz, color='darkolivegreen')
-                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='darkolivegreen')
-                    elif 'ZONA SOPORTE' in z[1]:
+                        ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='darkolivegreen')
+                    elif z_name == 'ZONA SOPORTE':
                         ax[row, col].plot(xz, yz, color='y')
-                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='y')
-                    elif 'ZONA SALAS REUNION FORMAL' in z[1]:
+                        ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='y')
+                    elif z_name == 'ZONA SALAS REUNION FORMAL':
                         ax[row, col].plot(xz, yz, color='indigo')
-                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='indigo')
-                    elif 'ZONA TRABAJO PRIVADO' in z[1]:
+                        ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='indigo')
+                    elif z_name == 'ZONA TRABAJO PRIVADO':
                         ax[row, col].plot(xz, yz, color='brown')
-                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='brown')
-                    elif 'ZONA ESPECIALES' in z[1]:
+                        ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='brown')
+                    elif z_name == 'ZONA ESPECIALES':
                         ax[row, col].plot(xz, yz, color='darkturquoise')
-                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='darkturquoise')
-                    elif 'ZONA REUNIONES INFORMALES' in z[1]:
+                        ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='darkturquoise')
+                    elif 'ZONA REUNIONES INFORMALES' in z_name:
                         ax[row, col].plot(xz, yz, color='orangered')
-                        ax[row, col].text(z[0].centroid.x-5, z[0].centroid.y, z[1], weight='bold', fontsize=6, ma='center', color='orangered')
+                        ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='orangered')
 
         for key, value in areas.items():
             xz, yz = value.exterior.xy
