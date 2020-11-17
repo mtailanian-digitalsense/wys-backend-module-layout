@@ -56,7 +56,7 @@ def viz_update(viz, viz_period, g, pop,  fig, ax):
         return boxes
 
 
-def viewer_viz(planta, As, viz, zones={}, areas={}):
+def viewer_viz(planta, As, viz, zones={}, areas={}, circ=[]):
 
     if viz:
         rows = 2
@@ -100,24 +100,31 @@ def viewer_viz(planta, As, viz, zones={}, areas={}):
                 for col in range(cols):
                     if 'ZONA PUESTOS DE TRABAJO' in z_name:
                         ax[row, col].plot(xz, yz, color='r')
+                        ax[row, col].fill(xz, yz, color='peachpuff')
                         ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='r')
-                    elif z_name == 'ZONA SERVICIOS':
+                    elif 'ZONA SERVICIOS' in z_name:
                         ax[row, col].plot(xz, yz, color='darkolivegreen')
+                        ax[row, col].fill(xz, yz, color='palegreen')
                         ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='darkolivegreen')
-                    elif z_name == 'ZONA SOPORTE':
-                        ax[row, col].plot(xz, yz, color='y')
-                        ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='y')
-                    elif z_name == 'ZONA SALAS REUNION FORMAL':
+                    elif 'ZONA SOPORTE' in z_name:
+                        ax[row, col].plot(xz, yz, color='purple')
+                        ax[row, col].fill(xz, yz, color='pink')
+                        ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='purple')
+                    elif 'ZONA SALAS REUNION FORMAL' in z_name:
                         ax[row, col].plot(xz, yz, color='indigo')
+                        ax[row, col].fill(xz, yz, color='thistle')
                         ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='indigo')
-                    elif z_name == 'ZONA TRABAJO PRIVADO':
+                    elif 'ZONA TRABAJO PRIVADO' in z_name:
                         ax[row, col].plot(xz, yz, color='brown')
+                        ax[row, col].fill(xz, yz, color='wheat')
                         ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='brown')
-                    elif z_name == 'ZONA ESPECIALES':
+                    elif 'ZONA ESPECIALES' in z_name:
                         ax[row, col].plot(xz, yz, color='darkturquoise')
+                        ax[row, col].fill(xz, yz, color='lightcyan')
                         ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='darkturquoise')
                     elif 'ZONA REUNIONES INFORMALES' in z_name:
                         ax[row, col].plot(xz, yz, color='orangered')
+                        ax[row, col].fill(xz, yz, color='bisque')
                         ax[row, col].text(zone.centroid.x-5, zone.centroid.y, z_name, weight='bold', fontsize=6, ma='center', color='orangered')
 
         for key, value in areas.items():
@@ -127,7 +134,35 @@ def viewer_viz(planta, As, viz, zones={}, areas={}):
                     ax[row, col].plot(xz, yz, 'g', linewidth=2)
                     ax[row, col].text(value.centroid.x, value.centroid.y, 'area: '+ str(key), weight='bold', fontsize=6, ma='center', color='g')
 
+            for ai in value.interiors:
+                x, y = ai.xy
+                for row in range(rows):
+                    for col in range(cols):
+                        ax[row, col].plot(x, y, color='g', linewidth=2)
+
+        i = 1
+        for c in circ:
+            x, y = c.exterior.xy
+            for row in range(rows):
+                for col in range(cols):
+                    ax[row, col].plot(x, y, color='r', linewidth=1)
+                    ax[row, col].text(c.centroid.x, c.centroid.y, str(i), weight='bold', fontsize=6, ma='center', color='b')
+            i += 1
+            for ci in c.interiors:
+                x, y = ci.xy
+                for row in range(rows):
+                    for col in range(cols):
+                        ax[row, col].plot(x, y, color='r', linewidth=1)
+        
         return fig, ax
+
+        '''x, y = lines.exterior.xy
+        for row in range(rows):
+            for col in range(cols):
+                ax[row, col].plot(x, y, 'g', linewidth=2)
+                #ax[row, col].text(line.centroid.x, line.centroid.y, str(i), weight='bold', fontsize=6, ma='center', color='b')
+                ax[row, col].fill(x, y, color='yellow')
+        return fig, ax'''
     return 0, 0
 
 

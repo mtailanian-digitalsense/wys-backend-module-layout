@@ -14,7 +14,7 @@ def get_lines(planta, holes, boundbox_on_outline = True, boundbox_on_holes = Tru
     in_voids = []
     voids = []
     for h in holes:
-        in_voids.append(h[1])
+        in_voids.append(h)
     if boundbox_on_holes:
         for v in in_voids:
             xmin, ymin, xmax, ymax = Polygon(v).bounds
@@ -141,7 +141,7 @@ def get_pol_zones(outline, holes, min_area, min_dim, boundbox_on_outline, boundb
     polygons = get_pols(points)
     pol_holes= []
     for h in holes:
-        pol_holes.append(Polygon(h[1]))
+        pol_holes.append(Polygon(h))
     rmv_list = []
     for i in range(len(polygons)):
         tmp = polygons[i]
@@ -171,7 +171,7 @@ def get_pol_zones(outline, holes, min_area, min_dim, boundbox_on_outline, boundb
     for a in areas:
         As.append([Polygon(a[1]), a[0]])
     for h in holes:
-        voids.append(h[1])
+        voids.append(h)
     pol_dict = get_pol_zones(outline, holes, min_area=2, min_dim=2, boundbox_on_outline=False, boundbox_on_holes=False)
     viewer.simple_show(outline, holes, areas, [pol_dict[i] for i in range(len(pol_dict))])
 main()'''
