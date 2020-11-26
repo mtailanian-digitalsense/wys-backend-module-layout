@@ -10,3 +10,6 @@ flask-cors
 requests
 pandas
 xlrd
+deap
+matplotlib
+shapely

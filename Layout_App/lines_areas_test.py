@@ -120,9 +120,10 @@ def process(polygons, min_area, min_dim):
             min_dim_in_pol = min(dx, dy)
             if polygons[i].area <= min_area or min_dim_in_pol <= min_dim:
                 options = get_overlap_pols(polygons, i)
-                j = options[0][0]
-                polygon_merge(polygons, i, j)
-                break
+                if options:
+                    j = options[0][0]
+                    polygon_merge(polygons, i, j)
+                    break
     return polygons
 def get_overlap_pols(polygons, index):
     A = polygons[index]
