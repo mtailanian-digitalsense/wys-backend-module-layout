@@ -131,8 +131,8 @@ def viewer_viz(planta, As, viz, zones={}, areas={}, circ=[]):
             xz, yz = value.exterior.xy
             for row in range(rows):
                 for col in range(cols):
-                    ax[row, col].plot(xz, yz, 'g', linewidth=2)
-                    ax[row, col].text(value.centroid.x, value.centroid.y, 'area: '+ str(key), weight='bold', fontsize=6, ma='center', color='g')
+                    ax[row, col].plot(xz, yz, 'g', linewidth=1)
+                    #ax[row, col].text(value.centroid.x, value.centroid.y, 'area: '+ str(key), weight='bold', fontsize=6, ma='center', color='g')
 
             for ai in value.interiors:
                 x, y = ai.xy
@@ -145,14 +145,14 @@ def viewer_viz(planta, As, viz, zones={}, areas={}, circ=[]):
             x, y = c.exterior.xy
             for row in range(rows):
                 for col in range(cols):
-                    ax[row, col].plot(x, y, color='r', linewidth=1)
+                    ax[row, col].plot(x, y, color='r', linewidth=2)
                     ax[row, col].text(c.centroid.x, c.centroid.y, str(i), weight='bold', fontsize=6, ma='center', color='b')
             i += 1
             for ci in c.interiors:
                 x, y = ci.xy
                 for row in range(rows):
                     for col in range(cols):
-                        ax[row, col].plot(x, y, color='r', linewidth=1)
+                        ax[row, col].plot(x, y, color='r', linewidth=2)
         
         return fig, ax
 

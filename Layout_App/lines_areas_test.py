@@ -10,6 +10,7 @@ from shapely.ops import unary_union, polygonize, linemerge
 import matplotlib.pyplot as plt
 def get_lines(planta, holes, boundbox_on_outline = True, boundbox_on_holes = True):
     in_outline = planta[0][1]
+    print(in_outline)
     outline = []
     in_voids = []
     voids = []
