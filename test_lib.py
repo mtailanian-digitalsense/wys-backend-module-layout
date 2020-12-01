@@ -128,9 +128,9 @@ class Test(TestCase):
                   ['WYS_COLABORATIVO_BARRA6PERSONAS', 0, 11.261155484545492, -5.727458128298589, 0],
                   ['WYS_COLABORATIVO_MEETINGBOOTH2PERSONAS', 0, -1.4616880975647504, -8.851786132193698, 180]]
 
-        datas = transform_coords(dict_ex, spaces, 'https://wysdev.ac3eplatforms.com/api/spaces', self.token)
+        spaces_data, floor_elements = transform_coords(dict_ex, spaces, 'https://wysdev.ac3eplatforms.com/api/spaces', self.token)
         f_width, f_height = get_image_size(dict_ex['selected_floor']['image_link'])
-        for data in datas:
+        for data in spaces_data:
             self.assertTrue(data['position_x'] <= f_width)
             self.assertTrue(data['position_y'] <= f_height)
 

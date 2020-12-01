@@ -21,7 +21,7 @@ from http import HTTPStatus
 from xlrd import open_workbook, XLRDError
 from mockup_layout import layout
 from Layout_App.SmartLayout import Smart_Layout, smart_layout_async
-from lib import transform_coords, resize_base64_image
+from lib import transform_coords, resize_base64_image, get_floor_elements_p
 from rq.job import Job
 from redis_resc import redis_conn, redis_queue
 
@@ -516,7 +516,7 @@ def generate_layout(project_id):
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
 
         layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 50, config.generations if config is not None else 50)
-        workspaces_coords = transform_coords(layout_data, layout_workspaces, SPACES_URL+SPACES_MODULE_API, token)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces, SPACES_URL+SPACES_MODULE_API, token)
 
         layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
         if layout_gen is not None:
@@ -542,6 +542,8 @@ def generate_layout(project_id):
         layout_gen['selected_floor'] = floor
         for wk in layout_gen['workspaces']:
             wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]), None)
+
+        layout_gen['floor_elements'] = floor_elements
 
         return jsonify(layout_gen), 201
 
@@ -588,7 +590,20 @@ def get_layout_by_project(project_id):
         floor = get_floor_by_ids(layout_gen['building_id'], layout_gen['floor_id'], token)
         if floor is None:
             return "A layout floor doesn't exist", 404
+
+        floor_polygons = get_floor_polygons_by_ids(floor['building_id'], floor['id'], token)
+        if floor_polygons is None or len(floor_polygons) == 0:
+            return "The floor doesn't exist or not have a polygons.", 404
+        floor['polygons'] = floor_polygons
+
+        floor_elements = get_floor_elements_p({'selected_floor': floor})
+
+        layout_gen['floor_elements']  = floor_elements
+        
+        del floor['polygons']
+
         layout_gen['selected_floor'] = floor
+        
         for wk in layout_gen['workspaces']:
             space = get_space_by_id(wk['space_id'], token)
             if space is None:
@@ -1050,7 +1065,7 @@ def get_layout():
             return "The project doesn't exist", 404
 
         layout_workspaces, layout_data = job.result
-        workspaces_coords = transform_coords(layout_data, layout_workspaces, SPACES_URL + SPACES_MODULE_API, token)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces, SPACES_URL + SPACES_MODULE_API, token)
 
         floor = layout_data['selected_floor']
 
@@ -1079,6 +1094,8 @@ def get_layout():
         for wk in layout_gen['workspaces']:
             wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]),
                                None)
+                               
+        layout_gen['floor_elements'] = floor_elements
 
         return jsonify(layout_gen), 201
 

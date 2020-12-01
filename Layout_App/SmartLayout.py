@@ -627,6 +627,7 @@ def make_zones(planta, shafts, core, entrances, cat_area, areas, crystal_facs):
     # Zona reuniones formales
     if 1 in cat_area and len(areas) > 0:
         nearest_len = None
+        rf_candidate_len = None
         if ptp_selected_zone:
             # Se buscan indices de areas disponibles cercanas a la zona seleccionada como trabajo privado
             if sp_nearest_idx and sv_nearest_idx:
