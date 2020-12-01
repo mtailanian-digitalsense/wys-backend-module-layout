@@ -45,14 +45,18 @@ def transform_coords(floor_dict: dict, coordinates: [], space_images_url, token)
     :param space_images_url: Where we want to find the image for every space
     :param floor_dict: data given to smart layout
     :param coordinates: list of all spaces with their coordinates
-    :return: the spaces with their coordinates in pixels
+    :return: spaces and floor elements with their coordinates in pixels
     """
     # Init floor
     floor_loc = FloorLocation()
 
+    # Polygons or elements of floor
+
+    floor_polygons = floor_dict['selected_floor']['polygons']
+
     # Give width and length of a floor
 
-    x_min, y_min, x_max, y_max = get_extremes_m(floor_dict['selected_floor']['polygons'])
+    x_min, y_min, x_max, y_max = get_extremes_m(floor_polygons)
 
     floor_loc.width_m = (x_max - x_min) / 100.0
     floor_loc.height_m = (y_max - y_min) / 100.0
@@ -132,8 +136,24 @@ def transform_coords(floor_dict: dict, coordinates: [], space_images_url, token)
             space_loc.image = img_storage_by_name[space_name]
 
         spaces.append(space_loc.to_dict())
+    
+    # Save floor elements here
+    floor_elements = []
+    for fp in floor_polygons:
+        element = FloorPolygon(fp['id'], fp['name'])
 
-    return spaces
+        for point in fp['points']:
+            # (point_m - origin) multiplied for the pixel/meters reason.
+            point_position_x = (point['x']/100.0 - floor_loc.x_0) * floor_loc.x_pixel_m
+
+            # Y coordinate is always positive
+            point_position_y = (point['y']/100.0 - floor_loc.y_0) * -1 * floor_loc.y_pixel_m
+
+            element.add_point(point['order'], abs(point_position_x), abs(point_position_y))
+
+        floor_elements.append(element.to_dict())
+
+    return spaces, floor_elements
 
 
 class SpaceLocation:
@@ -177,6 +197,36 @@ class FloorLocation:
             'y_pixel_m': self.y_pixel_m
         }
 
+class FloorPolygon:
+
+    def __init__(self, _id, name):
+        self.id = _id
+        self.name = name
+        self.points = []
+
+    def add_point(self, order, position_x, position_y):
+        point = PolygonPoint(order, position_x, position_y)
+        self.points.append(point)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'points': [p.to_dict() for p in self.points],
+        }
+
+class PolygonPoint:
+    def __init__(self, order, position_x, position_y):
+        self.order = order
+        self.position_x = position_x
+        self.position_y = position_y
+
+    def to_dict(self):
+        return {
+            'order': self.order,
+            'position_x': self.position_x,
+            'position_y': self.position_y
+        }
 
 def get_image_size(link):
     """

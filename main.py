@@ -516,7 +516,7 @@ def generate_layout(project_id):
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
 
         layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 50, config.generations if config is not None else 50)
-        workspaces_coords = transform_coords(layout_data, layout_workspaces, SPACES_URL+SPACES_MODULE_API, token)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces, SPACES_URL+SPACES_MODULE_API, token)
 
         layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
         if layout_gen is not None:
@@ -542,6 +542,8 @@ def generate_layout(project_id):
         layout_gen['selected_floor'] = floor
         for wk in layout_gen['workspaces']:
             wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]), None)
+
+        layout_gen['floor_elements'] = floor_elements
 
         return jsonify(layout_gen), 201
 
@@ -1050,7 +1052,7 @@ def get_layout():
             return "The project doesn't exist", 404
 
         layout_workspaces, layout_data = job.result
-        workspaces_coords = transform_coords(layout_data, layout_workspaces, SPACES_URL + SPACES_MODULE_API, token)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces, SPACES_URL + SPACES_MODULE_API, token)
 
         floor = layout_data['selected_floor']
 
@@ -1079,6 +1081,8 @@ def get_layout():
         for wk in layout_gen['workspaces']:
             wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]),
                                None)
+                               
+        layout_gen['floor_elements'] = floor_elements
 
         return jsonify(layout_gen), 201
 
