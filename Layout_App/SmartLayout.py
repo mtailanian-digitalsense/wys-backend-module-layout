@@ -12,12 +12,11 @@ from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union, polygonize, linemerge
 import matplotlib.pyplot as plt
 
-import viewer
-import restrictions
-from get_areas import get_area
-from get_areas2 import get_area2
+from Layout_App import viewer
+from Layout_App import restrictions
+from Layout_App.get_areas import get_area
+from Layout_App.get_areas2 import get_area2
 #from lines_areas_test import get_pol_zones
-
 random.seed(100)
 
 def get_input(dictionary):
@@ -1269,11 +1268,23 @@ def make_circ_ring(planta, core, shafts, entrances, voids, ring_width):
     void_pols = [Polygon(v) for v in voids]
     for pol in pols_bounds:
         box_pol = box(*pol)
-        circ_ring_pols.append(box_pol)
+        is_void = False
         for v in void_pols:
             if box_pol.equals(v):
-                circ_ring_pols.remove(box_pol)
+                is_void = True
                 break
+        if not is_void:
+            circ_ring_pols.append(box_pol.buffer(-0.0001, cap_style=3, join_style=2))
+
+    # circ_ring_pols = []
+    # void_pols = [Polygon(v) for v in voids]
+    # for pol in pols_bounds:
+    #     box_pol = box(*pol)
+    #     circ_ring_pols.append(box_pol)
+    #     for v in void_pols:
+    #         if box_pol.equals(v):
+    #             circ_ring_pols.remove(box_pol)
+    #             break
 
     #Se genera el poligono completo del anillo
     '''circ_ring = circ_ring_pols[0]
@@ -1429,7 +1440,6 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     
     circ_width = 1.2
     circ_pols = make_circ_ring(planta,core, shafts, entrances, voids, circ_width)
-
     #areas = make_areas(planta, core)
     #areas = make_areas_reg(planta, core)
 
