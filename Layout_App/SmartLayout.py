@@ -1333,7 +1333,8 @@ def make_circ_ring(planta, core, shafts, entrances, voids, ring_width):
                 is_void = True
                 break
         if not is_void:
-            circ_ring_pols.append(box_pol.buffer(-0.0001, cap_style=3, join_style=2))
+            #circ_ring_pols.append(box_pol.buffer(-0.0001, cap_style=3, join_style=2))
+            circ_ring_pols.append(box_pol)
 
     #Se genera el poligono completo del anillo
     '''circ_ring = circ_ring_pols[0]
@@ -1348,28 +1349,90 @@ def make_circ_ring(planta, core, shafts, entrances, voids, ring_width):
     return circ_ring_pols
 
 def filter_areas(circ_pols, areas):
-    i = 0
-    k = 0
-    while k + i != len(areas):
-        v = areas[k]
-        for circ in circ_pols:
-            if v.intersection(circ).area > 0:
-                new_area = v.difference(circ)
-                if new_area.geom_type == 'MultiPolygon':
-                    new_areas = list(new_area)
+    while not all([all([a.intersection(circ).area == 0 for circ in circ_pols]) for a in areas.values()]):
+        i = 0
+        k = 0
+        while k + i != len(areas):
+            v = areas[k]
+            for circ in circ_pols:
+                if v.intersection(circ).area > 0:
+                    new_area = v.difference(circ)
+                    if new_area.geom_type == 'MultiPolygon':
+                        new_areas = list(new_area)
+                        areas[k] = new_areas.pop(0)
+                        for na in new_areas:
+                            areas[len(areas)] = na
+                            i += 1
+                    else:
+                        areas[k] = new_area
+                elif v.geom_type == 'MultiPolygon':
+                    new_areas = list(v)
                     areas[k] = new_areas.pop(0)
                     for na in new_areas:
+                        areas[len(areas)] = na
                         i += 1
-                        areas[len(areas) + i] = na
-                else:
-                    areas[k] = new_area
-            elif v.geom_type == 'MultiPolygon':
-                new_areas = list(v)
-                areas[k] = new_areas.pop(0)
-                for na in new_areas:
-                    i += 1
-                    areas[len(areas) + i] = na
-        k += 1
+            k += 1
+    return areas
+
+def merge_min_areas(areas, max_dim):
+    
+    while not all([a.area > max_dim for a in areas.values()]):
+        areas_idx = rtree.index.Index()
+        for i, e in enumerate([a.bounds for a in areas.values()]):
+            areas_idx.insert(i, e)
+
+        new_areas_list = []
+        merged_idx = []
+        
+        for i, a in areas.items():
+            if not i in merged_idx:
+                if a.area < max_dim:
+                    nearest_idx = list(areas_idx.nearest(a.bounds))
+                    nearest_len = {idx: a.intersection(areas[idx]).length for idx in nearest_idx if idx != i}
+                    nearest_candidate_idx = max(nearest_len, key=nearest_len.get)
+                    merged_idx.append(i)
+                    merged_idx.append(nearest_candidate_idx)
+                    new_area = unary_union([a, areas[nearest_candidate_idx]])
+                    new_areas_list.append(new_area)
+
+        leftover_areas = [v for k,v in areas.items() if not k in merged_idx]
+
+        new_areas = {}
+        for i, a in enumerate(leftover_areas + new_areas_list):
+            new_areas[i] = a
+        areas = new_areas
+
+    while not all([all([a1.intersection(a2).area == 0 for a2 in areas.values() if a1 != a2]) for a1 in areas.values()]):
+        areas_idx = rtree.index.Index()
+        for i, e in enumerate([a.bounds for a in areas.values()]):
+            areas_idx.insert(i, e)
+
+        new_areas_list = []
+        merged_idx = []
+
+        for i, a in areas.items():
+            if not i in merged_idx:
+                nearest_idx = [idx for idx in list(areas_idx.nearest(a.bounds)) if idx != i and not idx in merged_idx]
+                for idx in nearest_idx:
+                    if a.intersection(areas[idx]).area > 0:
+                        merged_idx.append(i)
+                        merged_idx.append(idx)
+                        new_area = unary_union([a, areas[idx]])
+                        new_areas_list.append(new_area)
+                        break
+
+        leftover_areas = [v for k,v in areas.items() if not k in merged_idx]
+
+        new_areas = {}
+        for i, a in enumerate(leftover_areas + new_areas_list):
+            new_areas[i] = a
+        areas = new_areas
+
+    '''while not all([a.geom_type == 'Polygon' for a in areas.values()]):
+        k = 0
+        while k + i != len(areas):
+            v = areas[k]'''
+
     return areas
 
 def merge_voids(voids, circ_pols):
@@ -1452,13 +1515,14 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     print(cat_area)
     cat_dims = get_category_max_dims(input_list)
 
-    min_cat_area, min_cat_key = min(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_area'))
-    #max_cat_width, min_cat_key = max(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_width'))
-    #max_cat_height, min_cat_key = max(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_height'))
+    #min_cat_area, min_cat_key = min(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_area'))
+    max_cat_width, min_cat_key = max(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_width'))
+    max_cat_height, min_cat_key = max(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_height'))
     
-    #max_dim = max(max_cat_width, max_cat_height)
+    max_dim = max(max_cat_width, max_cat_height)
 
     print('cat_dims:', cat_dims)
+    print('max_dim:', max_dim)
     #print("min cat area, key", (min_cat_area, min_cat_key))
     print(round(time.time() - start_time, 2), 'Load and compute all the inputs')
     print('Number of modules: ', N)
@@ -1483,40 +1547,40 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             crystal_facs.append(As[-1][0])
     
     circ_width = 1.2
-    circ_pols = make_circ_ring(planta,core, shafts, entrances, voids, circ_width)
+    circ_pols = make_circ_ring(planta, core, shafts, entrances, voids, circ_width)
 
+    #areas = make_areas(planta, core)
+    #areas = filter_areas(circ_pols, areas)
+    #areas = {}
     #areas = make_areas(planta, core)
     #areas = make_areas_reg(planta, core)
 
     #areas = get_area(planta, core, min_area=2, divisiones=15, proporcional=True)
-    areas = get_area2(planta, core, min_dim_area=2, proporcional=True)
+    
+    areas = get_area2(planta, core, min_dim_area=max_dim, proporcional=False)
 
     #areas = get_pol_zones(outline, voids, min_area=3, min_dim=3, boundbox_on_outline=False, boundbox_on_holes=True)
-    areas = filter_areas(circ_pols, areas)
-    #zones = make_zones(planta, shafts, core, entrances, cat_area, areas, crystal_facs)
-    zones = {}
-
-    circ_voids_coords = merge_voids(voids, circ_pols)
     
-    print("planta valida:", planta.is_valid)
-    planta = Polygon(border, circ_voids_coords)
-    print("planta valida:", planta.is_valid)
-    areas = get_pol_zones(outline, circ_voids_coords, min_area=min_cat_area, min_dim=min_cat_area, boundbox_on_outline=False, boundbox_on_holes=False)
-    filtered_areas = {}
+    areas = filter_areas(circ_pols, areas)
+    #areas = get_pol_zones(outline, circ_voids_coords, min_area=min_cat_area, min_dim=min_cat_area, boundbox_on_outline=False, boundbox_on_holes=False)
+    
+    areas = merge_min_areas(areas, max_dim*2)
+    print('areas:', {k: list(v) if v.geom_type == 'MultiPolygon' else v for k,v in areas.items()})
+    '''filtered_areas = {}
     i = 0
     for k,a in areas.items():
         if a.area > 1:
             filtered_areas[i] = a
             i += 1
-    areas = filtered_areas
-    #areas = make_areas(planta, core)
-    #areas = filter_areas(circ_pols, areas)
-    #areas = {}
-    zones = make_zones(planta, shafts, core, circ_voids_coords, entrances, cat_area, areas, crystal_facs)
-    '''for k,v in zones.items():
-        if (v.area / v.minimum_rotated_rectangle.area) > .90:
-            print("rectangulo:", k)'''
-    #zones = {}
+    areas = filtered_areas'''
+
+    circ_pols = [c.buffer(-0.0001, cap_style=3, join_style=2) for c in circ_pols]
+    circ_voids_coords = merge_voids(voids, circ_pols)
+    print("planta valida:", planta.is_valid)
+    planta = Polygon(border, circ_voids_coords)
+    print("planta valida:", planta.is_valid)
+    #zones = make_zones(planta, shafts, core, circ_voids_coords, entrances, cat_area, areas, crystal_facs)
+    zones = {}
     def mutMod(individual, planta, mu, sigma, indpb):
         minx, miny, maxx, maxy = planta.bounds
         for i in individual:
@@ -1667,7 +1731,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
-    fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones, circ = circ_pols)
+    fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
 

@@ -145,7 +145,7 @@ def viewer_viz(planta, As, viz, zones={}, areas={}, circ=[]):
             x, y = c.exterior.xy
             for row in range(rows):
                 for col in range(cols):
-                    ax[row, col].plot(x, y, color='r', linewidth=2)
+                    ax[row, col].plot(x, y, color='r', linewidth=1)
                     ax[row, col].text(c.centroid.x, c.centroid.y, str(i), weight='bold', fontsize=6, ma='center', color='b')
             i += 1
             for ci in c.interiors:
