@@ -6,11 +6,13 @@ from shapely.ops import unary_union, polygonize
 
 # import matplotlib.pyplot as plt
 # from Layout_App import example_data_v3, example_data_v4
+# from Layout_App.SmartLayout import make_circ_ring
 
-def crear_areas(planta, core, min_dim_area, proporcional=True):
+def crear_areas(planta, core, circ_pols, min_dim_area, proporcional=True):
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
     c_minx, c_miny, c_maxx, c_maxy = core.bounds
     core_bbox_points = [Point(c_minx, c_miny), Point(c_maxx, c_maxy)]
+    circulacion = unary_union(circ_pols)
 
     num_divisions_x = int(np.ceil((p_maxx - p_minx) / min_dim_area))
     num_divisions_y = int(np.ceil((p_maxy - p_miny) / min_dim_area))
@@ -24,11 +26,6 @@ def crear_areas(planta, core, min_dim_area, proporcional=True):
         for ly in range(1, num_divisions_y):
             line_y = LineString([(p_minx, p_miny + min_dim_area * ly), (p_maxx, p_miny + min_dim_area * ly)])
             lines.append(line_y)
-        lu = unary_union(lines)
-        inter = unary_union([planta.intersection(lu), planta.boundary])
-        # Poligoniza las áreas
-        pols = list(polygonize(MultiLineString(inter)))
-        pols_planta = list(polygonize(MultiLineString(planta.boundary)))
     else:
         # Crea las líneas alrededor del core y subdivide esas mismas áreas
         num_divisions = int(num_divisions_x/3)
@@ -60,11 +57,11 @@ def crear_areas(planta, core, min_dim_area, proporcional=True):
                     line_y = LineString([(p_minx, c_maxy + longy*lm), (p_maxx, c_maxy + longy*lm)])
                     lines.append(line_x)
                     lines.append(line_y)
-        lu = unary_union(lines)
-        inter = unary_union([planta.intersection(lu), planta.boundary])
-        # Poligoniza las áreas
-        pols = list(polygonize(MultiLineString(inter)))
-        pols_planta = list(polygonize(MultiLineString(planta.boundary)))
+    lu = unary_union(lines)
+    inter = unary_union([planta.intersection(lu), circulacion.intersection(lu), planta.boundary, circulacion.boundary])
+    # Poligoniza las áreas
+    pols = list(polygonize(MultiLineString(inter)))
+    pols_planta = list(polygonize(MultiLineString(planta.boundary)))
 
     # Se eliminan las áreas que corresponden a los pilares y al core
     for i, p in enumerate(pols_planta):
@@ -76,14 +73,22 @@ def crear_areas(planta, core, min_dim_area, proporcional=True):
     centroids_dist = [p.centroid.distance(core.centroid) for p in pols]
     min_centroid_value, min_centroid_idx = min((val, idx) for (idx, val) in enumerate(centroids_dist))
     del pols[min_centroid_idx]
-    return pols
 
+    # Se eliminan las áreas dentro de la circulación
+    areas_del = []
+    for idx, a in enumerate(pols):
+        if circulacion.contains(pols[idx]):
+            areas_del.append(idx)
+    areas_del.sort(reverse=True)
+    for e in areas_del:
+        del pols[e]
+
+    return pols
 def areas_union(min_area, pols):
     # Busca las áreas menores al área mínima y las une al vecino de mayor adyacencia
     areas_idx = index.Index()
     for i, p in enumerate(pols):
         areas_idx.insert(i, p.bounds)
-    areas_del = []
     areas_dict = {k:v for k, v in enumerate(pols)}
     calc_areas_dict = {idx:area.area for idx, area in areas_dict.items()}
     min_areas_idx = {idx for idx, area in calc_areas_dict.items() if area < min_area}
@@ -104,14 +109,12 @@ def areas_union(min_area, pols):
                     continue
                 # Se agregan los polinomios resultados de la union
                 pols.append(pols[idx].union(pols[q]))
-                areas_del.append(idx); areas_del.append(q)
                 areas_dict.pop(idx);   areas_dict.pop(q)
                 areas_dict.setdefault(idx, pols[idx].union(pols[q]))
         # Se eliminan las áreas que se unieron a otras
-        areas_del.sort(reverse=True)
-        for e in areas_del:
-            del pols[e]
-        areas_del = []
+        pols = []
+        for e, f in areas_dict.items():
+            pols.append(f)
         # Se vuelven a crear los ïndices
         areas_idx = index.Index()
         for i, p in enumerate(pols):
@@ -122,12 +125,12 @@ def areas_union(min_area, pols):
         min_areas_idx = {idx for idx, area in calc_areas_dict.items() if area < min_area}
     return areas_dict
 
-def get_area2(planta, core, min_dim_area, proporcional):
-    pols = crear_areas(planta, core, min_dim_area, proporcional)
+def get_area2(planta, core, circ_pols, min_dim_area, proporcional):
+    pols = crear_areas(planta, core, circ_pols, min_dim_area, proporcional)
+    #pols_a = pols.copy()
     min_area = min_dim_area
-    areas_dict = areas_union(min_area,pols)
-    return (areas_dict)
-
+    areas_dict = areas_union(min_area, pols)
+    return areas_dict #, pols_a
 
 
 
@@ -150,6 +153,7 @@ def get_area2(planta, core, min_dim_area, proporcional):
 #     return outline, holes, areas
 #
 # outline, holes, areas = get_input(example_data_v3.dict_ex)
+#
 # voids = []
 # border = outline[0][1]
 # pilares = [] #### para graficar
@@ -159,16 +163,21 @@ def get_area2(planta, core, min_dim_area, proporcional):
 # planta = Polygon(border, voids)
 #
 # As = []
-# shaft = []
+# shafts = []
+# entrances = []
 # for a in areas:
 #     As.append([Polygon(a[1]), a[0]])
 #     if a[0] == 'WYS_CORE':
 #         core = As[-1][0]
 #     if a[0] == 'WYS_SHAFT':
-#         shaft.append(As[-1][0])
+#         shafts.append(As[-1][0])
+#     if a[0] == 'WYS_ENTRANCE':
+#         entrances.append(As[-1][0])
+# circ_width = 1.2
+# circ_pols = make_circ_ring(planta, core, shafts, entrances, voids, circ_width)
+# #circulacion = unary_union(circ_pols)
 #
-#
-# areas_dict = get_area(planta, core, min_dim_area=2, proporcional=True)
+# areas_dict, pols_a = get_area2(planta, core, circ_pols, min_dim_area=2, proporcional=True)
 #
 # for e,f in areas_dict.items():
 #     x, y = f.exterior.xy
@@ -176,7 +185,13 @@ def get_area2(planta, core, min_dim_area, proporcional):
 #     plt.text(f.centroid.x, f.centroid.y, 'A: '+ str(e), weight='bold', fontsize=6, ma='center', color='g')
 # x, y = planta.exterior.xy
 # plt.plot(x, y, color='black')
-# for f in shaft:
+#
+# # for e, f in enumerate(pols_a):    # Areas en polígonos
+# #     x, y = f.exterior.xy
+# #     plt.plot(x, y, color='#a8e4a0')
+# #     plt.text(f.centroid.x, f.centroid.y, 'A: '+ str(e), weight='bold', fontsize=6, ma='center', color='g')
+#
+# for f in shafts:
 #     x, y = f.exterior.xy
 #     plt.plot(x, y, color='black')
 # for f in pilares:

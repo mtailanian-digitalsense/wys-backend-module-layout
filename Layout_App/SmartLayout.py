@@ -1264,27 +1264,28 @@ def make_circ_ring(planta, core, shafts, entrances, voids, ring_width):
                 pols_bounds.remove(p)
 
     #Se crea la lista de elementos del anillo y se filtran los hoyos de la planta que vayan quedando en la lista
-    circ_ring_pols = []
-    void_pols = [Polygon(v) for v in voids]
-    for pol in pols_bounds:
-        box_pol = box(*pol)
-        is_void = False
-        for v in void_pols:
-            if box_pol.equals(v):
-                is_void = True
-                break
-        if not is_void:
-            circ_ring_pols.append(box_pol.buffer(-0.0001, cap_style=3, join_style=2))
-
     # circ_ring_pols = []
     # void_pols = [Polygon(v) for v in voids]
     # for pol in pols_bounds:
     #     box_pol = box(*pol)
-    #     circ_ring_pols.append(box_pol)
+    #     is_void = False
     #     for v in void_pols:
     #         if box_pol.equals(v):
-    #             circ_ring_pols.remove(box_pol)
+    #             is_void = True
     #             break
+    #     if not is_void:
+    #         circ_ring_pols.append(box_pol)
+    #         # circ_ring_pols.append(box_pol.buffer(-0.0001, cap_style=3, join_style=2))
+
+    circ_ring_pols = []
+    void_pols = [Polygon(v) for v in voids]
+    for pol in pols_bounds:
+        box_pol = box(*pol)
+        circ_ring_pols.append(box_pol)
+        for v in void_pols:
+            if box_pol.equals(v):
+                circ_ring_pols.remove(box_pol)
+                break
 
     #Se genera el poligono completo del anillo
     '''circ_ring = circ_ring_pols[0]
@@ -1443,11 +1444,11 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     #areas = make_areas(planta, core)
     #areas = make_areas_reg(planta, core)
 
-    #areas = get_area(planta, core, min_area=2, divisiones=15, proporcional=True)
-    areas = get_area2(planta, core, min_dim_area=2, proporcional=True)
+    #areas = get_area(planta, core, circ_pols, min_area=2, divisiones=15, proporcional=True)
+    areas = get_area2(planta, core, circ_pols, min_dim_area=2, proporcional=True)
 
     #areas = get_pol_zones(outline, voids, min_area=3, min_dim=3, boundbox_on_outline=False, boundbox_on_holes=True)
-    areas = filter_areas(circ_pols, areas)
+    # areas = filter_areas(circ_pols, areas)
     #zones = make_zones(planta, shafts, core, entrances, cat_area, areas, crystal_facs)
     zones = {}
 
@@ -1607,7 +1608,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
-    fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones, circ = circ_pols)
+    fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)#, circ = circ_pols)
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
 

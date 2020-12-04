@@ -142,7 +142,6 @@ areas_dict = {k:v for k, v in enumerate(pols)}
 areas_idx = index.Index()
 for i, p in enumerate(pols):
     areas_idx.insert(i, p.bounds)
-areas_del = []
 areas_dict = {k:v for k, v in enumerate(pols)}
 calc_areas_dict = {idx:area.area for idx, area in areas_dict.items()}
 min_areas_idx = {idx for idx, area in calc_areas_dict.items() if area < min_area}
@@ -163,14 +162,12 @@ while len(min_areas_idx) > 0:
                 continue
             # Se agregan los polinomios resultados de la union
             pols.append(pols[idx].union(pols[q]))
-            areas_del.append(idx); areas_del.append(q)
             areas_dict.pop(idx);   areas_dict.pop(q)
             areas_dict.setdefault(idx, pols[idx].union(pols[q]))
     # Se eliminan las áreas que se unieron a otras
-    areas_del.sort(reverse=True)
-    for e in areas_del:
-        del pols[e]
-    areas_del = []
+    pols = []
+    for e, f in areas_dict.items():
+        pols.append(f)
     # Se vuelven a crear los ïndices
     areas_idx = index.Index()
     for i, p in enumerate(pols):

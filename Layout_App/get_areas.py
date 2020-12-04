@@ -3,10 +3,11 @@ from shapely.geometry import Point, MultiLineString
 from shapely.geometry.polygon import LineString
 from shapely.ops import unary_union, polygonize
 
-def crear_areas(planta, core, num_divisions, proporcional=True):
+def crear_areas(planta, core, circ_pols, num_divisions, proporcional=True):
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
     c_minx, c_miny, c_maxx, c_maxy = core.bounds
     core_bbox_points = [Point(c_minx, c_miny), Point(c_maxx, c_maxy)]
+    circulacion = unary_union(circ_pols)
 
     if proporcional == True:
         # Crea líneas equidistantes a lo largo y ancho de la planta
@@ -18,11 +19,6 @@ def crear_areas(planta, core, num_divisions, proporcional=True):
             line_y = LineString([(p_minx, p_miny + longy * lm), (p_maxx, p_miny + longy * lm)])
             lines.append(line_x)
             lines.append(line_y)
-        lu = unary_union(lines)
-        inter = unary_union([planta.intersection(lu), planta.boundary])
-        # Poligoniza las áreas
-        pols = list(polygonize(MultiLineString(inter)))
-        pols_planta = list(polygonize(MultiLineString(planta.boundary)))
     else:
         # Crea las líneas alrededor del core y subdivide esas mismas áreas
         num_divisions = int(num_divisions/3)
@@ -54,11 +50,11 @@ def crear_areas(planta, core, num_divisions, proporcional=True):
                     line_y = LineString([(p_minx, c_maxy + longy*lm), (p_maxx, c_maxy + longy*lm)])
                     lines.append(line_x)
                     lines.append(line_y)
-        lu = unary_union(lines)
-        inter = unary_union([planta.intersection(lu), planta.boundary])
-        # Poligoniza las áreas
-        pols = list(polygonize(MultiLineString(inter)))
-        pols_planta = list(polygonize(MultiLineString(planta.boundary)))
+    lu = unary_union(lines)
+    inter = unary_union([planta.intersection(lu), circulacion.intersection(lu), planta.boundary, circulacion.boundary])
+    # Poligoniza las áreas
+    pols = list(polygonize(MultiLineString(inter)))
+    pols_planta = list(polygonize(MultiLineString(planta.boundary)))
 
     # Se eliminan las áreas que corresponden a los pilares y al core
     for i, p in enumerate(pols_planta):
@@ -70,6 +66,16 @@ def crear_areas(planta, core, num_divisions, proporcional=True):
     centroids_dist = [p.centroid.distance(core.centroid) for p in pols]
     min_centroid_value, min_centroid_idx = min((val, idx) for (idx, val) in enumerate(centroids_dist))
     del pols[min_centroid_idx]
+
+    # Se eliminan las áreas dentro de la circulación
+    areas_del = []
+    for idx, a in enumerate(pols):
+        if circulacion.contains(pols[idx]):
+            areas_del.append(idx)
+    areas_del.sort(reverse=True)
+    for e in areas_del:
+        del pols[e]
+
     return pols
 
 def areas_union(min_area, pols):
@@ -77,7 +83,6 @@ def areas_union(min_area, pols):
     areas_idx = index.Index()
     for i, p in enumerate(pols):
         areas_idx.insert(i, p.bounds)
-    areas_del = []
     areas_dict = {k:v for k, v in enumerate(pols)}
     calc_areas_dict = {idx:area.area for idx, area in areas_dict.items()}
     min_areas_idx = {idx for idx, area in calc_areas_dict.items() if area < min_area}
@@ -98,14 +103,12 @@ def areas_union(min_area, pols):
                     continue
                 # Se agregan los polinomios resultados de la union
                 pols.append(pols[idx].union(pols[q]))
-                areas_del.append(idx); areas_del.append(q)
                 areas_dict.pop(idx);   areas_dict.pop(q)
                 areas_dict.setdefault(idx, pols[idx].union(pols[q]))
         # Se eliminan las áreas que se unieron a otras
-        areas_del.sort(reverse=True)
-        for e in areas_del:
-            del pols[e]
-        areas_del = []
+        pols = []
+        for e, f in areas_dict.items():
+            pols.append(f)
         # Se vuelven a crear los ïndices
         areas_idx = index.Index()
         for i, p in enumerate(pols):
@@ -116,7 +119,7 @@ def areas_union(min_area, pols):
         min_areas_idx = {idx for idx, area in calc_areas_dict.items() if area < min_area}
     return areas_dict
 
-def get_area(planta, core, min_area, divisiones, proporcional):
-    pols = crear_areas(planta, core, divisiones, proporcional)
+def get_area(planta, core, circ_pols, min_area, divisiones, proporcional):
+    pols = crear_areas(planta, core, circ_pols, divisiones, proporcional)
     areas_dict = areas_union(min_area,pols)
     return (areas_dict)
