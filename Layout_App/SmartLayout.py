@@ -12,13 +12,12 @@ from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union, polygonize, linemerge
 import matplotlib.pyplot as plt
 
-import viewer
-import restrictions
 from randrange import randrange
-from get_areas import get_area
-from get_areas2 import get_area2
+from Layout_App import viewer
+from Layout_App import restrictions
+from Layout_App.get_areas import get_area
+from Layout_App.get_areas2 import get_area2
 #from lines_areas_test import get_pol_zones
-
 random.seed(100)
 
 def get_input(dictionary):
@@ -1323,6 +1322,19 @@ def make_circ_ring(planta, core, shafts, entrances, voids, ring_width):
                 pols_bounds.remove(p)
 
     #Se crea la lista de elementos del anillo y se filtran los hoyos de la planta que vayan quedando en la lista
+    # circ_ring_pols = []
+    # void_pols = [Polygon(v) for v in voids]
+    # for pol in pols_bounds:
+    #     box_pol = box(*pol)
+    #     is_void = False
+    #     for v in void_pols:
+    #         if box_pol.equals(v):
+    #             is_void = True
+    #             break
+    #     if not is_void:
+    #         circ_ring_pols.append(box_pol)
+    #         # circ_ring_pols.append(box_pol.buffer(-0.0001, cap_style=3, join_style=2))
+
     circ_ring_pols = []
     void_pols = [Polygon(v) for v in voids]
     for pol in pols_bounds:
