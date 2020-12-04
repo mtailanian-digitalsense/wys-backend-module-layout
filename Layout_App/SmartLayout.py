@@ -14,8 +14,10 @@ import matplotlib.pyplot as plt
 
 import viewer
 import restrictions
-from lines_areas_test import get_pol_zones
 from randrange import randrange
+from get_areas import get_area
+from get_areas2 import get_area2
+#from lines_areas_test import get_pol_zones
 
 random.seed(100)
 
@@ -1481,9 +1483,18 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             crystal_facs.append(As[-1][0])
     
     circ_width = 1.2
-    circ_pols = make_circ_ring(planta, core, shafts, entrances, voids, circ_width)
-    
-    #circ_pols_coords = [list(circ.exterior.coords) for circ in circ_pols]
+    circ_pols = make_circ_ring(planta,core, shafts, entrances, voids, circ_width)
+
+    #areas = make_areas(planta, core)
+    #areas = make_areas_reg(planta, core)
+
+    #areas = get_area(planta, core, min_area=2, divisiones=15, proporcional=True)
+    areas = get_area2(planta, core, min_dim_area=2, proporcional=True)
+
+    #areas = get_pol_zones(outline, voids, min_area=3, min_dim=3, boundbox_on_outline=False, boundbox_on_holes=True)
+    areas = filter_areas(circ_pols, areas)
+    #zones = make_zones(planta, shafts, core, entrances, cat_area, areas, crystal_facs)
+    zones = {}
 
     circ_voids_coords = merge_voids(voids, circ_pols)
     
@@ -1656,7 +1667,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
-    fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
+    fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones, circ = circ_pols)
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
 
