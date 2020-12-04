@@ -295,7 +295,9 @@ def assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor
         sv_candidate_idx = max(shafts_adj_qty, key=shafts_adj_qty.get)
     else:
         sv_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values())]
-        sv_candidate_idx = [k for k, v in crystal_adj_qty.items() if v >= min(crystal_adj_qty.values()) and v < max(crystal_adj_qty.values()) and entrances_adj_qty[k] == min(entrances_adj_qty.values()) and k in sv_candidate_idx]
+        sv_candidate_idx_filter = [k for k, v in crystal_adj_qty.items() if v == min(crystal_adj_qty.values()) and k in sv_candidate_idx]
+        if sv_candidate_idx_filter:
+            sv_candidate_idx = sv_candidate_idx_filter
         sv_candidate_zones = {}
         for c in sv_candidate_idx:
             sv_candidate_zones[c] = areas[c]
@@ -843,7 +845,7 @@ def assign_esp_zone(sp_nearest_idx, elements_idx, cat_area, factor, esp_selected
 
 def assign_ri_zone(pt_nearest_idx, elements_idx, cat_area, factor, prev_ri_selected_zone, 
                     ri_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                    entrances_adj_qty, core_adj_qty, zones):
+                    entrances_adj_qty, core_adj_qty, zones, ri_fill):
 
     if not prev_ri_selected_zone:
         # Se buscan como candidatos, indices de areas disponibles cercanas a la zonas seleccionadas como puestos de trabajo
@@ -874,7 +876,11 @@ def assign_ri_zone(pt_nearest_idx, elements_idx, cat_area, factor, prev_ri_selec
             entrances_adj_qty.pop(ri_selected_zone_idx, None)
             core_adj_qty.pop(ri_selected_zone_idx, None)
             ri_banned_idx = []
-            while ri_selected_zone.area < cat_area[6] + factor*cat_area[6] and len(areas) > 0:
+            if ri_fill:
+                expansion_condition = True
+            else:
+                expansion_condition = ri_selected_zone.area < cat_area[6] + factor*cat_area[6]
+            while expansion_condition and len(areas) > 0:
                 ri_nearest = list(map(lambda x: tuple(x.bbox), list(elements_idx.nearest(ri_selected_zone.bounds, objects=True))))
                 ri_nearest_idx = [k for k,v in areas.items() if v.bounds in ri_nearest and not k in ri_banned_idx]
                 nearest_len = {idx: ri_selected_zone.intersection(areas[idx]).length for idx in ri_nearest_idx}
@@ -896,7 +902,6 @@ def assign_ri_zone(pt_nearest_idx, elements_idx, cat_area, factor, prev_ri_selec
             zones['ZONA REUNIONES INFORMALES 0'] = ri_selected_zone
             ri_nearest = list(map(lambda x: tuple(x.bbox), list(elements_idx.intersection(ri_selected_zone.bounds, objects=True))))
             ri_nearest_idx = [k for k,v in areas.items() if v.bounds in ri_nearest]
-            print("areax:",ri_selected_zone.area)
             return ri_selected_zone, ri_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones
     else:
         ri_zones_list = [prev_ri_selected_zone]
@@ -964,26 +969,28 @@ def make_zones(planta, shafts, core, circs, entrances, cat_area, areas, crystal_
             elements_idx.insert(i, e)
 
         for key, area in areas.items():
-            crystal_adj = [obj for obj in list(elements_idx.nearest(area.bounds, objects=True)) if tuple(obj.bbox) in crystal_facs_bounds]
-            shafts_adj = [obj for obj in list(elements_idx.nearest(area.bounds, objects=True)) if tuple(obj.bbox) in shafts_bounds]
-            entrances_adj = [obj for obj in list(elements_idx.nearest(area.bounds, objects=True)) if tuple(obj.bbox) in entrances_bounds]
-            core_adj = [obj for obj in list(elements_idx.nearest(area.bounds, objects=True)) if tuple(obj.bbox) in core_bounds]
+            area_nearest = list(elements_idx.nearest(area.bounds, objects=True))
+            crystal_adj = [obj for obj in area_nearest if tuple(obj.bbox) in crystal_facs_bounds]
+            shafts_adj = [obj for obj in area_nearest if tuple(obj.bbox) in shafts_bounds]
+            entrances_adj = [obj for obj in area_nearest if tuple(obj.bbox) in entrances_bounds]
+            core_adj = [area.intersection(core).length for obj in area_nearest if tuple(obj.bbox) in core_bounds]
             crystal_adj_qty[key] = len(crystal_adj)
             shafts_adj_qty[key] = len(shafts_adj)
             entrances_adj_qty[key] = len(entrances_adj)
-            core_adj_qty[key] = len(core_adj)
+            core_adj_qty[key] = core_adj[0] if core_adj else 0
     else:
         elements = circs_bounds + core_bounds + entrances_bounds + crystal_facs_bounds + areas_bounds
         for i, e in enumerate(elements):
             elements_idx.insert(i, e)
 
         for key, area in areas.items():
-            crystal_adj = [obj for obj in list(elements_idx.nearest(area.bounds, objects=True)) if tuple(obj.bbox) in crystal_facs_bounds]
-            entrances_adj = [obj for obj in list(elements_idx.nearest(area.bounds, objects=True)) if tuple(obj.bbox) in entrances_bounds]
-            core_adj = [obj for obj in list(elements_idx.nearest(area.bounds, objects=True)) if tuple(obj.bbox) in core_bounds]
+            area_nearest = list(elements_idx.nearest(area.bounds, objects=True))
+            crystal_adj = [obj for obj in area_nearest if tuple(obj.bbox) in crystal_facs_bounds]
+            entrances_adj = [obj for obj in area_nearest if tuple(obj.bbox) in entrances_bounds]
+            core_adj = [area.intersection(core).length for obj in area_nearest if tuple(obj.bbox) in core_bounds]
             crystal_adj_qty[key] = len(crystal_adj)
             entrances_adj_qty[key] = len(entrances_adj)
-            core_adj_qty[key] = len(core_adj)
+            core_adj_qty[key] = core_adj[0] if core_adj else 0
     print("adyacentes a cristal:", crystal_adj_qty)
     print("adyacentes al core:", core_adj_qty)
     # Zona de servicios
@@ -1052,12 +1059,14 @@ def make_zones(planta, shafts, core, circs, entrances, cat_area, areas, crystal_
     ri_nearest_idx = None
     # Zona reuniones informales (o puestos de trabajo informal)
     if 6 in cat_area and len(areas) > 0:
+        ri_fill = False
         ri_selected_zone, ri_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
             assign_ri_zone(pt_nearest_idx, elements_idx, cat_area, factor, ri_selected_zone, 
                     ri_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                    entrances_adj_qty, core_adj_qty, zones)
+                    entrances_adj_qty, core_adj_qty, zones, ri_fill)
         assigned_zones[6] = ri_selected_zone
-    
+    ri_fill = True
+
     if(len(areas) > 0):
         diff_zones_areas = {}
         for k, zone in assigned_zones.items():
@@ -1121,7 +1130,7 @@ def make_zones(planta, shafts, core, circs, entrances, cat_area, areas, crystal_
         ri_selected_zone, ri_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
             assign_ri_zone(pt_nearest_idx, elements_idx, cat_area, factor, ri_selected_zone, 
                     ri_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                    entrances_adj_qty, core_adj_qty, zones)
+                    entrances_adj_qty, core_adj_qty, zones, ri_fill)
                     
     return zones
 
@@ -1367,40 +1376,20 @@ def merge_voids(voids, circ_pols):
     circ_voids_pols = list(unary_union(voids_pols + circ_pols))
 
     return [list(circ.exterior.coords) for circ in circ_voids_pols]
+
+def get_category_max_dims(inlist):
+    cat_max_dims = {}
+    for mod in inlist:
+        cat_id = mod[4]
+        cat_max_dims[cat_id] = {} if cat_id not in cat_max_dims else cat_max_dims[cat_id]
+        cat_max_dims[cat_id]['max_width'] = mod[2] if 'max_width' not in cat_max_dims[cat_id] else max(mod[2], cat_max_dims[cat_id]['max_width'])
+        cat_max_dims[cat_id]['max_height'] = mod[3] if 'max_height' not in cat_max_dims[cat_id] else max(mod[3], cat_max_dims[cat_id]['max_height']) 
+        cat_max_dims[cat_id]['max_area'] = cat_max_dims[cat_id]['max_width']*cat_max_dims[cat_id]['max_height']
+    return cat_max_dims
+
 start_time = time.time()
 
 def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
-
-
-    if False:
-        list_of_mods = []
-        for key in restrictions.module_dictionary.keys():
-            list_of_mods.append(key)
-
-        for lm in list_of_mods:
-            print(lm)
-
-
-        fig, ax = plt.subplots()
-        im = ax.matshow(restrictions.mod2mod_matrix, cmap = "RdYlGn")
-        ax.set_xticks(range(len(list_of_mods)))
-        ax.set_yticks(range(len(list_of_mods)))
-        # ... and label them with the respective list entries
-        ax.set_xticklabels(list_of_mods, fontsize= 5)
-        ax.set_yticklabels(list_of_mods, fontsize= 5)
-        ax.tick_params(top=True, bottom=False,
-                       labeltop=True, labelbottom=False)
-        plt.setp(ax.get_xticklabels(), rotation=-90, ha="right",
-                 rotation_mode="anchor")
-
-        # Loop over data dimensions and create text annotations.
-        for i in range(len(list_of_mods)):
-            for j in range(len(list_of_mods)):
-                text = ax.text(j, i, restrictions.mod2mod_matrix[i][j],
-                               ha="center", va="center", color="black", fontsize = 5)
-        #fig.tight_layout()
-        plt.show()
-
 
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
@@ -1459,7 +1448,16 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             else:
                 cat_area[cat_id] = total_area
     print(cat_area)
-                
+    cat_dims = get_category_max_dims(input_list)
+
+    min_cat_area, min_cat_key = min(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_area'))
+    #max_cat_width, min_cat_key = max(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_width'))
+    #max_cat_height, min_cat_key = max(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_height'))
+    
+    #max_dim = max(max_cat_width, max_cat_height)
+
+    print('cat_dims:', cat_dims)
+    #print("min cat area, key", (min_cat_area, min_cat_key))
     print(round(time.time() - start_time, 2), 'Load and compute all the inputs')
     print('Number of modules: ', N)
     # GA PARAMETERS
@@ -1492,7 +1490,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     print("planta valida:", planta.is_valid)
     planta = Polygon(border, circ_voids_coords)
     print("planta valida:", planta.is_valid)
-    areas = get_pol_zones(outline, circ_voids_coords, min_area=2, min_dim=2, boundbox_on_outline=False, boundbox_on_holes=False)
+    areas = get_pol_zones(outline, circ_voids_coords, min_area=min_cat_area, min_dim=min_cat_area, boundbox_on_outline=False, boundbox_on_holes=False)
     filtered_areas = {}
     i = 0
     for k,a in areas.items():
@@ -1504,11 +1502,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     #areas = filter_areas(circ_pols, areas)
     #areas = {}
     zones = make_zones(planta, shafts, core, circ_voids_coords, entrances, cat_area, areas, crystal_facs)
-    for k,v in zones.items():
+    '''for k,v in zones.items():
         if (v.area / v.minimum_rotated_rectangle.area) > .90:
-            print("rectangulo:", k)
+            print("rectangulo:", k)'''
     #zones = {}
-    print("areas:", areas)
     def mutMod(individual, planta, mu, sigma, indpb):
         minx, miny, maxx, maxy = planta.bounds
         for i in individual:
