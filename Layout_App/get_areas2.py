@@ -1,12 +1,13 @@
 import numpy as np
 from rtree import index
 from shapely.geometry import Point, MultiLineString
-from shapely.geometry.polygon import Polygon, LineString
+from shapely.geometry.polygon import LineString     # ,Polygon
 from shapely.ops import unary_union, polygonize
 
 # import matplotlib.pyplot as plt
 # from Layout_App import example_data_v3, example_data_v4
 # from Layout_App.SmartLayout import make_circ_ring
+
 
 def crear_areas(planta, core, circ_pols, min_dim_area, proporcional=True):
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
@@ -93,13 +94,14 @@ def areas_union(min_area, pols):
     calc_areas_dict = {idx:area.area for idx, area in areas_dict.items()}
     min_areas_idx = {idx for idx, area in calc_areas_dict.items() if area < min_area}
     while len(min_areas_idx) > 0:
+        indice = []
         for idx in min_areas_idx:
-            if idx in areas_dict:
+            if idx in areas_dict and idx not in indice:
                 # Encontrar áreas adyacentes
                 areas_vecinas = list(areas_idx.intersection(pols[idx].bounds))
                 adj_max = []
                 for v in areas_vecinas:
-                    if idx != v and v in areas_dict:
+                    if idx != v and v in areas_dict and v not in indice:
                         adj = pols[idx].intersection(pols[v]).length
                         adj_max.append([v, adj])
                 if len(adj_max) > 0:
@@ -108,9 +110,12 @@ def areas_union(min_area, pols):
                 else:
                     continue
                 # Se agregan los polinomios resultados de la union
-                pols.append(pols[idx].union(pols[q]))
-                areas_dict.pop(idx);   areas_dict.pop(q)
-                areas_dict.setdefault(idx, pols[idx].union(pols[q]))
+                if pols[idx].intersects(pols[q]):
+                    pols.append(pols[idx].union(pols[q]))
+                    areas_dict.pop(idx);   areas_dict.pop(q)
+                    areas_dict.setdefault(idx, pols[idx].union(pols[q]))
+                    indice.append(idx); indice.append(q)
+
         # Se eliminan las áreas que se unieron a otras
         pols = []
         for e, f in areas_dict.items():
@@ -123,14 +128,15 @@ def areas_union(min_area, pols):
         areas_dict = {k: v for k, v in enumerate(pols)}
         calc_areas_dict = {idx:area.area for idx, area in areas_dict.items()}
         min_areas_idx = {idx for idx, area in calc_areas_dict.items() if area < min_area}
+        # min_areas_idx = {}
     return areas_dict
 
 def get_area2(planta, core, circ_pols, min_dim_area, proporcional):
     pols = crear_areas(planta, core, circ_pols, min_dim_area, proporcional)
-    #pols_a = pols.copy()
+    # pols_a = pols.copy()
     min_area = min_dim_area
     areas_dict = areas_union(min_area, pols)
-    return areas_dict #, pols_a
+    return areas_dict   # , pols_a
 
 
 
@@ -177,7 +183,7 @@ def get_area2(planta, core, circ_pols, min_dim_area, proporcional):
 # circ_pols = make_circ_ring(planta, core, shafts, entrances, voids, circ_width)
 # #circulacion = unary_union(circ_pols)
 #
-# areas_dict, pols_a = get_area2(planta, core, circ_pols, min_dim_area=2, proporcional=True)
+# areas_dict, pols_a = get_area2(planta, core, circ_pols, min_dim_area=3, proporcional=True)
 #
 # for e,f in areas_dict.items():
 #     x, y = f.exterior.xy
