@@ -497,6 +497,7 @@ def assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_id
     
     sp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0]
     sp_candidate_filter = [idx for idx in sp_candidate_idx if feasible_polygon(cat_dims, areas[idx])]
+    entrances_idx = True
     if not sp_candidate_filter:
         sp_candidate_idx = [k for k, v in core_adj_qty.items() if v > 0 ]
         sp_candidate_filter = [idx for idx in sp_candidate_idx if feasible_polygon(cat_dims, areas[idx])]
@@ -1468,11 +1469,18 @@ def merge_min_areas(areas, max_dim):
             new_areas[i] = a
         areas = new_areas
 
-    '''while not all([a.geom_type == 'Polygon' for a in areas.values()]):
+    while not all([a.geom_type == 'Polygon' for a in areas.values()]):
         k = 0
+        i = 0
         while k + i != len(areas):
-            v = areas[k]'''
-
+            v = areas[k]
+            if v.geom_type == 'MultiPolygon':
+                new_areas = list(v)
+                areas[k] = new_areas.pop(0)
+                for na in new_areas:
+                    areas[len(areas)] = na
+                    i += 1
+            k += 1
     return areas
 
 def merge_voids(voids, circ_pols):
@@ -1599,15 +1607,15 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     #areas = filter_areas(circ_pols, areas)
     #areas = get_pol_zones(outline, circ_voids_coords, min_area=min_cat_area, min_dim=min_cat_area, boundbox_on_outline=False, boundbox_on_holes=False)
     
-    #areas = merge_min_areas(areas, max_dim*2)
+    areas = merge_min_areas(areas, max_dim*3)
 
     circ_pols = [c.buffer(-0.0001, cap_style=3, join_style=2) for c in circ_pols]
     circ_voids_coords = merge_voids(voids, circ_pols)
     print("planta valida:", planta.is_valid)
     planta = Polygon(border, circ_voids_coords)
     print("planta valida:", planta.is_valid)
-    #zones = make_zones(planta, shafts, core, circ_voids_coords, entrances, crystal_facs, areas, cat_area, cat_dims)
-    zones = {}
+    zones = make_zones(planta, shafts, core, circ_voids_coords, entrances, crystal_facs, areas, cat_area, cat_dims)
+    #zones = {}
 
     def mutMod(individual, planta, mu, sigma, indpb):
         minx, miny, maxx, maxy = planta.bounds
