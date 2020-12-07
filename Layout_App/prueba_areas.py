@@ -146,13 +146,14 @@ areas_dict = {k:v for k, v in enumerate(pols)}
 calc_areas_dict = {idx:area.area for idx, area in areas_dict.items()}
 min_areas_idx = {idx for idx, area in calc_areas_dict.items() if area < min_area}
 while len(min_areas_idx) > 0:
+    indice = []
     for idx in min_areas_idx:
-        if idx in areas_dict:
+        if idx in areas_dict and idx not in indice:
             # Encontrar áreas adyacentes
             areas_vecinas = list(areas_idx.intersection(pols[idx].bounds))
             adj_max = []
             for v in areas_vecinas:
-                if idx != v and v in areas_dict:
+                if idx != v and v in areas_dict and v not in indice:
                     adj = pols[idx].intersection(pols[v]).length
                     adj_max.append([v, adj])
             if len(adj_max) > 0:
@@ -161,9 +162,11 @@ while len(min_areas_idx) > 0:
             else:
                 continue
             # Se agregan los polinomios resultados de la union
-            pols.append(pols[idx].union(pols[q]))
-            areas_dict.pop(idx);   areas_dict.pop(q)
-            areas_dict.setdefault(idx, pols[idx].union(pols[q]))
+            if pols[idx].intersects(pols[q]):
+                pols.append(pols[idx].union(pols[q]))
+                areas_dict.pop(idx);  areas_dict.pop(q)
+                areas_dict.setdefault(idx, pols[idx].union(pols[q]))
+                indice.append(idx);   indice.append(q)
     # Se eliminan las áreas que se unieron a otras
     pols = []
     for e, f in areas_dict.items():
@@ -176,6 +179,7 @@ while len(min_areas_idx) > 0:
     areas_dict = {k: v for k, v in enumerate(pols)}
     calc_areas_dict = {idx:area.area for idx, area in areas_dict.items()}
     min_areas_idx = {idx for idx, area in calc_areas_dict.items() if area < min_area}
+
 print(planta.is_valid)
 
 #%%
