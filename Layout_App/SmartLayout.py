@@ -12,11 +12,11 @@ from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union, polygonize, linemerge
 import matplotlib.pyplot as plt
 
+import viewer
+import restrictions
 from randrange import randrange
-from Layout_App import viewer
-from Layout_App import restrictions
-from Layout_App.get_areas import get_area
-from Layout_App.get_areas2 import get_area2
+from get_areas import get_area
+from get_areas2 import get_area2
 #from lines_areas_test import get_pol_zones
 random.seed(100)
 
@@ -286,7 +286,33 @@ def make_areas(planta,core):
         visited_list.append(areas_adj[min_area_idx])
 
     
-    return areas_dict  
+    return areas_dict
+
+def feasible_polygon(dims, polygon):
+
+    pol_centroid = polygon.centroid
+    base_polygon = box(pol_centroid.x - dims['max_width'] / 2, pol_centroid.y - dims['max_height'] / 2, pol_centroid.x + dims['max_width'] / 2, pol_centroid.y + dims['max_height'] / 2)
+
+    diff_polygon = base_polygon.difference(polygon)
+    
+    if diff_polygon.area > 0.2*base_polygon.area:
+        return False
+    
+    pol_minx, pol_miny, pol_maxx, pol_maxy = polygon.bounds
+
+    pol_d1 = abs(pol_maxx-pol_minx)
+    pol_d2 = abs(pol_maxy-pol_miny)
+    pol_max_dim = max(pol_d1, pol_d2)
+    pol_min_dim = min(pol_d1, pol_d2)
+
+    base_d1 = dims['max_width']
+    base_d2 = dims['max_height']
+    base_max_dim = max(base_d1, base_d2)
+    base_min_dim = min(base_d1, base_d2)
+
+    if pol_max_dim >= base_max_dim and pol_min_dim >= base_min_dim:
+        return True
+    return False
 
 def assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor, prev_sv_selected_zone, 
                         sv_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
@@ -467,14 +493,16 @@ def assign_pt_zones(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_
 
 def assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_idx, cat_area, factor, prev_sp_selected_zone,
                         sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                        entrances_adj_qty, core_adj_qty, zones):
+                        entrances_adj_qty, core_adj_qty, zones, cat_dims):
     
     sp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0]
-    entrances_idx = True
-    if not sp_candidate_idx:
+    sp_candidate_filter = [idx for idx in sp_candidate_idx if feasible_polygon(cat_dims, areas[idx])]
+    if not sp_candidate_filter:
         sp_candidate_idx = [k for k, v in core_adj_qty.items() if v > 0 ]
+        sp_candidate_filter = [idx for idx in sp_candidate_idx if feasible_polygon(cat_dims, areas[idx])]
         entrances_idx = False
 
+    sp_candidate_idx = sp_candidate_filter
     print("Candidatos zona soporte:", sp_candidate_idx)
     if len(sp_candidate_idx) > 0:
         # Se asume que hay al menos 1 zona candidata
@@ -500,7 +528,7 @@ def assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_id
             else:
                 core = box(*core_bounds[0])
                 core_nearest = list(map(lambda x: tuple(x.bbox), list(elements_idx.nearest(core_bounds[0], objects=True))))
-                core_nearest_idx = [k for k,v in areas.items() if v.bounds in core_nearest]
+                core_nearest_idx = [k for k,v in areas.items() if v.bounds in core_nearest and k in sp_candidate_idx]
                 sp_candidate_zones_areas = {idx: core.intersection(areas[idx]).length for idx in core_nearest_idx}
                 sp_selected_zone_idx = max(sp_candidate_zones_areas, key=sp_candidate_zones_areas.get)
 
@@ -928,7 +956,7 @@ def assign_ri_zone(pt_nearest_idx, elements_idx, cat_area, factor, prev_ri_selec
         return prev_ri_selected_zone, ri_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones
     
 
-def make_zones(planta, shafts, core, circs, entrances, cat_area, areas, crystal_facs):
+def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_area, cat_dims):
     zones = {}
     assigned_zones = {}
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
@@ -1021,7 +1049,7 @@ def make_zones(planta, shafts, core, circs, entrances, cat_area, areas, crystal_
         sp_selected_zone, sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
             assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_idx, cat_area, factor, sp_selected_zone,
                     sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                    entrances_adj_qty, core_adj_qty, zones)
+                    entrances_adj_qty, core_adj_qty, zones, cat_dims[5])
         assigned_zones[5] = sp_selected_zone
 
     # Zona de puestos de trabajo privado
@@ -1099,7 +1127,7 @@ def make_zones(planta, shafts, core, circs, entrances, cat_area, areas, crystal_
                     sp_selected_zone, sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
                         assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_idx, cat_area, factor, sp_selected_zone,
                             sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                            entrances_adj_qty, core_adj_qty, zones)
+                            entrances_adj_qty, core_adj_qty, zones, cat_dims[5])
                     assigned_zones[5] = sp_selected_zone
 
     last_areas_len = len(areas)
@@ -1560,39 +1588,27 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     
     circ_width = 1.2
     circ_pols = make_circ_ring(planta, core, shafts, entrances, voids, circ_width)
-
     #areas = make_areas(planta, core)
-    #areas = filter_areas(circ_pols, areas)
-    #areas = {}
-    #areas = make_areas(planta, core)
-    #areas = make_areas_reg(planta, core)
 
     #areas = get_area(planta, core, min_area=2, divisiones=15, proporcional=True)
     
-    areas = get_area2(planta, core, min_dim_area=max_dim, proporcional=False)
+    areas = get_area2(planta, core, circ_pols, min_dim_area=max_dim, proporcional=False)
 
     #areas = get_pol_zones(outline, voids, min_area=3, min_dim=3, boundbox_on_outline=False, boundbox_on_holes=True)
     
-    areas = filter_areas(circ_pols, areas)
+    #areas = filter_areas(circ_pols, areas)
     #areas = get_pol_zones(outline, circ_voids_coords, min_area=min_cat_area, min_dim=min_cat_area, boundbox_on_outline=False, boundbox_on_holes=False)
     
-    areas = merge_min_areas(areas, max_dim*2)
-    print('areas:', {k: list(v) if v.geom_type == 'MultiPolygon' else v for k,v in areas.items()})
-    '''filtered_areas = {}
-    i = 0
-    for k,a in areas.items():
-        if a.area > 1:
-            filtered_areas[i] = a
-            i += 1
-    areas = filtered_areas'''
+    #areas = merge_min_areas(areas, max_dim*2)
 
     circ_pols = [c.buffer(-0.0001, cap_style=3, join_style=2) for c in circ_pols]
     circ_voids_coords = merge_voids(voids, circ_pols)
     print("planta valida:", planta.is_valid)
     planta = Polygon(border, circ_voids_coords)
     print("planta valida:", planta.is_valid)
-    #zones = make_zones(planta, shafts, core, circ_voids_coords, entrances, cat_area, areas, crystal_facs)
+    #zones = make_zones(planta, shafts, core, circ_voids_coords, entrances, crystal_facs, areas, cat_area, cat_dims)
     zones = {}
+
     def mutMod(individual, planta, mu, sigma, indpb):
         minx, miny, maxx, maxy = planta.bounds
         for i in individual:

@@ -132,7 +132,7 @@ def viewer_viz(planta, As, viz, zones={}, areas={}, circ=[]):
             for row in range(rows):
                 for col in range(cols):
                     ax[row, col].plot(xz, yz, 'g', linewidth=1)
-                    #ax[row, col].text(value.centroid.x, value.centroid.y, 'area: '+ str(key), weight='bold', fontsize=6, ma='center', color='g')
+                    ax[row, col].text(value.centroid.x, value.centroid.y, 'area: '+ str(key), weight='bold', fontsize=6, ma='center', color='g')
 
             for ai in value.interiors:
                 x, y = ai.xy
