@@ -9,7 +9,7 @@ from deap import algorithms
 from shapely import geometry
 from shapely.geometry import Point, box, LineString, MultiLineString, MultiPolygon
 from shapely.geometry.polygon import Polygon
-from shapely.ops import unary_union, polygonize, linemerge, substring
+from shapely.ops import unary_union, polygonize, linemerge
 import matplotlib.pyplot as plt
 
 import viewer
@@ -162,7 +162,7 @@ def makePos(planta, in_list, zones):
         minx, miny, maxx, maxy = planta.bounds
     
     #print(round(time.time() - start_time, 2), len(curr_bx), mod.name)
-    print(mod.name)
+    #print(mod.name)
     rot = False
     while True:
         if rot:
@@ -963,12 +963,12 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
     c_minx, c_miny, c_maxx, c_maxy = core.bounds
     factor = 0.1
-    print(cat_area)
+    
     #cat_area = {1:80 ,2:200, 3:70, 4:70, 5:30, 6: 50, 7:20}
     #cat_area = {2:200, 3:40, 4:70, 5:30, 6: 50, 7:20}
-    # cat_area = {1: 36.349999999999994, 2: 113.56900000000002, 3: 28.36, 4: 30.6116, 5: 8.775}
-    cat_area = {1: 36.349999999999994, 2: 113.56900000000002, 3: 28.36, 4: 30.6116, 5: 8.775}
-    # cat_area = {1: 80, 2: 160, 3: 58.36, 4: 30.6116, 5: 16.790499999999998, 6: 30, 7:30}
+    #cat_area = {4:70}
+    #cat_area = {1: 68.75, 2: 56.78450000000001, 3: 28.36, 4: 30.6116, 5: 16.790499999999998}
+    cat_area = {1: 80, 2: 160, 3: 58.36, 4: 30.6116, 5: 16.790499999999998, 6: 30, 7:30}
     #cat_area = {1: 36.349999999999994, 2: 56.78450000000001, 3: 38.16, 4: 30.6116, 5: 30, 6:20}
     #cat_area = {1: 36.349999999999994, 2: 113.56900000000002, 3: 28.36, 4: 30.6116, 5: 8.775}
 
@@ -1507,22 +1507,22 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
-    # input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
-    #                 ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
-    #                 ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
-    #                 ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
-    #                 # ['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-    #                 ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
-    #                 ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
-    #                 ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
-    #                 ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
-    #                 ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
-    #                 ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
-    #                 ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
-    #                 ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
-    #                 ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
-    #                 ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
-    #                 ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6]]
+    '''input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
+                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
+                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
+                    #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
+                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
+                    ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
+                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
+                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
+                    ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
+                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
+                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
+                    ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
+                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
+                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
+                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6]]'''
     
     input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05, 1],
@@ -1609,41 +1609,13 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     
     areas = merge_min_areas(areas, max_dim*3)
 
-    def circ_buffer(circ_pols):
-        circ_polygons = []
-        for c in circ_pols:
-            r_minx, r_miny, r_maxx, r_maxy = c.bounds
-            line1 = LineString([(r_minx, r_miny), (r_minx, r_maxy)])
-            line2 = LineString([(r_minx, r_maxy), (r_maxx, r_maxy)])
-            line3 = LineString([(r_maxx, r_maxy), (r_maxx, r_miny)])
-            line4 = LineString([(r_maxx, r_miny), (r_minx, r_miny)])
-            if line1.length > line2.length:
-                line1_buf = substring(line1, start_dist=0.0001, end_dist=-0.0001)
-                line3_buf = substring(line3, start_dist=0.0001, end_dist=-0.0001)
-                l1_min, l1_max = line1_buf.boundary
-                l3_min, l3_max = line3_buf.boundary
-                rectan1 = Polygon([l1_min, l1_max, l3_max, l3_min, l1_min])
-                circ_polygons.append(rectan1)
-            elif line1.length < line2.length:
-                line1_buf = substring(line2, start_dist=0.0001, end_dist=-0.0001)
-                line3_buf = substring(line4, start_dist=0.0001, end_dist=-0.0001)
-                l1_min, l1_max = line1_buf.boundary
-                l3_min, l3_max = line3_buf.boundary
-                rectan1 = Polygon([l1_min, l1_max, l3_max, l3_min, l1_min])
-                circ_polygons.append(rectan1)
-            else:
-                circ_polygons.append(c)
-                continue
-        return circ_polygons
-
-    circ_pols = circ_buffer(circ_pols)
-
+    circ_pols = [c.buffer(-0.0001, cap_style=3, join_style=2) for c in circ_pols]
     circ_voids_coords = merge_voids(voids, circ_pols)
     print("planta valida:", planta.is_valid)
     planta = Polygon(border, circ_voids_coords)
     print("planta valida:", planta.is_valid)
     zones = make_zones(planta, shafts, core, circ_voids_coords, entrances, crystal_facs, areas, cat_area, cat_dims)
-    # zones = {}
+    #zones = {}
 
     def mutMod(individual, planta, mu, sigma, indpb):
         minx, miny, maxx, maxy = planta.bounds
@@ -1795,8 +1767,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
-    # fig, ax = viewer.viewer_viz(planta, As, viz)
-    fig, ax = viewer.viewer_viz(planta, As, viz, areas=areas, zones=zones)
+    fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
 
