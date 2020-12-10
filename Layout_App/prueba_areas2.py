@@ -2,7 +2,7 @@ from rtree import index
 import matplotlib.pyplot as plt
 from shapely.geometry import Point, MultiLineString
 from shapely.geometry.polygon import Polygon, LineString
-from shapely.ops import unary_union, polygonize, linemerge
+from shapely.ops import unary_union, polygonize, substring
 from Layout_App import example_data_v3, example_data_v4
 from Layout_App.SmartLayout import make_circ_ring
 
@@ -214,3 +214,38 @@ for e,f in areas_dict.items():   # Areas en Diccionario
 #     plt.plot(x, y, color='black')
 
 plt.show()
+
+#%%
+
+def circ_buffer(circ_pols):
+    circ_polygons = []
+    for c in circ_pols:
+        #rectan = Polygon([(0,0),(0,5),(10,5),(10,0),(0,0)])
+        #linea = LineString([(0,0),(10,0)])
+        r_minx, r_miny, r_maxx, r_maxy = c.bounds
+        line1 = LineString([(r_minx, r_miny), (r_minx, r_maxy)])
+        line2 = LineString([(r_minx, r_maxy), (r_maxx, r_maxy)])
+        line3 = LineString([(r_maxx, r_maxy), (r_maxx, r_miny)])
+        line4 = LineString([(r_maxx, r_miny), (r_minx, r_miny)])
+
+        if line1.length > line2.length:
+            line1_buf = substring(line1, start_dist=0.0001, end_dist=-0.0001)
+            line3_buf = substring(line3, start_dist=0.0001, end_dist=-0.0001)
+            l1_min, l1_max = line1_buf.boundary
+            l3_min, l3_max = line3_buf.boundary
+            rectan1 = Polygon([l1_min, l1_max, l3_max, l3_min, l1_min])
+            circ_polygons.append(rectan1)
+            #print('Polígono Vertical')
+        elif line1.length < line2.length:
+            line1_buf = substring(line2, start_dist=0.0001, end_dist=-0.0001)
+            line3_buf = substring(line4, start_dist=0.0001, end_dist=-0.0001)
+            l1_min, l1_max = line1_buf.boundary
+            l3_min, l3_max = line3_buf.boundary
+            rectan1 = Polygon([l1_min, l1_max, l3_max, l3_min, l1_min])
+            circ_polygons.append(rectan1)
+            #print('Polígono Horizontal')
+        else:
+            circ_polygons.append(c)
+            continue
+    return circ_polygons
+#rect_buf = rectan.buffer(-0.0001, cap_style=2, join_style=2)
