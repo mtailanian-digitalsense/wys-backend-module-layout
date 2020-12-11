@@ -12,7 +12,10 @@ from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union, polygonize, linemerge
 import matplotlib.pyplot as plt
 
-from . import viewer, restrictions, randrange, get_area, get_area2
+from . import viewer, restrictions
+from Layout_App.randrange import randrange
+from Layout_App.get_areas import get_area
+from Layout_App.get_areas2 import get_area2
 #from lines_areas_test import get_pol_zones
 random.seed(100)
 
@@ -1578,19 +1581,19 @@ def get_category_max_dims(inlist):
 
 start_time = time.time()
 
-def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
+def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, IS_ASYNC=False , viz=False, viz_period=10):
 
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
-    '''input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
+    '''input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              2, 3, 4.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             20, 3.37, 3.37, 2],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
+                    ['WYS_PRIVADO_1PERSONA',                        2, 3.5, 2.8, 3],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
-                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
+                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    0, 3.54, 3.02, 4],
                     ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
@@ -1843,8 +1846,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
-    fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
-    #fig, ax = viewer.viewer_viz(planta, As, viz)
+    #fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
+    fig, ax = viewer.viewer_viz(planta, As, viz)
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
     if IS_ASYNC:
