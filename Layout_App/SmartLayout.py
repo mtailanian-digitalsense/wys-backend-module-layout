@@ -1621,19 +1621,19 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                 line1_buf = substring(line1, start_dist=0.0001, end_dist=-0.0001)
                 line3_buf = substring(line3, start_dist=0.0001, end_dist=-0.0001)
                 l1_min, l1_max = line1_buf.boundary
-                l3_min, l3_max = line3_buf.boundary
+                l3_max, l3_min = line3_buf.boundary
                 rectan1 = Polygon([l1_min, l1_max, l3_max, l3_min, l1_min])
                 circ_polygons.append(rectan1)
             elif line1.length < line2.length:
-                line1_buf = substring(line2, start_dist=0.0001, end_dist=-0.0001)
-                line3_buf = substring(line4, start_dist=0.0001, end_dist=-0.0001)
-                l1_min, l1_max = line1_buf.boundary
-                l3_min, l3_max = line3_buf.boundary
-                rectan1 = Polygon([l1_min, l1_max, l3_max, l3_min, l1_min])
-                circ_polygons.append(rectan1)
+                line2_buf = substring(line2, start_dist=0.0001, end_dist=-0.0001)
+                line4_buf = substring(line4, start_dist=0.0001, end_dist=-0.0001)
+                l2_min, l2_max = line2_buf.boundary
+                l4_max, l4_min = line4_buf.boundary
+                rectan2 = Polygon([l2_min, l2_max, l4_max, l4_min, l2_min])
+                circ_polygons.append(rectan2)
             else:
                 circ_polygons.append(c)
-                continue
+                #continue
         return circ_polygons
 
     circ_pols = circ_buffer(circ_pols)
