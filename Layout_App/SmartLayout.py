@@ -6,7 +6,7 @@ from deap import base
 from deap import creator
 from deap import tools
 from deap import algorithms
-from shapely import geometry
+from shapely import geometry, affinity
 from shapely.geometry import Point, box, LineString, MultiLineString, MultiPolygon
 from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union, polygonize, linemerge, substring
@@ -178,20 +178,23 @@ def makePos(planta, in_list, zones):
     #print(round(time.time() - start_time, 2), len(curr_bx), mod.name)
     #print(mod.name)
     rot = False
+    larger_than_zone = False
     pos_retries = 0
     zones_idx = makeposcnt
     positional_time_limit = 0.004
     overlap_time_limit = 0.001
     while True:
-        if time.time() - make_time > 3*(positional_time_limit + overlap_time_limit):
+        if time.time() - make_time > 3*(positional_time_limit + overlap_time_limit) and not larger_than_zone:
             make_time = time.time()
             zones_idx += 1
             pos_retries += 1
             zone, zones_qty = select_zone(zones, zone, mod_cat, zones_idx)
             minx, miny, maxx, maxy = zone.bounds
+        elif larger_than_zone:
+            minx, miny, maxx, maxy = planta.bounds
 
         if rot:
-            b = box(p.x - mod.height / 2, p.y - mod.width / 2, p.x + mod.height / 2, p.y + mod.width / 2)
+            b = affinity.rotate(b, 90)
         else:
             p = Point(round(randrange(minx, maxx, 20), 1), round(randrange(miny, maxy, 20), 1))
             b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
@@ -200,6 +203,10 @@ def makePos(planta, in_list, zones):
             condition1 = zone.contains(b) and planta.contains(b)
             if time.time() - make_time >= positional_time_limit and not condition1:
                 condition1 = zone.intersects(b) and planta.contains(b)
+        elif not larger_than_zone:
+            larger_than_zone = True
+            #print(mod.name)
+            condition1 = planta.contains(b)
         else:
             condition1 = planta.contains(b)
         
@@ -350,20 +357,27 @@ def assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor
                         entrances_adj_qty, core_adj_qty, zones, cat_dims):
 
     if has_shaft:
-        sv_candidate_idx = max(shafts_adj_qty, key=shafts_adj_qty.get)
+        sv_candidate_idx = [k for k, v in shafts_adj_qty.items() if v > min(shafts_adj_qty.values()) and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
+        if not sv_candidate_idx:
+            sv_candidate_idx = [k for k, v in core_adj_qty.items() if v > min(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
+            if not sv_candidate_idx:
+                sv_candidate_idx = [k for k, v in crystal_adj_qty.items() if v == min(crystal_adj_qty.values()) and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
+                if not sv_candidate_idx:
+                    sv_candidate_idx = [k for k, v in crystal_adj_qty.items() if v == min(crystal_adj_qty.values())]
     else:
-        sv_candidate_idx = [k for k, v in core_adj_qty.items() if v > min(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
+        sv_candidate_idx = [k for k, v in core_adj_qty.items() if v > min(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
         if not sv_candidate_idx:
             sv_candidate_idx = [k for k, v in core_adj_qty.items() if v > min(core_adj_qty.values())]
         sv_candidate_idx_filter = [k for k, v in crystal_adj_qty.items() if v == min(crystal_adj_qty.values()) and k in sv_candidate_idx]
         if sv_candidate_idx_filter:
             sv_candidate_idx = sv_candidate_idx_filter
-        print("Candidato zona de servicios:", sv_candidate_idx)
-        sv_candidate_zones = {}
-        for c in sv_candidate_idx:
-            sv_candidate_zones[c] = areas[c]
-        sv_candidate_zones_areas = {k: v.area for k, v in sv_candidate_zones.items()}
-        sv_candidate_idx = max(sv_candidate_zones_areas, key=sv_candidate_zones_areas.get)
+    
+    print("Candidatos zona de servicios:", sv_candidate_idx)
+    sv_candidate_zones = {}
+    for c in sv_candidate_idx:
+        sv_candidate_zones[c] = areas[c]
+    sv_candidate_zones_areas = {k: v.area for k, v in sv_candidate_zones.items()}
+    sv_candidate_idx = max(sv_candidate_zones_areas, key=sv_candidate_zones_areas.get)
     
     sv_selected_zone = areas[sv_candidate_idx]
     areas.pop(sv_candidate_idx, None)
@@ -847,19 +861,25 @@ def assign_esp_zone(sp_nearest_idx, elements_idx, cat_area, factor, esp_selected
                     esp_nearest, esp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
                     entrances_adj_qty, core_adj_qty, zones, cat_dims):
     if sp_nearest_idx:
-        esp_candidate_idx = [k for k,v in areas.items() if k in sp_nearest_idx and feasible_polygon(cat_dims, areas[k])]
+        esp_candidate_idx = [k for k,v in areas.items() if k in sp_nearest_idx and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
         if not esp_candidate_idx:
-            esp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0 and feasible_polygon(cat_dims, areas[k])]
+            esp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0 and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
             if not esp_candidate_idx:
-                esp_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
+                esp_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
+                if not esp_candidate_idx:
+                    esp_candidate_idx = [k for k,v in areas.items() if k in sp_nearest_idx and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
+                    if not esp_candidate_idx:
+                        esp_candidate_idx = [k for k,v in areas.items() if k in sp_nearest_idx]
+                        if not esp_candidate_idx:
+                            esp_candidate_idx = [k for k,v in areas.items()]
+    else:
+        esp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0 and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
+        if not esp_candidate_idx:
+            esp_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
+            if not esp_candidate_idx:
+                esp_candidate_idx = [k for k,v in areas.items() if feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
                 if not esp_candidate_idx:
                     esp_candidate_idx = [k for k,v in areas.items()]
-    else:
-        esp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0 and feasible_polygon(cat_dims, areas[k])]
-        if not esp_candidate_idx:
-            esp_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
-            if not esp_candidate_idx:
-                esp_candidate_idx = [k for k,v in areas.items()]
 
     print("Candidatos especiales:", esp_candidate_idx)
     if len(esp_candidate_idx) > 0:
