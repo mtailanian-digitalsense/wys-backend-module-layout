@@ -217,10 +217,14 @@ plt.show()
 
 #%%
 
-def circ_buffer(circ_pols):
+rectan = Polygon([(0,0), (0,10), (5,10), (5,0), (0,0)])
+rectan2 = Polygon([(0,10), (0,15), (5,15), (5,10), (0,10)])
+rectan3 = Polygon([(5,10), (5,15), (15,15), (15,10), (5,10)])
+circ_polys = []; circ_polys.append(rectan); circ_polys.append(rectan2); circ_polys.append(rectan3)
+
+def circ_buffer(circ_polys):
     circ_polygons = []
-    for c in circ_pols:
-        #rectan = Polygon([(0,0),(0,5),(10,5),(10,0),(0,0)])
+    for c in circ_polys:
         #linea = LineString([(0,0),(10,0)])
         r_minx, r_miny, r_maxx, r_maxy = c.bounds
         line1 = LineString([(r_minx, r_miny), (r_minx, r_maxy)])
@@ -232,20 +236,26 @@ def circ_buffer(circ_pols):
             line1_buf = substring(line1, start_dist=0.0001, end_dist=-0.0001)
             line3_buf = substring(line3, start_dist=0.0001, end_dist=-0.0001)
             l1_min, l1_max = line1_buf.boundary
-            l3_min, l3_max = line3_buf.boundary
+            l3_max, l3_min = line3_buf.boundary
             rectan1 = Polygon([l1_min, l1_max, l3_max, l3_min, l1_min])
             circ_polygons.append(rectan1)
             #print('Polígono Vertical')
         elif line1.length < line2.length:
-            line1_buf = substring(line2, start_dist=0.0001, end_dist=-0.0001)
-            line3_buf = substring(line4, start_dist=0.0001, end_dist=-0.0001)
-            l1_min, l1_max = line1_buf.boundary
-            l3_min, l3_max = line3_buf.boundary
-            rectan1 = Polygon([l1_min, l1_max, l3_max, l3_min, l1_min])
-            circ_polygons.append(rectan1)
+            line2_buf = substring(line2, start_dist=0.0001, end_dist=-0.0001)
+            line4_buf = substring(line4, start_dist=0.0001, end_dist=-0.0001)
+            l2_min, l2_max = line2_buf.boundary
+            l4_max, l4_min = line4_buf.boundary
+            rectan2 = Polygon([l2_min, l2_max, l4_max, l4_min, l2_min])
+            circ_polygons.append(rectan2)
             #print('Polígono Horizontal')
         else:
             circ_polygons.append(c)
-            continue
+            #continue
     return circ_polygons
-#rect_buf = rectan.buffer(-0.0001, cap_style=2, join_style=2)
+
+circ_poligonos = circ_buffer(circ_polys)
+#for f in circ_polys:
+for f in circ_poligonos:
+    x, y = f.exterior.xy
+    plt.plot(x, y, color='black')
+plt.show()
