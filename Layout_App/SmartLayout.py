@@ -78,6 +78,61 @@ class Module:
 makeposcnt = 0
 curr_bx = []
 
+def select_zone(zones, zone, mod_cat, n):
+    
+    z_names_qty = 0
+    if mod_cat == 1:
+        z_names = [k for k,v in zones.items() if 'ZONA SALAS REUNION FORMAL' in k]
+        z_names_qty = len(z_names)
+        if z_names_qty > 1:
+            zone = zones['ZONA SALAS REUNION FORMAL ' + str(n%(z_names_qty))]
+        elif z_names_qty == 1:
+            zone = zones['ZONA SALAS REUNION FORMAL 0']
+    elif mod_cat == 2:
+        z_names = [k for k,v in zones.items() if 'ZONA PUESTOS DE TRABAJO' in k]
+        z_names_qty = len(z_names)
+        if z_names_qty > 1:
+            zone = zones['ZONA PUESTOS DE TRABAJO ' + str(n%(z_names_qty))]
+        elif z_names_qty == 1:
+            zone = zones['ZONA PUESTOS DE TRABAJO 0']
+    elif mod_cat == 3:
+        z_names = [k for k,v in zones.items() if 'ZONA TRABAJO PRIVADO' in k]
+        z_names_qty = len(z_names)
+        if z_names_qty > 1:
+            zone = zones['ZONA TRABAJO PRIVADO ' + str(n%(z_names_qty))]
+        elif z_names_qty == 1:
+            zone = zones['ZONA TRABAJO PRIVADO 0']
+    elif mod_cat == 4:
+        z_names = [k for k,v in zones.items() if 'ZONA SERVICIOS' in k]
+        z_names_qty = len(z_names)
+        if z_names_qty > 1:
+            zone = zones['ZONA SERVICIOS ' + str(n%(z_names_qty))]
+        elif z_names_qty == 1:
+            zone = zones['ZONA SERVICIOS 0']
+    elif mod_cat == 5:
+        z_names = [k for k,v in zones.items() if 'ZONA SOPORTE' in k]
+        z_names_qty = len(z_names)
+        if z_names_qty > 1:
+            zone = zones['ZONA SOPORTE ' + str(n%(z_names_qty))]
+        elif z_names_qty == 1:
+            zone = zones['ZONA SOPORTE 0']
+    elif mod_cat == 6:
+        z_names = [k for k,v in zones.items() if 'ZONA REUNIONES INFORMALES' in k]
+        z_names_qty = len(z_names)
+        if z_names_qty > 1:
+            zone = zones['ZONA REUNIONES INFORMALES ' + str(n%(z_names_qty))]
+        elif z_names_qty == 1:
+            zone = zones['ZONA REUNIONES INFORMALES 0']
+    elif mod_cat == 7:
+        z_names = [k for k,v in zones.items() if 'ZONA ESPECIALES' in k]
+        z_names_qty = len(z_names)
+        if z_names_qty > 1:
+            zone = zones['ZONA ESPECIALES ' + str(n%(z_names_qty))]
+        elif z_names_qty == 1:
+            zone = zones['ZONA ESPECIALES 0']
+
+    return zone, z_names_qty
+
 def makePos(planta, in_list, zones):
     make_time = time.time()
     global makeposcnt
@@ -113,48 +168,7 @@ def makePos(planta, in_list, zones):
         z = [z[0] for z in zones if 'ZONA ESPECIALES' in z[1]]'''
 
     zone = None
-    if mod_cat == 1:
-        z_names = [k for k,v in zones.items() if 'ZONA SALAS REUNION FORMAL' in k]
-        if len(z_names) > 1:
-            zone = zones['ZONA SALAS REUNION FORMAL ' + str(makeposcnt%2)]
-        elif len(z_names) == 1:
-            zone = zones['ZONA SALAS REUNION FORMAL 0']
-    elif mod_cat == 2:
-        z_names = [k for k,v in zones.items() if 'ZONA PUESTOS DE TRABAJO' in k]
-        if len(z_names) > 1:
-            zone = zones['ZONA PUESTOS DE TRABAJO ' + str(makeposcnt%2)]
-        elif len(z_names) == 1:
-            zone = zones['ZONA PUESTOS DE TRABAJO 0']
-    elif mod_cat == 3:
-        z_names = [k for k,v in zones.items() if 'ZONA TRABAJO PRIVADO' in k]
-        if len(z_names) > 1:
-            zone = zones['ZONA TRABAJO PRIVADO ' + str(makeposcnt%2)]
-        elif len(z_names) == 1:
-            zone = zones['ZONA TRABAJO PRIVADO 0']
-    elif mod_cat == 4:
-        z_names = [k for k,v in zones.items() if 'ZONA SERVICIOS' in k]
-        if len(z_names) > 1:
-            zone = zones['ZONA SERVICIOS ' + str(makeposcnt%2)]
-        elif len(z_names) == 1:
-            zone = zones['ZONA SERVICIOS 0']
-    elif mod_cat == 5:
-        z_names = [k for k,v in zones.items() if 'ZONA SOPORTE' in k]
-        if len(z_names) > 1:
-            zone = zones['ZONA SOPORTE ' + str(makeposcnt%2)]
-        elif len(z_names) == 1:
-            zone = zones['ZONA SOPORTE 0']
-    elif mod_cat == 6:
-        z_names = [k for k,v in zones.items() if 'ZONA REUNIONES INFORMALES' in k]
-        if len(z_names) > 1:
-            zone = zones['ZONA REUNIONES INFORMALES ' + str(makeposcnt%(len(z_names)))]
-        elif len(z_names) == 1:
-            zone = zones['ZONA REUNIONES INFORMALES 0']
-    elif mod_cat == 7:
-        z_names = [k for k,v in zones.items() if 'ZONA ESPECIALES' in k]
-        if len(z_names) > 1:
-            zone = zones['ZONA ESPECIALES ' + str(makeposcnt%2)]
-        elif len(z_names) == 1:
-            zone = zones['ZONA ESPECIALES 0']
+    zone, zones_qty = select_zone(zones, zone, mod_cat, makeposcnt)
     
     if zone:
         minx, miny, maxx, maxy = zone.bounds
@@ -164,21 +178,32 @@ def makePos(planta, in_list, zones):
     #print(round(time.time() - start_time, 2), len(curr_bx), mod.name)
     #print(mod.name)
     rot = False
+    pos_retries = 0
+    zones_idx = makeposcnt
+    positional_time_limit = 0.004
+    overlap_time_limit = 0.001
     while True:
+        if time.time() - make_time > 3*(positional_time_limit + overlap_time_limit):
+            make_time = time.time()
+            zones_idx += 1
+            pos_retries += 1
+            zone, zones_qty = select_zone(zones, zone, mod_cat, zones_idx)
+            minx, miny, maxx, maxy = zone.bounds
+
         if rot:
             b = box(p.x - mod.height / 2, p.y - mod.width / 2, p.x + mod.height / 2, p.y + mod.width / 2)
         else:
-            p = Point(round(randrange(minx, maxx, 10), 1), round(randrange(miny, maxy, 10), 1))
+            p = Point(round(randrange(minx, maxx, 20), 1), round(randrange(miny, maxy, 20), 1))
             b = box(p.x - mod.width / 2, p.y - mod.height / 2, p.x + mod.width / 2, p.y + mod.height / 2)
 
-        if zone and (time.time() - make_time) > 0.05:
-            condition1 = zone.intersects(b) and planta.contains(b)
-        elif zone:
-            condition1 = zone.intersects(b) and planta.contains(b)
+        if pos_retries < zones_qty and zone:
+            condition1 = zone.contains(b) and planta.contains(b)
+            if time.time() - make_time >= positional_time_limit and not condition1:
+                condition1 = zone.intersects(b) and planta.contains(b)
         else:
             condition1 = planta.contains(b)
         
-        if (time.time() - make_time) > 0.01 and condition1:
+        if time.time() - make_time >= overlap_time_limit and condition1:
             mod.x, mod.y = p.x, p.y
             curr_bx.append(b)
             makeposcnt += 1
@@ -310,27 +335,35 @@ def feasible_polygon(dims, polygon):
     base_max_dim = max(base_d1, base_d2)
     base_min_dim = min(base_d1, base_d2)
 
+    '''print("pol_max_dim", pol_max_dim)
+    print("pol_min_dim", pol_min_dim)
+    print("base_max_dim", base_max_dim)
+    print("base_min_dim", base_min_dim)
+    print("-----")'''
+
     if pol_max_dim >= base_max_dim and pol_min_dim >= base_min_dim:
         return True
     return False
 
 def assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor, prev_sv_selected_zone, 
                         sv_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                        entrances_adj_qty, core_adj_qty, zones):
+                        entrances_adj_qty, core_adj_qty, zones, cat_dims):
 
     if has_shaft:
         sv_candidate_idx = max(shafts_adj_qty, key=shafts_adj_qty.get)
     else:
-        sv_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values())]
+        sv_candidate_idx = [k for k, v in core_adj_qty.items() if v > min(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
+        if not sv_candidate_idx:
+            sv_candidate_idx = [k for k, v in core_adj_qty.items() if v > min(core_adj_qty.values())]
         sv_candidate_idx_filter = [k for k, v in crystal_adj_qty.items() if v == min(crystal_adj_qty.values()) and k in sv_candidate_idx]
         if sv_candidate_idx_filter:
             sv_candidate_idx = sv_candidate_idx_filter
+        print("Candidato zona de servicios:", sv_candidate_idx)
         sv_candidate_zones = {}
         for c in sv_candidate_idx:
             sv_candidate_zones[c] = areas[c]
         sv_candidate_zones_areas = {k: v.area for k, v in sv_candidate_zones.items()}
         sv_candidate_idx = max(sv_candidate_zones_areas, key=sv_candidate_zones_areas.get)
-    print("Candidato zona de servicios:", sv_candidate_idx)
     
     sv_selected_zone = areas[sv_candidate_idx]
     areas.pop(sv_candidate_idx, None)
@@ -392,7 +425,7 @@ def assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor
 
 def assign_pt_zones(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_selected_zone,
                     sv_nearest_idx, pt_selected_zones, pt_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                    entrances_adj_qty, core_adj_qty, zones):
+                    entrances_adj_qty, core_adj_qty, zones, cat_dims):
     pt_candidate_idx = []
     '''if sv_selected_zone:
         # Arreglo de indices de zonas cercanas al area de servicios
@@ -402,7 +435,7 @@ def assign_pt_zones(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_
             pt_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and v <= max(crystal_adj_qty.values()) and k in sv_nearest_idx]
     if not pt_candidate_idx:
         pt_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and v <= max(crystal_adj_qty.values())]'''
-    pt_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and v <= max(crystal_adj_qty.values())]
+    pt_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and v <= max(crystal_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
     pt_candidate_zones = {}
     print("Candidatos puestos de trabajo:", pt_candidate_idx)
 
@@ -412,7 +445,7 @@ def assign_pt_zones(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_
             pt_candidate_zones[c] = areas[c]
         if len(pt_candidate_zones) < 2:
             # Si hay una zona con area maxima absoluta, se selecciona la primera zona siguiente que tenga area maxima
-            pt_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and v <= max(crystal_adj_qty.values()) and not k in pt_candidate_idx]
+            pt_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and v <= max(crystal_adj_qty.values()) and not k in pt_candidate_idx and feasible_polygon(cat_dims, areas[k])]
             pt_candidate_zones[pt_candidate_idx[0]] = areas[pt_candidate_idx[0]]
         # Se seleccionan solo 2 zonas de la lista de candidatas
         pt_selected_zones = []
@@ -599,38 +632,37 @@ def assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_id
 
 def assign_ptp_zone(circs_bounds, sv_selected_zone, sv_nearest_idx, sp_selected_zone, sp_nearest_idx, elements_idx, 
                     cat_area, factor, ptp_selected_zone, ptp_nearest_idx, areas, shafts_adj_qty, 
-                    crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones):
+                    crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones, cat_dims):
 
     # Indices de areas cercanas a zona de soporte
     if sp_selected_zone and sv_selected_zone:
         # Se buscan candidatos que tengan fachadas de cristal adyacentes y que no esten cerca de la zona de soporte
-        ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and (not k in sp_nearest_idx and not k in sv_nearest_idx)]
-
+        ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and (not k in sp_nearest_idx and not k in sv_nearest_idx) and feasible_polygon(cat_dims, areas[k])]
         if not ptp_candidate_idx:
             # En caso que NO se haya encontrado a lo menos un candidato que cumpla con el criterio, se relaja la restriccion
-            ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and (not k in sp_nearest_idx or not k in sv_nearest_idx)]
+            ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and (not k in sp_nearest_idx or not k in sv_nearest_idx) and feasible_polygon(cat_dims, areas[k])]
             if not ptp_candidate_idx:
-                ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if not k in sp_nearest_idx]
+                ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if not k in sp_nearest_idx and feasible_polygon(cat_dims, areas[k])]
                 if not ptp_candidate_idx:
-                    ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values())]
+                    ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
     elif sp_selected_zone:
         # Se buscan candidatos que tengan fachadas de cristal adyacentes y que no esten cerca de la zona de soporte
-        ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and not k in sp_nearest_idx]
+        ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and not k in sp_nearest_idx and feasible_polygon(cat_dims, areas[k])]
         if not ptp_candidate_idx:
-            ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if not k in sp_nearest_idx]
+            ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if not k in sp_nearest_idx and feasible_polygon(cat_dims, areas[k])]
             if not ptp_candidate_idx:
-                ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values())]
+                ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
     elif sv_selected_zone:
             # Se buscan candidatos que tengan fachadas de cristal adyacentes y que no esten cerca de la zona de soporte
-        ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and not k in sv_nearest_idx]
+        ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and not k in sv_nearest_idx and feasible_polygon(cat_dims, areas[k])]
         if not ptp_candidate_idx:
-            ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if not k in sv_nearest_idx]
+            ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if not k in sv_nearest_idx and feasible_polygon(cat_dims, areas[k])]
             if not ptp_candidate_idx:
-                ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values())]
+                ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
     else:
-        ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values())]
+        ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
         if not ptp_candidate_idx:
-            ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v >= min(crystal_adj_qty.values())]
+            ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v >= min(crystal_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
     
     print("Candidatos puestos de trabajo privado:")
     print(ptp_candidate_idx)
@@ -662,7 +694,7 @@ def assign_ptp_zone(circs_bounds, sv_selected_zone, sv_nearest_idx, sp_selected_
             if nearest_len:
                 nearest_candidate_idx = max(nearest_len, key=nearest_len.get)
                 ptp_candidate_zone = unary_union([ptp_selected_zone, areas[nearest_candidate_idx]])
-                if ptp_candidate_zone.geom_type == 'Polygon' and (ptp_candidate_zone.area / ptp_candidate_zone.minimum_rotated_rectangle.area) > .90:
+                if ptp_candidate_zone.geom_type == 'Polygon' and (ptp_candidate_zone.area / ptp_candidate_zone.minimum_rotated_rectangle.area) > .90 and feasible_polygon(cat_dims, ptp_candidate_zone.minimum_rotated_rectangle):
                     ptp_selected_zone = ptp_candidate_zone
                     areas.pop(nearest_candidate_idx, None)
                     shafts_adj_qty.pop(nearest_candidate_idx, None)
@@ -698,7 +730,7 @@ def assign_rf_zone(sv_nearest_idx, sp_nearest_idx, ptp_selected_zone, ptp_neares
             if not rf_candidate_idx:
                 rf_candidate_idx = [k for k, v in areas.items() if (not k in sp_nearest_idx or not k in sv_nearest_idx) and k in ptp_nearest_idx]
                 if not rf_candidate_idx:
-                    rf_candidate_idx = [k for k, v in areas.items() if k in ptp_nearest_idx]
+                    rf_candidate_idx = [k for k, v in areas.items() if k in ptp_nearest_idx and crystal_adj_qty[k] > min(crystal_adj_qty.values())]
                     if not rf_candidate_idx:
                         rf_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values())]
         elif sp_nearest_idx:
@@ -813,19 +845,19 @@ def assign_rf_zone(sv_nearest_idx, sp_nearest_idx, ptp_selected_zone, ptp_neares
 
 def assign_esp_zone(sp_nearest_idx, elements_idx, cat_area, factor, esp_selected_zone, 
                     esp_nearest, esp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                    entrances_adj_qty, core_adj_qty, zones):
+                    entrances_adj_qty, core_adj_qty, zones, cat_dims):
     if sp_nearest_idx:
-        esp_candidate_idx = [k for k,v in areas.items() if k in sp_nearest_idx]
+        esp_candidate_idx = [k for k,v in areas.items() if k in sp_nearest_idx and feasible_polygon(cat_dims, areas[k])]
         if not esp_candidate_idx:
-            esp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0]
+            esp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0 and feasible_polygon(cat_dims, areas[k])]
             if not esp_candidate_idx:
-                esp_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values())]
+                esp_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
                 if not esp_candidate_idx:
                     esp_candidate_idx = [k for k,v in areas.items()]
     else:
-        esp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0]
+        esp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0 and feasible_polygon(cat_dims, areas[k])]
         if not esp_candidate_idx:
-            esp_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values())]
+            esp_candidate_idx = [k for k, v in core_adj_qty.items() if v == max(core_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
             if not esp_candidate_idx:
                 esp_candidate_idx = [k for k,v in areas.items()]
 
@@ -968,7 +1000,7 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
     #cat_area = {2:200, 3:40, 4:70, 5:30, 6: 50, 7:20}
     #cat_area = {4:70}
     #cat_area = {1: 68.75, 2: 56.78450000000001, 3: 28.36, 4: 30.6116, 5: 16.790499999999998}
-    cat_area = {1: 80, 2: 160, 3: 58.36, 4: 30.6116, 5: 16.790499999999998, 6: 30, 7:30}
+    #cat_area = {1: 80, 2: 160, 3: 58.36, 4: 30.6116, 5: 16.790499999999998, 6: 30, 7:30}
     #cat_area = {1: 36.349999999999994, 2: 56.78450000000001, 3: 38.16, 4: 30.6116, 5: 30, 6:20}
     #cat_area = {1: 36.349999999999994, 2: 113.56900000000002, 3: 28.36, 4: 30.6116, 5: 8.775}
 
@@ -976,6 +1008,7 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
     entrances_bounds = list(map(lambda x: x.bounds, entrances))
     crystal_facs_bounds = list(map(lambda x: x.bounds, crystal_facs))
     circs_bounds = list(map(lambda x: Polygon(x).bounds, circs))
+    #areas = {k: a.buffer(0.0001, cap_style=3, join_style=2) for k, a in areas.items()}
     areas_bounds = []
     for key, area in areas.items():
         areas_bounds.append(area.bounds)
@@ -1030,7 +1063,7 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
     if 4 in cat_area and len(areas) > 0:
         sv_selected_zone, sv_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
             assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_selected_zone, sv_nearest_idx, areas, shafts_adj_qty, 
-                            crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones)
+                            crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones, cat_dims[4])
         assigned_zones[4] = sv_selected_zone
     
     # Zonas de puestos de trabajo
@@ -1040,7 +1073,7 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
         pt_selected_zones, pt_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
             assign_pt_zones(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_selected_zone,
                     sv_nearest_idx, pt_selected_zones, pt_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                    entrances_adj_qty, core_adj_qty, zones)
+                    entrances_adj_qty, core_adj_qty, zones, cat_dims[2])
         assigned_zones[2] = pt_selected_zones
 
     # Zona de soporte
@@ -1060,7 +1093,7 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
         ptp_selected_zone, ptp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
             assign_ptp_zone(circs_bounds, sv_selected_zone, sv_nearest_idx, sp_selected_zone, sp_nearest_idx, elements_idx, cat_area, factor, ptp_selected_zone,
                     ptp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                    entrances_adj_qty, core_adj_qty, zones)
+                    entrances_adj_qty, core_adj_qty, zones, cat_dims[3])
         assigned_zones[3] = ptp_selected_zone
 
     # Zona reuniones formales
@@ -1082,7 +1115,7 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
         esp_selected_zone, esp_nearest, esp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
             assign_esp_zone(sp_nearest_idx, elements_idx, cat_area, factor, esp_selected_zone, 
                     esp_nearest, esp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
-                    entrances_adj_qty, core_adj_qty, zones)
+                    entrances_adj_qty, core_adj_qty, zones, cat_dims[7])
         assigned_zones[7] = esp_selected_zone
 
     ri_selected_zone = None
@@ -1118,21 +1151,20 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
                             assign_rf_zone(sv_nearest_idx, sp_nearest_idx, ptp_selected_zone, ptp_nearest_idx,
                                         elements_idx, cat_area, factor, rf_selected_zone, rf_nearest_idx,
                                         areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones)
-                    assigned_zones[1] = rf_selected_zone
+                    assigned_zones[k] = rf_selected_zone
                 if k == 4:
                     sv_selected_zone, sv_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
                             assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_selected_zone, sv_nearest_idx, areas, shafts_adj_qty, 
-                            crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones)
-                    assigned_zones[4] = sv_selected_zone
+                            crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones, cat_dims[4])
+                    assigned_zones[k] = sv_selected_zone
                 if k == 5:
                     sp_selected_zone, sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones = \
                         assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_idx, cat_area, factor, sp_selected_zone,
                             sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
                             entrances_adj_qty, core_adj_qty, zones, cat_dims[5])
-                    assigned_zones[5] = sp_selected_zone
+                    assigned_zones[k] = sp_selected_zone
 
     last_areas_len = len(areas)
-    critical_zones = [1,2,3,5]
     while len(areas) > 0:
         for zone_name, zone in zones.items():
             nearest = list(map(lambda x: tuple(x.bbox), list(elements_idx.nearest(zone.bounds, objects=True))))
@@ -1141,7 +1173,7 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
             if nearest_len:
                 nearest_candidate_idx = max(nearest_len, key=nearest_len.get)
                 candidate_zone = unary_union([zone, areas[nearest_candidate_idx]])
-                if candidate_zone.geom_type == 'Polygon' and (candidate_zone.area / candidate_zone.minimum_rotated_rectangle.area) > .90:
+                if candidate_zone.geom_type == 'Polygon':
                     zones[zone_name] = candidate_zone
                     areas.pop(nearest_candidate_idx, None)
                     shafts_adj_qty.pop(nearest_candidate_idx, None)
@@ -1389,6 +1421,7 @@ def make_circ_ring(planta, core, shafts, entrances, voids, ring_width):
 
     return circ_ring_pols
 
+# deprecado
 def filter_areas(circ_pols, areas):
     while not all([all([a.intersection(circ).area == 0 for circ in circ_pols]) for a in areas.values()]):
         i = 0
@@ -1507,7 +1540,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
-    '''input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
                     ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
@@ -1522,9 +1555,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                     ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
-                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6]]'''
+                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             2, 1.95, 2.4, 6],
+                    ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   1, 4, 5, 7]]
     
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
+    '''input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
                     ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             0, 3.37, 3.37, 2],
@@ -1539,7 +1573,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                     ['WYS_RECEPCION_1PERSONA',                      0, 2.7, 3.25, 5],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
-                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6]]
+                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6],
+                    ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   0, 4, 5, 7]]'''
     voids = []
 
     border = outline[0][1]
@@ -1797,6 +1832,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         ind.fitness.values = fit
 
     fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
+    #fig, ax = viewer.viewer_viz(planta, As, viz)
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
 
@@ -1811,8 +1847,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
               'Local sol. count:', max_count)
         
         if max(fitn) < 0:
-            CXPB = 0.2
-            MUTPB = 0.5
+            CXPB = 0.1
+            MUTPB = 0.6
         else:
             CXPB = 0.5
             MUTPB = 0.2
@@ -1841,10 +1877,11 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                 ind.fitness.values = fit
 
             #offspring = toolbox.select(offspring + pop, POP_SIZE)
-
-            pop[:] = offspring
+            best_ind = toolbox.select_best(pop, k=int(POP_SIZE*0.4))
+            pop[:] = offspring + best_ind
 
             pop.sort(key=lambda x: x.fitness, reverse=True)
+            pop = pop[:POP_SIZE]
 
         viewer.viz_clear(viz, g, NGEN, viz_period, boxes)
 
