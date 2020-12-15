@@ -542,15 +542,19 @@ def assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_id
                         sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
                         entrances_adj_qty, core_adj_qty, zones, cat_dims):
     
+    sp_selected_zone = prev_sp_selected_zone
     sp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0]
     sp_candidate_filter = [idx for idx in sp_candidate_idx if feasible_polygon(cat_dims, areas[idx])]
     entrances_idx = True
     if not sp_candidate_filter:
         sp_candidate_idx = [k for k, v in core_adj_qty.items() if v > 0 ]
+        if not sp_candidate_idx:
+            sp_candidate_idx = [k for k, v in areas.items()]
         sp_candidate_filter = [idx for idx in sp_candidate_idx if feasible_polygon(cat_dims, areas[idx])]
         entrances_idx = False
 
-    sp_candidate_idx = sp_candidate_filter
+    if sp_candidate_filter:
+        sp_candidate_idx = sp_candidate_filter
     print("Candidatos zona soporte:", sp_candidate_idx)
     if len(sp_candidate_idx) > 0:
         # Se asume que hay al menos 1 zona candidata
@@ -641,7 +645,8 @@ def assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_id
                         circ_nearest = list(map(lambda x: tuple(x.bbox), list(elements_idx.nearest(circ, objects=True))))
                         circ_nearest_idx = [k for k,v in areas.items() if v.bounds in circ_nearest and not k in sp_nearest_idx]
                         sp_nearest_idx += circ_nearest_idx
-
+            sp_selected_zone = sp_selected_zones
+        
     return sp_selected_zone, sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones
 
 def assign_ptp_zone(circs_bounds, sv_selected_zone, sv_nearest_idx, sp_selected_zone, sp_nearest_idx, elements_idx, 
@@ -1028,7 +1033,6 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
     entrances_bounds = list(map(lambda x: x.bounds, entrances))
     crystal_facs_bounds = list(map(lambda x: x.bounds, crystal_facs))
     circs_bounds = list(map(lambda x: Polygon(x).bounds, circs))
-    #areas = {k: a.buffer(0.0001, cap_style=3, join_style=2) for k, a in areas.items()}
     areas_bounds = []
     for key, area in areas.items():
         areas_bounds.append(area.bounds)
@@ -1560,10 +1564,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
+    '''input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             60, 3.37, 3.37, 2],
                     #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
                     ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
@@ -1573,10 +1577,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
                     ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
                     ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
-                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
-                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
+                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    1, 2.05, 1.9, 5],
+                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    1, 2.05, 2.01, 5],
                     ['WYS_COLABORATIVO_BARRA6PERSONAS',             2, 1.95, 2.4, 6],
-                    ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   1, 4, 5, 7]]
+                    ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   1, 4, 5, 7]]'''
     
     '''input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05, 1],
@@ -1649,7 +1653,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         if a[0] == 'WYS_FACADE_CRYSTAL':
             crystal_facs.append(As[-1][0])
     
-    circ_width = 1.2
+    circ_width = 0.8
     circ_pols = make_circ_ring(planta, core, shafts, entrances, voids, circ_width)
     #areas = make_areas(planta, core)
 
