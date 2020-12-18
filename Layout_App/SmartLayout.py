@@ -1782,8 +1782,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         return a
 
     def evaluateInd(ind):
+        pond = -10
         fit_list = []
         fit_list.append(modtoareas(As, ind))
+        fit_list.append(pond * feas_distance(ind))
         a = sum(fit_list)
         print("Evaluate Ind = " + str(a))
         return a,
@@ -1836,16 +1838,16 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                      (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.2)
+    toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=0.5, indpb=0.2)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
-    # toolbox.register("select", tools.selTournament, tournsize=5)
-    toolbox.register("select", tools.selTournament, tournsize=round(POP_SIZE*0.4))
+    toolbox.register("select", tools.selTournament, tournsize=3)
+    # toolbox.register("select", tools.selTournament, tournsize=round(POP_SIZE*0.4))
     # toolbox.register("select", tools.selNSGA2)
     toolbox.register("evaluate", evaluateInd)
 
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-    toolbox.decorate("evaluate", tools.DeltaPenalty(feasible, -10.0, feas_distance))
+    # toolbox.decorate("evaluate", tools.DeltaPenalty(feasible, -10.0, feas_distance))
 
     # Init of the algorithm
     print(round(time.time() - start_time, 1), 'Generate population:')
