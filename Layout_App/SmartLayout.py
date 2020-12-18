@@ -372,7 +372,7 @@ def assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor
         if sv_candidate_idx_filter:
             sv_candidate_idx = sv_candidate_idx_filter
     
-    print("Candidatos zona de servicios:", sv_candidate_idx)
+    #print("Candidatos zona de servicios:", sv_candidate_idx)
     sv_candidate_zones = {}
     for c in sv_candidate_idx:
         sv_candidate_zones[c] = areas[c]
@@ -451,7 +451,7 @@ def assign_pt_zones(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_
         pt_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and v <= max(crystal_adj_qty.values())]'''
     pt_candidate_idx = [k for k, v in crystal_adj_qty.items() if v > min(crystal_adj_qty.values()) and v <= max(crystal_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
     pt_candidate_zones = {}
-    print("Candidatos puestos de trabajo:", pt_candidate_idx)
+    #print("Candidatos puestos de trabajo:", pt_candidate_idx)
 
     if len(pt_candidate_idx) > 0:
         # Se asume que hay al menos 1 zona con muchas fachadas de cristal cercanas
@@ -551,7 +551,7 @@ def assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_id
         entrances_idx = False
 
     sp_candidate_idx = sp_candidate_filter
-    print("Candidatos zona soporte:", sp_candidate_idx)
+    #print("Candidatos zona soporte:", sp_candidate_idx)
     if len(sp_candidate_idx) > 0:
         # Se asume que hay al menos 1 zona candidata
         if len(sp_candidate_idx) > 1:
@@ -678,8 +678,8 @@ def assign_ptp_zone(circs_bounds, sv_selected_zone, sv_nearest_idx, sp_selected_
         if not ptp_candidate_idx:
             ptp_candidate_idx = [k for k, v in crystal_adj_qty.items() if v >= min(crystal_adj_qty.values()) and feasible_polygon(cat_dims, areas[k])]
     
-    print("Candidatos puestos de trabajo privado:")
-    print(ptp_candidate_idx)
+    #print("Candidatos puestos de trabajo privado:")
+    #print(ptp_candidate_idx)
     if len(ptp_candidate_idx) > 0:
         # En caso que se haya encontrado mas de un candidato que cumpla con algun criterio, se elige el que tenga mas fachadas de cristal
         if len(ptp_candidate_idx) > 1:
@@ -794,8 +794,8 @@ def assign_rf_zone(sv_nearest_idx, sp_nearest_idx, ptp_selected_zone, ptp_neares
             if not rf_candidate_idx:
                 rf_candidate_idx = [k for k, v in areas.items()]
     
-    print("Candidatos reuniones formales:")
-    print(rf_candidate_idx)
+    #print("Candidatos reuniones formales:")
+    #print(rf_candidate_idx)
     rf_candidate_zones = {}
     if len(rf_candidate_idx) > 0:
         # En caso que se haya encontrado mas de un candidato que cumpla con algun criterio, se elige el de mayor area
@@ -881,7 +881,7 @@ def assign_esp_zone(sp_nearest_idx, elements_idx, cat_area, factor, esp_selected
                 if not esp_candidate_idx:
                     esp_candidate_idx = [k for k,v in areas.items()]
 
-    print("Candidatos especiales:", esp_candidate_idx)
+    #print("Candidatos especiales:", esp_candidate_idx)
     if len(esp_candidate_idx) > 0:
         if len(esp_candidate_idx) > 1:
             esp_candidate_zones = {}
@@ -937,7 +937,7 @@ def assign_ri_zone(pt_nearest_idx, elements_idx, cat_area, factor, prev_ri_selec
                 ri_candidate_idx = [k for k,v in areas.items()]
         else:
             ri_candidate_idx = [k for k,v in areas.items()]
-        print("Candidatos reuniones informales:", ri_candidate_idx)
+        #print("Candidatos reuniones informales:", ri_candidate_idx)
 
         if len(ri_candidate_idx) > 0:
             # En caso que se haya encontrado mas de un candidato que cumpla con algun criterio, se elige el de mayor area
@@ -1074,8 +1074,8 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
             crystal_adj_qty[key] = len(crystal_adj)
             entrances_adj_qty[key] = len(entrances_adj)
             core_adj_qty[key] = core_adj[0] if core_adj else 0
-    print("adyacentes a cristal:", crystal_adj_qty)
-    print("adyacentes al core:", core_adj_qty)
+    #print("adyacentes a cristal:", crystal_adj_qty)
+    #print("adyacentes al core:", core_adj_qty)
     # Zona de servicios
     # Se selecciona solo 1 area que tenga mas shafts o core cercanos
     sv_selected_zone = None
@@ -1162,7 +1162,7 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
                 diff_area = zone.area - cat_area[k]
             if diff_area < 0:
                 diff_zones_areas[k] = diff_area
-        print(diff_zones_areas)
+        #print(diff_zones_areas)
         if diff_zones_areas:
             diff_zones_areas = {k: v for k, v in sorted(diff_zones_areas.items(), key=lambda item: item[1])}
             for k,v in diff_zones_areas.items():
@@ -1615,7 +1615,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                 cat_area[cat_id] += total_area
             else:
                 cat_area[cat_id] = total_area
-    print(cat_area)
+    #print(cat_area)
     cat_dims = get_category_max_dims(input_list)
 
     #min_cat_area, min_cat_key = min(((v1,k0) for k0,v0 in cat_dims.items() for k1,v1 in v0.items() if k1 == 'max_area'))
@@ -1624,11 +1624,11 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     
     max_dim = max(max_cat_width, max_cat_height)
 
-    print('cat_dims:', cat_dims)
-    print('max_dim:', max_dim)
+    #print('cat_dims:', cat_dims)
+    #print('max_dim:', max_dim)
     #print("min cat area, key", (min_cat_area, min_cat_key))
-    print(round(time.time() - start_time, 2), 'Load and compute all the inputs')
-    print('Number of modules: ', N)
+    #print(round(time.time() - start_time, 2), 'Load and compute all the inputs')
+    #print('Number of modules: ', N)
     # GA PARAMETERS
     IND_SIZE = N  # should be equal or very close to N
 
@@ -1742,6 +1742,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     def modtoareas(As, ind):
         a = 0
         boxes = []
+        print("Comienza modtoareas")
         for mod in ind:
             boxes.append(
                 [mod.get_box(),
@@ -1761,7 +1762,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                 w = restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary,
                                           restrictions.mod2area_matrix, boxes[i][1], d[0])
                 if w != 0:
-
+                    #print("fitval1")
                     ind[i].fitval1 += round((acond_distance(d[1]) * w)/(ind[i].qty), 2)
                     a += (acond_distance(d[1]) * w)/(ind[i].qty)
 
@@ -1775,6 +1776,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                 w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
                                          boxes[i][1], d[0])
                 if w != 0:
+                    #print("fitval2")
                     ind[i].fitval2 += round((acond_distance(d[1]) * w)/(ind[i].qty), 2)
                     a += (acond_distance(d[1]) * w)/(ind[i].qty)
         return a
@@ -1783,6 +1785,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         fit_list = []
         fit_list.append(modtoareas(As, ind))
         a = sum(fit_list)
+        print("Evaluate Ind = " + str(a))
         return a,
 
     def feasible(ind):  # Need too add if boxes collide
@@ -1792,12 +1795,17 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         for mod in ind:
             boxes.append(mod.get_box())
         nb = len(boxes)
+        print("¿ Is Feasible ?")
         for i in range(nb):
             if not planta.contains(boxes[i]):
+                # print("Feasible.boxes 1 " + str(len(boxes)))
                 return False
             for j in range(i + 1, nb):
                 if boxes[i].intersects(boxes[j]):
+                    print("Feasible.boxes 2 " + str(len(boxes)))
+                    # print(i,j)
                     return False
+        # print("Feasible: " + str(i))
         return True
 
 
@@ -1816,6 +1824,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             for j in range(i + 1, nb):
                 if boxes[i][0].intersects(boxes[j][0]):
                     area += boxes[i][0].intersection(boxes[j][0]).area
+        print("Feas Distance Area: " + str(area))
         return area
 
     creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -1830,6 +1839,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.2)
     toolbox.register("select_best", tools.selBest)
     toolbox.register("select_roulette", tools.selRoulette)
+    # toolbox.register("select", tools.selTournament, tournsize=5)
     toolbox.register("select", tools.selTournament, tournsize=round(POP_SIZE*0.4))
     # toolbox.register("select", tools.selNSGA2)
     toolbox.register("evaluate", evaluateInd)
@@ -1841,6 +1851,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     print(round(time.time() - start_time, 1), 'Generate population:')
 
     pop = toolbox.population(n=POP_SIZE)
+    print("Cantidad de Población: "+str(len(pop)))
     print(round(time.time() - start_time, 1), '...Done')
 
     CXPB, MUTPB, NGEN = 0.5, 0.2, GENERATIONS
@@ -1850,9 +1861,10 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
 
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
+        print(fit)
 
-    fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
-    #fig, ax = viewer.viewer_viz(planta, As, viz)
+    #fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
+    fig, ax = viewer.viewer_viz(planta, As, viz)
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
 
@@ -1892,6 +1904,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
 
             # Evaluate the individuals with an invalid fitness
             invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+            print("Debiera entrar")
             fitnesses = map(toolbox.evaluate, invalid_ind)
             for ind, fit in zip(invalid_ind, fitnesses):
                 ind.fitness.values = fit
