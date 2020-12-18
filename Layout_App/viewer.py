@@ -40,8 +40,8 @@ def viz_update(viz, viz_period, g, pop,  fig, ax):
                     labels = []
 
                     labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.2, mod.name, fontsize=6, ma='center'))
-                    labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.8, round(mod.fitval1, 2), fontsize=6, ma='center'))
-                    labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 2.4, round(mod.fitval2, 2), fontsize=6, ma='center'))
+                    labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.8, "fit_area:" + str(round(mod.fitval1, 2)), fontsize=6, ma='center'))
+                    labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 2.4, "fit_mods:" + str(round(mod.fitval2, 2)), fontsize=6, ma='center'))
                     labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 0.6, mod.x, fontsize=6, ma='center'))
                     labels.append(ax[row, col].text(x[2] + 2, y[2] - 0.6, mod.y, fontsize=6, ma='center'))
                     boxes.append([b, labels])
