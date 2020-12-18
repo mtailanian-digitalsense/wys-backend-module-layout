@@ -181,8 +181,8 @@ def makePos(planta, in_list, zones):
     larger_than_zone = False
     pos_retries = 0
     zones_idx = makeposcnt
-    positional_time_limit = 0.004
-    overlap_time_limit = 0.001
+    positional_time_limit = 0.08
+    overlap_time_limit = 0.05
     while True:
         if time.time() - make_time > 3*(positional_time_limit + overlap_time_limit) and not larger_than_zone:
             make_time = time.time()
@@ -1795,17 +1795,17 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         for mod in ind:
             boxes.append(mod.get_box())
         nb = len(boxes)
-        print("¿ Is Feasible ?")
+        print("¿ Is Feasible ? Boxes = "+str(nb))
         for i in range(nb):
             if not planta.contains(boxes[i]):
-                # print("Feasible.boxes 1 " + str(len(boxes)))
+                print("Feasible.boxes 1 " + str(len(boxes)))
                 return False
             for j in range(i + 1, nb):
                 if boxes[i].intersects(boxes[j]):
-                    print("Feasible.boxes 2 " + str(len(boxes)))
+                    print("Feasible.boxes 2 " + str(j))
                     # print(i,j)
                     return False
-        # print("Feasible: " + str(i))
+        print("Yes")
         return True
 
 
@@ -1877,7 +1877,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         print('Time:', round(time.time() - start_time, 1), ' Generation ', g + 1, 'of', NGEN, 'POP SIZE:', len(pop),
               '  Min:', round(min(fitn), 2), 'Max:', round(max(fitn), 2), 'Avg:', round(sum(fitn) / len(fitn), 1),
               'Local sol. count:', max_count)
-        
+
         if max(fitn) < 0:
             CXPB = 0.1
             MUTPB = 0.6

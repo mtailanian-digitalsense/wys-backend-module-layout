@@ -477,18 +477,18 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         for mod in ind:
             boxes.append(mod.get_box())
         nb = len(boxes)
-        print("¿ Is Feasible ?")
+        print("¿ Is Feasible ? Boxes = "+str(nb))
         for i in range(nb):
             if not planta.contains(boxes[i]):
                 print("Feasible.boxes 1 " + str(len(boxes)))
-                print(i)
+                # print(i)
                 return False
             for j in range(i + 1, nb):
                 if boxes[i].intersects(boxes[j]):
                     print("Feasible.boxes 2 " + str(len(boxes)))
-                    print(i, j)
+                    # print(i, j)
                     return False
-        # print("Feasible: " + str(i))
+        print("Yes")
         return True
 
 
