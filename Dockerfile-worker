@@ -8,6 +8,6 @@ RUN apt-get -y update &&\
 
 RUN apt-get -y install libspatialindex-dev
 RUN pip install --no-cache-dir -r requirements.txt
-EXPOSE 8086
 COPY . .
-CMD [ "gunicorn", "--bind", "0.0.0.0:8086", "main:app" ]
+ENV PYTHONUNBUFFERED=1
+CMD ["sh", "run_worker.sh"]
