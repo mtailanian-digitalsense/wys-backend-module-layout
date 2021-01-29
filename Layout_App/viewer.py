@@ -14,10 +14,10 @@ def viz_clear(viz, g, NGEN, viz_period, boxes):
         for el in boxes:
             el[0][0].remove()
             el[1][0].remove()
-            el[1][1].remove()
-            el[1][2].remove()
-            el[1][3].remove()
-            el[1][4].remove()
+            #el[1][1].remove()
+            #el[1][2].remove()
+            #el[1][3].remove()
+            # el[1][4].remove()
 
 def viz_update(viz, viz_period, g, pop,  fig, ax):
 
@@ -39,11 +39,13 @@ def viz_update(viz, viz_period, g, pop,  fig, ax):
                     b = ax[row, col].plot(x, y, color='b')
                     labels = []
 
-                    labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.2, mod.name, fontsize=6, ma='center'))
-                    labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.8, "fit_area:" + str(round(mod.fitval1, 2)), fontsize=6, ma='center'))
-                    labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 2.4, "fit_mods:" + str(round(mod.fitval2, 2)), fontsize=6, ma='center'))
-                    labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 0.6, mod.x, fontsize=6, ma='center'))
-                    labels.append(ax[row, col].text(x[2] + 2, y[2] - 0.6, mod.y, fontsize=6, ma='center'))
+                    labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.2, str(mod.id), fontsize=8, ma='center'))
+                    #labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 0.6, "Module_id: " + str(mod.id), fontsize=6, ma='center'))
+                    #labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.2, 'mod.name', fontsize=6, ma='center'))
+                    #labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 1.8, "fit_area: " + str(round(mod.fitval1, 2)), fontsize=6, ma='center'))
+                    #labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 2.4, "fit_mods: " + str(round(mod.fitval2, 2)), fontsize=6, ma='center'))
+                    # labels.append(ax[row, col].text(x[2] + 0.1, y[2] - 0.6, mod.x, fontsize=6, ma='center'))
+                    # labels.append(ax[row, col].text(x[2] + 2, y[2] - 0.6, mod.y, fontsize=6, ma='center'))
                     boxes.append([b, labels])
 
                 '''for b in boxes:

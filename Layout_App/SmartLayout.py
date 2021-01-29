@@ -6,6 +6,7 @@ from deap import base
 from deap import creator
 from deap import tools
 from deap import algorithms
+from numpy import nan
 from shapely import geometry, affinity
 from shapely.geometry import Point, box, LineString, MultiLineString, MultiPolygon
 from shapely.geometry.polygon import Polygon
@@ -15,8 +16,12 @@ import matplotlib.pyplot as plt
 import viewer
 import restrictions
 from randrange import randrange
-from get_areas import get_area
 from get_areas2 import get_area2
+from get_areas import get_area
+# from Layout_App import viewer
+# from Layout_App import restrictions
+# from Layout_App.randrange import randrange
+# from Layout_App.get_areas2 import get_area2
 #from lines_areas_test import get_pol_zones
 random.seed(100)
 
@@ -181,8 +186,8 @@ def makePos(planta, in_list, zones):
     larger_than_zone = False
     pos_retries = 0
     zones_idx = makeposcnt
-    positional_time_limit = 0.08
-    overlap_time_limit = 0.05
+    positional_time_limit = 0.08   # Recomendado 0.08        Tiempos iniciales de posicionamiento de módulos
+    overlap_time_limit = 0.05      # Recomendado 0.05        Tiempos iniciales de posicionamiento de módulos
     while True:
         if time.time() - make_time > 3*(positional_time_limit + overlap_time_limit) and not larger_than_zone:
             make_time = time.time()
@@ -256,14 +261,12 @@ def min_dist_to_area(lista):
             if j + 1 == len(lista):
                 my_output.append(curr_min)
                 # print('append', curr_min)
-
         else:
             my_output.append(curr_min)
             # print('append', curr_min)
             curr_min = B
             if j + 1 == len(lista):
                 my_output.append(curr_min)
-
         i = j
     return my_output
 
@@ -1560,41 +1563,41 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
-    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
+    # input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
+    #                 ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
+    #                 ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
+    #                 ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
+    #                 #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
+    #                 ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
+    #                 ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
+    #                 ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
+    #                 ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
+    #                 ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
+    #                 ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
+    #                 ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
+    #                 ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
+    #                 ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
+    #                 ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
+    #                 ['WYS_COLABORATIVO_BARRA6PERSONAS',             2, 1.95, 2.4, 6],
+    #                 ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   1, 4, 5, 7]]
+    
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
-                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
-                    #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
+                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6, 1],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             25, 3.37, 3.37, 2],
+                    #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            0, 3.82, 1.4],
+                    ['WYS_PRIVADO_1PERSONA',                        2, 3.5, 2.8, 3],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
-                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
-                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
+                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    0, 3.54, 3.02, 4],
+                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   2, 3.54, 3.02, 4],
                     ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
                     ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
-                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
+                    ['WYS_SOPORTE_PRINT1',                          3, 1.5, 1.3, 4],
                     ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
                     ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
                     ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
-                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             2, 1.95, 2.4, 6],
-                    ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   1, 4, 5, 7]]
-    
-    '''input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
-                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        0, 4, 6.05, 1],
-                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
-                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             0, 3.37, 3.37, 2],
-                    #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-                    ['WYS_PRIVADO_1PERSONA',                        0, 3.5, 2.8, 3],
-                    ['WYS_PRIVADO_1PERSONAESTAR',                   0, 6.4, 2.9, 3],
-                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    0, 3.54, 3.02, 4],
-                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   0, 3.54, 3.02, 4],
-                    ['WYS_SOPORTE_KITCHENETTE',                     0, 1.6, 2.3, 4],
-                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               0, 1.5, 2.4, 4],
-                    ['WYS_SOPORTE_PRINT1',                          0, 1.5, 1.3, 4],
-                    ['WYS_RECEPCION_1PERSONA',                      0, 2.7, 3.25, 5],
-                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
-                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
                     ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6],
-                    ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   0, 4, 5, 7]]'''
+                    ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   0, 4, 5, 7]]
     voids = []
 
     border = outline[0][1]
@@ -1739,46 +1742,207 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         return 10 * math.exp(-d / 3)
         #return d
 
+    def notas_percent_mod2areas(valoracion, metros, area):
+        # Evaluación de los módulos respecto a las entradas
+        if area == 'WYS_ENTRANCE' and valoracion > 0:
+            x1 = 1
+            x2 = 5
+            if 0 <= metros < x1:
+                cumplimiento = 100
+            elif metros > x2:
+                cumplimiento = 0
+            else:
+                cumplimiento = ((0-100)/(x2-x1)) * (metros - x1) + 100
+        if area == 'WYS_ENTRANCE' and valoracion < 0:
+            x1 = 0
+            x2 = 3
+            if metros > x2:
+                cumplimiento = 100
+            else:
+                cumplimiento = ((100-0)/(x2-x1)) * (metros - x1)
+
+        # Evaluación de los módulos respecto a las ventanas
+        if area == 'WYS_FACADE_CRYSTAL' and valoracion > 0:
+            x1 = 0
+            x2 = 3
+            if metros > x2:
+                cumplimiento = 0
+            else:
+                cumplimiento = ((0-100)/(x2-x1)) * (metros - x1) + 100
+        if area == 'WYS_FACADE_CRYSTAL' and valoracion < 0:
+            x1 = 0
+            x2 = 1
+            if metros > x2:
+                cumplimiento = 100
+            else:
+                cumplimiento = ((100-0)/(x2-x1)) * (metros - x1)
+
+        # Evaluación de los módulos respecto al Shaft
+        if area == 'WYS_SHAFT' and valoracion > 0:
+            x1 = 0
+            x2 = 0.5
+            if metros > 0.5:
+                cumplimiento = 0
+            else:
+                cumplimiento = ((0-100)/(x2-x1)) * (metros - x1) + 100
+        if area == 'WYS_SHAFT' and valoracion < 0:
+            x1 = 0
+            x2 = 3
+            if metros > 3:
+                cumplimiento = 100
+            else:
+                cumplimiento = ((100-0)/(x2-x1)) * (metros - x1)
+
+        # Evaluación de los módulos respecto al Core
+        if area == 'WYS_CORE' and valoracion > 0:
+            x1 = 0
+            x2 = 3
+            if metros > 3:
+                cumplimiento = 0
+            else:
+                cumplimiento = ((0-100)/(x2-x1)) * (metros - x1) + 100
+        if area == 'WYS_CORE' and valoracion < 0:
+            x1 = 0
+            x2 = 3
+            if metros > 3:
+                cumplimiento = 100
+            else:
+                cumplimiento = ((100-0)/(x2-x1)) * (metros - x1)
+
+        cumplimiento = round(cumplimiento, 2)
+        return cumplimiento
+
+    def notas_percent_mod2mod(valoracion, metros):
+        # Evaluación de los módulos respecto a los demás módulos
+        if valoracion > 0:
+            x1 = 1
+            x2 = 2
+            if 0 <= metros < x1:
+                cumplimiento = 100
+            elif metros > x2:
+                cumplimiento = 0
+            else:
+                cumplimiento = ((0-100)/(x2-x1)) * (metros - x1) + 100
+
+        if valoracion < 0:
+            x1 = 1
+            x2 = 2
+            if 0 <= metros < x1:
+                cumplimiento = 0
+            elif metros > x2:
+                cumplimiento = 100
+            else:
+                cumplimiento = ((100-0)/(x2-x1)) * (metros - x1)
+
+        cumplimiento = round(cumplimiento, 2)
+        return cumplimiento
+
+    def evaluate_rules(As, ind):
+        modulo = []
+        for mod in ind:
+            modulo.append([mod.get_box(), mod.name])
+        nb = len(modulo)
+        evaluacion_area = []; nota_total_area = []
+        evaluacion_mod = [];  nota_total_mod = []
+
+        # Se recorren todos los módulos
+        for i in range(nb):
+            # Distancia entre el módulo y las distintas áreas (la más cercana):
+            bx_dist = []
+            for A in As:
+                bx_dist.append([A[1], modulo[i][0].distance(A[0]), i, i])
+            mod_dist_areas = min_dist_to_area(bx_dist)
+
+            notas_mod2areas = [0] * (len(mod_dist_areas) * 2 + 2)
+            notas_mod2areas[0] = ind[i].id
+            notas_mod2areas[1] = ind[i].name
+            hl = 0
+            for d in mod_dist_areas:
+                w = restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary,
+                                          restrictions.mod2area_matrix, modulo[i][1], d[0])
+                notas_mod2areas[hl + 2] = d[0]
+                notas_mod2areas[hl + 3] = nan
+                if w != 0:
+                    x_area = notas_percent_mod2areas(w, d[1], d[0])
+                    notas_mod2areas[hl + 3] = x_area
+                    nota_total_area.append(x_area)
+                hl += 2
+            evaluacion_area.append(notas_mod2areas)
+            print(notas_mod2areas)
+
+            distances = []
+            for j in range(nb):
+                # Distancia entre el módulo y los demás módulos (el más cercano de cada tipo):
+                if i is not j:
+                    distances.append([modulo[j][1], modulo[i][0].distance(modulo[j][0]), i, j])
+            distances2 = min_dist_to_area(distances)
+            notas_mod2mod = [0] * (len(distances2) * 2 + 2)
+            notas_mod2mod[0] = ind[i].id
+            notas_mod2mod[1] = ind[i].name
+            hl = 0
+            for d in distances2:
+                w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
+                                         modulo[i][1], d[0])
+                notas_mod2mod[hl + 2] = nan
+                notas_mod2mod[hl + 3] = nan
+                if w != 0:
+                    if modulo[i][0].intersects(modulo[(d[3])][0]):
+                        x_mod = 0
+                        notas_mod2mod[hl + 2] = d[0]
+                        notas_mod2mod[hl + 3] = x_mod
+                        nota_total_mod.append(x_mod)
+                        print('Coliciona con el Módulo: ' + str(d[3]+1))
+                    else:
+                        x_mod = notas_percent_mod2mod(w, d[1])
+                        notas_mod2mod[hl + 2] = d[0]
+                        notas_mod2mod[hl + 3] = x_mod
+                        nota_total_mod.append(x_mod)
+                hl += 2
+            evaluacion_mod.append(notas_mod2mod)
+            print(notas_mod2mod)
+
+        nota_prom_area = round(sum(nota_total_area)/len(nota_total_area))
+        nota_prom_mod = round(sum(nota_total_mod) / len(nota_total_mod))
+        print('Nota Area Promedio del Layout =   ' + str(nota_prom_area))
+        print('Nota Modulo Promedio del Layout = ' + str(nota_prom_mod))
+        return nota_prom_area, nota_prom_mod
+
     def modtoareas(As, ind):
         a = 0
         boxes = []
-        print("Comienza modtoareas")
         for mod in ind:
-            boxes.append(
-                [mod.get_box(),
-                 mod.name])
+            boxes.append([mod.get_box(), mod.name])
             mod.fitval1 = 0
             mod.fitval2 = 0
+
         nb = len(boxes)
-
         for i in range(nb):
+            ind[i].id = i + 1
             bx_dist = []
+            # Distancia entre el módulo y las distintas áreas (la más cercana):
             for A in As:
-                bx_dist.append([A[1], boxes[i][0].distance(A[0])])
-
+                bx_dist.append([A[1], boxes[i][0].distance(A[0]), i, i])
             bx_dist2 = min_dist_to_area(bx_dist)
-
             for d in bx_dist2:
                 w = restrictions.mod2area(restrictions.module_dictionary, restrictions.area_dictionary,
                                           restrictions.mod2area_matrix, boxes[i][1], d[0])
                 if w != 0:
                     #print("fitval1")
-                    ind[i].fitval1 += round((acond_distance(d[1]) * w)/(ind[i].qty), 2)
-                    a += (acond_distance(d[1]) * w)/(ind[i].qty)
+                    ind[i].fitval1 += round((acond_distance(d[1]) * w)/ind[i].qty, 2)
+                    a += (acond_distance(d[1]) * w)/ind[i].qty
 
             distances = []
             for j in range(nb):
                 if i is not j:
-                    distances.append([boxes[j][1], boxes[i][0].distance(boxes[j][0])])
-
+                    distances.append([boxes[j][1], boxes[i][0].distance(boxes[j][0]), i, j])
             distances2 = min_dist_to_area(distances)
             for d in distances2:
                 w = restrictions.mod2mod(restrictions.module_dictionary, restrictions.mod2mod_matrix,
                                          boxes[i][1], d[0])
                 if w != 0:
                     #print("fitval2")
-                    ind[i].fitval2 += round((acond_distance(d[1]) * w)/(ind[i].qty), 2)
-                    a += (acond_distance(d[1]) * w)/(ind[i].qty)
+                    ind[i].fitval2 += round((acond_distance(d[1]) * w)/ind[i].qty, 2)
+                    a += (acond_distance(d[1]) * w)/ind[i].qty
         return a
 
     def evaluateInd(ind):
@@ -1787,29 +1951,21 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         fit_list.append(modtoareas(As, ind))
         fit_list.append(pond * feas_distance(ind))
         a = sum(fit_list)
-        print("Evaluate Ind = " + str(a))
         return a,
 
-    def feasible(ind):  # Need too add if boxes collide
-        """Feasibility function for the individual. Returns True if feasible False
-        otherwise."""
-        boxes = []
-        for mod in ind:
-            boxes.append(mod.get_box())
-        nb = len(boxes)
-        print("¿ Is Feasible ? Boxes = "+str(nb))
-        for i in range(nb):
-            if not planta.contains(boxes[i]):
-                print("Feasible.boxes 1 " + str(len(boxes)))
-                return False
-            for j in range(i + 1, nb):
-                if boxes[i].intersects(boxes[j]):
-                    print("Feasible.boxes 2 " + str(j))
-                    # print(i,j)
-                    return False
-        print("Yes")
-        return True
-
+    def evaluateBestInd(ind):
+        pond = -20
+        fit_list = []
+        a, b, c = modtoareas(As, ind)
+        fit_list.append(a)
+        area = feas_distance(ind)
+        fit_list.append(pond * area)
+        a = sum(fit_list)
+        print('Nota Area Promedio del Layout =   ' + str(b))
+        print('Nota Modulo Promedio del Layout = ' + str(c))
+        print("Feas Distance Area: " + str(area))
+        print("Evaluate Ind = " + str(a))
+        return a,
 
     def feas_distance(ind):
         # check for intermods collisions:
@@ -1826,8 +1982,27 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             for j in range(i + 1, nb):
                 if boxes[i][0].intersects(boxes[j][0]):
                     area += boxes[i][0].intersection(boxes[j][0]).area
-        print("Feas Distance Area: " + str(area))
         return area
+
+    # def feasible(ind):  # Need too add if boxes collide
+    #     """Feasibility function for the individual. Returns True if feasible False
+    #     otherwise."""
+    #     boxes = []
+    #     for mod in ind:
+    #         boxes.append(mod.get_box())
+    #     nb = len(boxes)
+    #     print("¿ Is Feasible ? Boxes = "+str(nb))
+    #     for i in range(nb):
+    #         if not planta.contains(boxes[i]):
+    #             print("Feasible.boxes 1 " + str(len(boxes)))
+    #             return False
+    #         for j in range(i + 1, nb):
+    #             if boxes[i].intersects(boxes[j]):
+    #                 print("Feasible.boxes 2 " + str(j))
+    #                 # print(i,j)
+    #                 return False
+    #     print("Yes")
+    #     return True
 
     creator.create("FitnessMax", base.Fitness, weights=(1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -1863,7 +2038,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
 
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
-        print(fit)
+        # print('Fitness Población Inicial: ', round(fit[0], 2))
 
     #fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
     fig, ax = viewer.viewer_viz(planta, As, viz)
@@ -1906,7 +2081,6 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
 
             # Evaluate the individuals with an invalid fitness
             invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-            print("Debiera entrar")
             fitnesses = map(toolbox.evaluate, invalid_ind)
             for ind, fit in zip(invalid_ind, fitnesses):
                 ind.fitness.values = fit
@@ -1918,6 +2092,11 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             pop.sort(key=lambda x: x.fitness, reverse=True)
             pop = pop[:POP_SIZE]
 
+        # evaluateBestInd(pop[0])
+        if (g + 1) == 1 or (g + 1) == NGEN:
+            evaluate_rules(As, pop[0])
+            print('Fitness = ', pop[0].fitness.values)
+            print('Tiempo Total Empleado: ', round(time.time() - start_time, 1))
         viewer.viz_clear(viz, g, NGEN, viz_period, boxes)
 
     viewer.viz_end()
@@ -1929,6 +2108,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         out.append([mod.name, mod.id, mod.x, mod.y, mod.rot])
         # print(mod.name, '(', mod.x, ',', mod.y, ')', 'id:', mod.id, 'rot:', mod.rot)
     print('Fitness = ', pop[0].fitness.values)
+    # evaluateBestInd(pop[0])
+    # evaluate_rules(As, pop[0])
     # viewer.show_floor(planta, As, pop, g)
     '''for o in out:
         print(o)'''
