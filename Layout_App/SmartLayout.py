@@ -320,8 +320,11 @@ def make_areas(planta,core):
         areas_dict[i+1] = areas_adj[min_area_idx]
         visited_list.append(areas_adj[min_area_idx])
 
-    
     return areas_dict
+
+def smart_layout_async(dictionary, POP_SIZE=50, GENERATIONS=50):
+    result = Smart_Layout(dictionary, POP_SIZE, GENERATIONS, IS_ASYNC=True)
+    return result, dictionary
 
 def feasible_polygon(dims, polygon):
 
