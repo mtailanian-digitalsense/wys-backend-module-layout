@@ -358,6 +358,42 @@ def spec():
     }]
     return jsonify(swag)
 
+@app.route('/api/layouts/data/<layout_gen_id>', methods = ['GET'])
+@token_required
+def get_layout_by_layout_gen_id(layout_gen_id):
+    """
+        Get if there's complete the layout module, by finding a record from Project table.
+        ---
+        parameters:
+          - in: path
+            name: layout_gen_id
+            type: integer
+            description: Layout Gen Id
+        tags:
+        - "Layouts"
+        responses:
+          200:
+            description: "completed" if there's a record
+          404:
+            description: Record Not Found.
+          500:
+            description: "Database error"
+    """
+    try:
+        token = request.headers.get('Authorization', None)
+        print(layout_gen_id)
+        layout_generated = LayoutGenerated.query.filter_by(id=layout_gen_id).first()
+        if layout_generated is not None:
+          return jsonify({'layout': 'completed'}), 200
+        else:
+          return jsonify({'layout': ''}), 200
+    except SQLAlchemyError as e:
+      return f'Error getting data: {e}', 500
+    except Exception as exp:
+      msg = f"Error: mesg ->{exp}"
+      app.logger.error(msg)
+      return msg, 404
+
 @app.route("/api/layouts/<project_id>", methods=['POST'])
 @token_required
 def generate_layout(project_id):
