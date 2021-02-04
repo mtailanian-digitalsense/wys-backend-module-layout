@@ -68,33 +68,27 @@ module_dictionary = {
     'WYS_ESPECIALES_BRAINSTORMING11PERSONAS': 66,
     }
 
-
 area_dictionary = {
     'WYS_ENTRANCE': 0,
     'WYS_FACADE_CRYSTAL': 1,
     'WYS_FACADE_OPAQUE': 2,
     'WYS_SHAFT': 3,
     'WYS_CORE': 4,
-}
+    }
 
-# create weight matrix for modules in areas
-mod2area_matrix = []
-# create weight matrix for modules near other modules
-mod2mod_matrix = []
-
+mod2area_matrix = []    # create weight matrix for modules in areas
+mod2mod_matrix = []     # create weight matrix for modules near other modules
 for m in range(len(module_dictionary)):
     mod2area_matrix.append([0] * len(area_dictionary))
-
-for m in range(len(module_dictionary)):
     mod2mod_matrix.append([0] * len(module_dictionary))
 
+def mod2mod(mod_dic, matrix, mod1, mod2):
+    row, col = mod_dic[mod1], mod_dic[mod2]
+    return matrix[row][col]
 
-def set_mod2area_matrix_value(mod_dic, area_dic, matrix, module_name, area_name, value):
+def mod2area(mod_dic, area_dic, matrix, module_name, area_name):
     row, col = mod_dic[module_name], area_dic[area_name]
-    if row is None or col is None:
-        pass
-    else:
-        matrix[row][col] = value
+    return matrix[row][col]
 
 
 def set_mod2mod_matrix_value(mod_dic, matrix, mod1, mod2, value):
@@ -104,118 +98,107 @@ def set_mod2mod_matrix_value(mod_dic, matrix, mod1, mod2, value):
     else:
         matrix[row][col] = value
 
-
-
-def mod2mod(mod_dic, matrix, mod1, mod2):
-    row, col = mod_dic[mod1], mod_dic[mod2]
-    return matrix[row][col]
-
-
-def mod2area(mod_dic, area_dic, matrix, module_name, area_name):
+def set_mod2area_matrix_value(mod_dic, area_dic, matrix, module_name, area_name, value):
     row, col = mod_dic[module_name], area_dic[area_name]
-    return matrix[row][col]
-
+    if row is None or col is None:
+        pass
+    else:
+        matrix[row][col] = value
 
 def set_mod2area_val(Modulo, valores):
-    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo,
-                              'WYS_ENTRANCE', valores[0])
-    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo,
-                              'WYS_FACADE_CRYSTAL', valores[1])
-    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo,
-                              'WYS_FACADE_OPAQUE', valores[2])
-    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo,
-                              'WYS_SHAFT', valores[3])
-    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo,
-                              'WYS_CORE', valores[4])
+    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo, 'WYS_ENTRANCE', valores[0])
+    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo, 'WYS_FACADE_CRYSTAL', valores[1])
+    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo, 'WYS_FACADE_OPAQUE', valores[2])
+    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo, 'WYS_SHAFT', valores[3])
+    set_mod2area_matrix_value(module_dictionary, area_dictionary, mod2area_matrix, Modulo, 'WYS_CORE', valores[4])
 
 # Arreglo restricciones [0, 0, 0, 0, 0] = [WYS_ENTRANCE, WYS_FACADE_CRYSTAL, WYS_FACADE_OPAQUE, WYS_SHAFT, WYS_CORE]
-set_mod2area_val('WYS_PUESTOTRABAJO_RECTO2PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_RECTO4PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_RECTO6PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_ESTRELLA3PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_ESTRELLA6PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_ESTRELLA9PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_CELL3PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_CELL6PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_CELL9PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_VOLANTE2PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_VOLANTE4PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PUESTOTRABAJO_VOLANTE6PERSONAS', [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_RECTO2PERSONAS',            [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_RECTO4PERSONAS',            [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_RECTO6PERSONAS',            [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_ESTRELLA3PERSONAS',         [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_ESTRELLA6PERSONAS',         [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_ESTRELLA9PERSONAS',         [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_CELL3PERSONAS',             [0, 1, 0, -1, -1])
+# set_mod2area_val('WYS_PUESTOTRABAJO_CELL3PERSONAS',             [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_CELL6PERSONAS',             [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_CELL9PERSONAS',             [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_VOLANTE2PERSONAS',          [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_VOLANTE4PERSONAS',          [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PUESTOTRABAJO_VOLANTE6PERSONAS',          [0, 1, 0, -1, 0])
 
-set_mod2area_val('WYS_SALAREUNION_REDONDA4PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_REDONDA5PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_RECTA6PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_MEDIATABLE3PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_MEDIATABLE5PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_RECTA8PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_DIRECTORIO10PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_DIRECTORIO12PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_DIRECTORIO14PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_DIRECTORIO16PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALAREUNION_DIRECTORIO20PERSONAS', [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_REDONDA4PERSONAS',            [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_REDONDA5PERSONAS',            [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_RECTA6PERSONAS',              [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_MEDIATABLE3PERSONAS',         [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_MEDIATABLE5PERSONAS',         [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_RECTA8PERSONAS',              [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_DIRECTORIO10PERSONAS',        [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_DIRECTORIO12PERSONAS',        [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_DIRECTORIO14PERSONAS',        [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_DIRECTORIO16PERSONAS',        [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALAREUNION_DIRECTORIO20PERSONAS',        [0, 1, 0, -1, 0])
 
-set_mod2area_val('WYS_SALACAPACITACION_12PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALACAPACITACION_19PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_SALACAPACITACION_25PERSONAS', [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALACAPACITACION_12PERSONAS',             [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALACAPACITACION_19PERSONAS',             [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_SALACAPACITACION_25PERSONAS',             [0, 1, 0, -1, 0])
 
-set_mod2area_val('WYS_PRIVADO_1PERSONA', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PRIVADO_1PERSONAGUARDADO', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PRIVADO_1PERSONAESTAR', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_PRIVADO_1PERSONAMESA', [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PRIVADO_1PERSONA',                        [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PRIVADO_1PERSONAGUARDADO',                [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PRIVADO_1PERSONAESTAR',                   [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_PRIVADO_1PERSONAMESA',                    [0, 1, 0, -1, 0])
 
-set_mod2area_val('WYS_COLABORATIVO_MEETINGBOOTH2PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_COLABORATIVO_MEETINGBOOTH4PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_COLABORATIVO_BARRA6PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_COLABORATIVO_BARRA8PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_COLABORATIVO_BARRA10PERSONAS', [0, 1, 0, -1, 0])
-set_mod2area_val('WYS_COLABORATIVO_TARIMA13PERSONAS', [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_COLABORATIVO_MEETINGBOOTH2PERSONAS',      [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_COLABORATIVO_MEETINGBOOTH4PERSONAS',      [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_COLABORATIVO_BARRA6PERSONAS',             [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_COLABORATIVO_BARRA8PERSONAS',             [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_COLABORATIVO_BARRA10PERSONAS',            [0, 1, 0, -1, 0])
+set_mod2area_val('WYS_COLABORATIVO_TARIMA13PERSONAS',           [0, 1, 0, -1, 0])
 
-set_mod2area_val('WYS_LOUNGE_4PERSONAS', [1, 0, 0, 0, 0])
-set_mod2area_val('WYS_LOUNGE_8PERSONAS', [1, 0, 0, 0, 0])
-set_mod2area_val('WYS_LOUNGE_3PERSONAS', [1, 0, 0, 0, 0])
-set_mod2area_val('WYS_LOUNGE_5PERSONAS', [1, 0, 0, 0, 0])
+set_mod2area_val('WYS_LOUNGE_4PERSONAS',                        [1, 0, 0, 0, 0])
+set_mod2area_val('WYS_LOUNGE_8PERSONAS',                        [1, 0, 0, 0, 0])
+set_mod2area_val('WYS_LOUNGE_3PERSONAS',                        [1, 0, 0, 0, 0])
+set_mod2area_val('WYS_LOUNGE_5PERSONAS',                        [1, 0, 0, 0, 0])
 
-set_mod2area_val('WYS_RECEPCION_1PERSONA', [10, 0, 0, 0, 0])
-set_mod2area_val('WYS_RECEPCION_2PERSONAS', [10, 0, 0, 0, 0])
+set_mod2area_val('WYS_RECEPCION_1PERSONA',                      [10, 0, 0, 0, 0])
+set_mod2area_val('WYS_RECEPCION_2PERSONAS',                     [10, 0, 0, 0, 0])
 
-set_mod2area_val('WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS', [0, -1, 0, -1, 1])
-set_mod2area_val('WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA', [0, -1, 0, -1, 1])
+set_mod2area_val('WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    [0, -1, 0, -1, 1])
+set_mod2area_val('WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    [0, -1, 0, -1, 1])
 
-set_mod2area_val('WYS_WORKCOFFEECOMEDOR_20PERSONAS', [0, 0.5, 0.5, 1, 0.5])
-set_mod2area_val('WYS_WORKCOFFEECOMEDOR_16PERSONAS', [0, 0.5, 0.5, 1, 0.5])
-set_mod2area_val('WYS_WORKCOFFEECOMEDOR_28PERSONAS', [0, 0.5, 0.5, 1, 0.5])
+set_mod2area_val('WYS_WORKCOFFEECOMEDOR_20PERSONAS',            [0, 0.5, 0.5, 1, 0.5])
+set_mod2area_val('WYS_WORKCOFFEECOMEDOR_16PERSONAS',            [0, 0.5, 0.5, 1, 0.5])
+set_mod2area_val('WYS_WORKCOFFEECOMEDOR_28PERSONAS',            [0, 0.5, 0.5, 1, 0.5])
 
-set_mod2area_val('WYS_SOPORTE_SALALACTANCIA1PERSONA', [0, -1, 0, 1, 0])
+set_mod2area_val('WYS_SOPORTE_SALALACTANCIA1PERSONA',           [0, -1, 0, 1, 0])
 
-set_mod2area_val('WYS_SOPORTE_SERVIDOR1BASTIDOR', [-1, -1, 0, 0, 1])
-set_mod2area_val('WYS_SOPORTE_SERVIDOR2BASTIDORES', [-1, -1, 0, 0, 1])
-set_mod2area_val('WYS_SOPORTE_SERVIDOR3BASTIDORES', [-1, -1, 0, 0, 1])
+set_mod2area_val('WYS_SOPORTE_SERVIDOR1BASTIDOR',               [-1, -1, 0, 0, 1])
+set_mod2area_val('WYS_SOPORTE_SERVIDOR2BASTIDORES',             [-1, -1, 0, 0, 1])
+set_mod2area_val('WYS_SOPORTE_SERVIDOR3BASTIDORES',             [-1, -1, 0, 0, 1])
 
-set_mod2area_val('WYS_SOPORTE_BAÑOUNIVERSAL1PERSONA', [0, 0, 0, 10, 5])
-set_mod2area_val('WYS_SOPORTE_BAÑOINDIVIDUAL1PERSONA', [0, 0, 0, 10, 5])
+set_mod2area_val('WYS_SOPORTE_BAÑOUNIVERSAL1PERSONA',           [0, 0, 0, 10, 5])
+set_mod2area_val('WYS_SOPORTE_BAÑOINDIVIDUAL1PERSONA',          [0, 0, 0, 10, 5])
 
-set_mod2area_val('WYS_SOPORTE_KITCHENETTE', [0, -2, 0, 10, 5])
+set_mod2area_val('WYS_SOPORTE_KITCHENETTE',                     [0, -2, 0, 10, 5])
 
-set_mod2area_val('WYS_SOPORTE_PRINT1', [0, 0, 0, -1, 1])
-set_mod2area_val('WYS_SOPORTE_PRINT2', [0, 0, 0, -1, 1])
+set_mod2area_val('WYS_SOPORTE_PRINT1',                          [0, 0, 0, -1, 1])
+set_mod2area_val('WYS_SOPORTE_PRINT2',                          [0, 0, 0, -1, 1])
 
-set_mod2area_val('WYS_SOPORTE_GUARDADOBAJO', [0, 0, 0, 0, 0])
-set_mod2area_val('WYS_SOPORTE_GUARDADOALTO', [0, -1, 0, 0, 0])
+set_mod2area_val('WYS_SOPORTE_GUARDADOBAJO',                    [0, 0, 0, 0, 0])
+set_mod2area_val('WYS_SOPORTE_GUARDADOALTO',                    [0, -1, 0, 0, 0])
 
-set_mod2area_val('WYS_SOPORTE_LOCKERS', [0, -1, 0, 0, 0])
-set_mod2area_val('WYS_SOPORTE_BODEGA', [0, -1, 0, 0, 1])
+set_mod2area_val('WYS_SOPORTE_LOCKERS',                         [0, -1, 0, 0, 0])
+set_mod2area_val('WYS_SOPORTE_BODEGA',                          [0, -1, 0, 0, 1])
 
-set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', [0, 0, 0, 10, 5])
-set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', [0, 0, 0, 10, 5])
+set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    [0, 0, 0, 10, 5])
+set_mod2area_val('WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   [0, 0, 0, 10, 5])
 
-set_mod2area_val('WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS', [0, 0, 0, 0, 1])
+set_mod2area_val('WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   [0, 0, 0, 0, 1])
 
-set_mod2area_val('WYS_ESPECIALES_MINDBREAKROOM1PERSONA', [0, 0, 0, 0, 1])
-set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING4PERSONAS', [0, 1, 0, 0, 1])
-set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING7PERSONAS', [0, 1, 0, 0, 1])
-set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING11PERSONAS', [0, 1, 0, 0, 1])
-
-
+set_mod2area_val('WYS_ESPECIALES_MINDBREAKROOM1PERSONA',        [0, 0, 0, 0, 1])
+set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING4PERSONAS',       [0, 1, 0, 0, 1])
+set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING7PERSONAS',       [0, 1, 0, 0, 1])
+set_mod2area_val('WYS_ESPECIALES_BRAINSTORMING11PERSONAS',      [0, 1, 0, 0, 1])
 
 
 #Puestos de trabajo con puestos de trabajo
@@ -232,6 +215,7 @@ for row in range(12, 26):
 for row in range(0, 12):
     for col in range(60, 62):
         mod2mod_matrix[row][col] = -1
+
 #puestos de trabajo con baños
 for row in range(0, 12):
     for col in range(51, 53):
@@ -241,7 +225,6 @@ for row in range(0, 12):
 for row in range(12, 26):
     for col in range(47, 62):
         mod2mod_matrix[row][col] = -1
-
 
 #salas de reunion con soporte
 for row in range(12, 26):
@@ -269,14 +252,12 @@ for row in range(30, 36):
         mod2mod_matrix[row][col] = -1
 
 
-
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SALAREUNION_DIRECTORIO14PERSONAS', 'WYS_PRIVADO_1PERSONAESTAR', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SALAREUNION_DIRECTORIO14PERSONAS', 'WYS_PRIVADO_1PERSONAMESA', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SALAREUNION_DIRECTORIO16PERSONAS', 'WYS_PRIVADO_1PERSONAESTAR', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SALAREUNION_DIRECTORIO16PERSONAS', 'WYS_PRIVADO_1PERSONAMESA', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SALAREUNION_DIRECTORIO20PERSONAS', 'WYS_PRIVADO_1PERSONAESTAR', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SALAREUNION_DIRECTORIO20PERSONAS', 'WYS_PRIVADO_1PERSONAMESA', 1)
-
 
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', 'WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', 'WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', 1)
@@ -297,7 +278,6 @@ set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_BAÑOIN
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_BAÑOINDIVIDUAL1PERSONA', 'WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS', 'WYS_SOPORTE_BAÑOINDIVIDUAL1PERSONA', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS', 'WYS_SOPORTE_BAÑOINDIVIDUAL1PERSONA', 1)
-
 
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_GUARDADOBAJO', 'WYS_SOPORTE_GUARDADOBAJO', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_GUARDADOBAJO', 'WYS_PUESTOTRABAJO_RECTO2PERSONAS', 1)
@@ -323,42 +303,35 @@ set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_PRINT1'
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_PRINT2', 'WYS_SOPORTE_PRINT1', -0.5)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_SOPORTE_PRINT2', 'WYS_SOPORTE_PRINT2', -1)
 
-
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_MEETINGBOOTH2PERSONAS', 'WYS_SOPORTE_KITCHENETTE', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_MEETINGBOOTH2PERSONAS', 'WYS_WORKCOFFEECOMEDOR_20PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_MEETINGBOOTH2PERSONAS', 'WYS_WORKCOFFEECOMEDOR_16PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_MEETINGBOOTH2PERSONAS', 'WYS_WORKCOFFEECOMEDOR_28PERSONAS', 1)
-
 
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_MEETINGBOOTH4PERSONAS', 'WYS_SOPORTE_KITCHENETTE', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_MEETINGBOOTH4PERSONAS', 'WYS_WORKCOFFEECOMEDOR_20PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_MEETINGBOOTH4PERSONAS', 'WYS_WORKCOFFEECOMEDOR_16PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_MEETINGBOOTH4PERSONAS', 'WYS_WORKCOFFEECOMEDOR_28PERSONAS', 1)
 
-
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA6PERSONAS', 'WYS_SOPORTE_KITCHENETTE', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA6PERSONAS', 'WYS_WORKCOFFEECOMEDOR_20PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA6PERSONAS', 'WYS_WORKCOFFEECOMEDOR_16PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA6PERSONAS', 'WYS_WORKCOFFEECOMEDOR_28PERSONAS', 1)
-
 
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA8PERSONAS', 'WYS_SOPORTE_KITCHENETTE', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA8PERSONAS', 'WYS_WORKCOFFEECOMEDOR_20PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA8PERSONAS', 'WYS_WORKCOFFEECOMEDOR_16PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA8PERSONAS', 'WYS_WORKCOFFEECOMEDOR_28PERSONAS', 1)
 
-
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA10PERSONAS', 'WYS_SOPORTE_KITCHENETTE', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA10PERSONAS', 'WYS_WORKCOFFEECOMEDOR_20PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA10PERSONAS', 'WYS_WORKCOFFEECOMEDOR_16PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_BARRA10PERSONAS', 'WYS_WORKCOFFEECOMEDOR_28PERSONAS', 1)
 
-
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_TARIMA13PERSONAS', 'WYS_SOPORTE_KITCHENETTE', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_TARIMA13PERSONAS', 'WYS_WORKCOFFEECOMEDOR_20PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_TARIMA13PERSONAS', 'WYS_WORKCOFFEECOMEDOR_16PERSONAS', 1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_COLABORATIVO_TARIMA13PERSONAS', 'WYS_WORKCOFFEECOMEDOR_28PERSONAS', 1)
-
 
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS', 'WYS_PUESTOTRABAJO_RECTO2PERSONAS', -1)
 set_mod2mod_matrix_value(module_dictionary, mod2mod_matrix, 'WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS', 'WYS_PUESTOTRABAJO_RECTO4PERSONAS', -1)

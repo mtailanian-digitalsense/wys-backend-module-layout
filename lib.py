@@ -3,6 +3,8 @@ import requests
 from io import BytesIO
 import json
 import base64
+from shapely.geometry.polygon import Polygon
+from Layout_App import example_data_v3          # temporal
 
 def get_floor_elements_p(floor_dict: dict, floor_loc=None):
     """
@@ -14,9 +16,33 @@ def get_floor_elements_p(floor_dict: dict, floor_loc=None):
         floor_loc = init_floor(floor_dict)
     
     floor_polygons = floor_dict['selected_floor']['polygons']
-
     # Save floor elements here
     floor_elements = []
+
+    border = 0
+    plant_exterior = []
+    points_ex = []
+    for Area in floor_polygons:
+        if Area.get('name') == 'WYS_AREA_UTIL':
+            border = [(round(a.get('x') / 100, 2), round(a.get('y') / 100, 2)) for a in Area.get('points')]
+    borde = Polygon(border)
+    borde_buff = borde.buffer(0.5, cap_style=3, join_style=2)
+    x, y = borde_buff.envelope.exterior.xy
+    plant_exterior.append('WYS_PLANT_EXTERIOR')
+    for i in range(len(x)):
+        points_ex.append((x[i], y[i]))
+    plant_exterior.append(points_ex)
+    element = FloorPolygon(0, plant_exterior[0])
+    i = 0
+    for point in plant_exterior[1]:
+        # (point_m - origin) multiplied for the pixel/meters reason.
+        point_position_x = (point[0] - floor_loc.x_0) * floor_loc.x_pixel_m
+        # Y coordinate is always positive
+        point_position_y = (point[1] - floor_loc.y_0) * -1 * floor_loc.y_pixel_m
+        element.add_point(i, abs(point_position_x), abs(point_position_y))
+        i += 1
+    floor_elements.append(element.to_dict())
+
     for fp in floor_polygons:
         element = FloorPolygon(fp['id'], fp['name'])
 
@@ -287,3 +313,6 @@ def resize_base64_image(image_base64: str, width_p: int, height_p: int):
     image2.save(io_bytes, format='PNG')
     new_image_str: bytearray = base64.b64encode(io_bytes.getvalue())
     return f"{image_base64.split(',')[0]},{new_image_str.decode('utf-8')}"
+
+
+#elementos = get_floor_elements_p(example_data_v3.dict_ex)
