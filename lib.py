@@ -26,15 +26,36 @@ def get_floor_elements_p(floor_dict: dict, floor_loc=None):
         if Area.get('name') == 'WYS_AREA_UTIL':
             border = [(round(a.get('x') / 100, 2), round(a.get('y') / 100, 2)) for a in Area.get('points')]
     borde = Polygon(border)
-    borde_buff = borde.buffer(0.5, cap_style=3, join_style=2)
-    x, y = borde_buff.envelope.exterior.xy
+
+    plant_exterior = []
+    points_ex = []
     plant_exterior.append('WYS_PLANT_EXTERIOR')
+    x, y = borde.exterior.xy
     for i in range(len(x)):
         points_ex.append((x[i], y[i]))
     plant_exterior.append(points_ex)
     element = FloorPolygon(0, plant_exterior[0])
     i = 0
     for point in plant_exterior[1]:
+        # (point_m - origin) multiplied for the pixel/meters reason.
+        point_position_x = (point[0] - floor_loc.x_0) * floor_loc.x_pixel_m
+        # Y coordinate is always positive
+        point_position_y = (point[1] - floor_loc.y_0) * -1 * floor_loc.y_pixel_m
+        element.add_point(i, abs(point_position_x), abs(point_position_y))
+        i += 1
+    floor_elements.append(element.to_dict())
+
+    plant_exterior_env = []
+    points_ex_env = []
+    plant_exterior_env.append('WYS_PLANT_EXTERIOR_ENV')
+    borde_buff = borde.buffer(0.5, cap_style=3, join_style=2)
+    x, y = borde_buff.envelope.exterior.xy
+    for i in range(len(x)):
+        points_ex_env.append((x[i], y[i]))
+    plant_exterior_env.append(points_ex_env)
+    element = FloorPolygon(0, plant_exterior_env[0])
+    i = 0
+    for point in plant_exterior_env[1]:
         # (point_m - origin) multiplied for the pixel/meters reason.
         point_position_x = (point[0] - floor_loc.x_0) * floor_loc.x_pixel_m
         # Y coordinate is always positive
