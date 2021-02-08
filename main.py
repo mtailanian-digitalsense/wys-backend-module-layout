@@ -34,19 +34,19 @@ DB_SCHEMA = os.getenv('DB_SCHEMA', 'wys')
 APP_HOST = os.getenv('APP_HOST', '127.0.0.1')
 APP_PORT = os.getenv('APP_PORT', 5006)
 
-#Buildings module info
+# Buildings module info
 BUILDINGS_MODULE_HOST = os.getenv('BUILDINGS_MODULE_HOST', '127.0.0.1')
 BUILDINGS_MODULE_PORT = os.getenv('BUILDINGS_MODULE_PORT', 5004)
 BUILDINGS_MODULE_API = os.getenv('BUILDINGS_MODULE_API', '/api/buildings/')
 BUILDINGS_URL = f"http://{BUILDINGS_MODULE_HOST}:{BUILDINGS_MODULE_PORT}"
 
-#Spaces module info
+# Spaces module info
 SPACES_MODULE_HOST = os.getenv('SPACES_MODULE_IP', '127.0.0.1')
 SPACES_MODULE_PORT = os.getenv('SPACES_MODULE_PORT', 5002)
 SPACES_MODULE_API = os.getenv('SPACES_MODULE_API', '/api/spaces/')
 SPACES_URL = f"http://{SPACES_MODULE_HOST}:{SPACES_MODULE_PORT}"
 
-#Projects module info
+# Projects module info
 PROJECTS_MODULE_HOST = os.getenv('PROJECTS_MODULE_HOST', '127.0.0.1')
 PROJECTS_MODULE_PORT = os.getenv('PROJECTS_MODULE_PORT', 5000)
 PROJECTS_MODULE_API = os.getenv('PROJECTS_MODULE_API', '/api/projects/')
@@ -68,6 +68,7 @@ except Exception as e:
 
 app.logger.setLevel(logging.DEBUG)
 db = SQLAlchemy(app)
+
 
 class LayoutGenerated(db.Model):
     """
@@ -108,6 +109,7 @@ class LayoutGenerated(db.Model):
         Serialize to json
         """
         return jsonify(self.to_dict())
+
 
 class LayoutGeneratedWorkspace(db.Model):
     """
@@ -163,6 +165,7 @@ class LayoutGeneratedWorkspace(db.Model):
         """
         return jsonify(self.to_dict())
 
+
 class LayoutZone(db.Model):
     """
     LayoutZone.
@@ -204,6 +207,7 @@ class LayoutZone(db.Model):
         """
         return jsonify(self.to_dict())
 
+
 class LayoutConfig(db.Model):
     """
     LayoutConfig.
@@ -239,6 +243,7 @@ class LayoutConfig(db.Model):
         """
         return jsonify(self.to_dict())
 
+
 db.create_all() # Create all tables
 
 # Swagger Config
@@ -266,6 +271,7 @@ def get_project_by_id(project_id, token):
         raise Exception("Cannot connect to the projects module")
     return None
 
+
 def update_project_by_id(project_id, data, token):
     headers = {'Authorization': token}
     api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
@@ -275,6 +281,7 @@ def update_project_by_id(project_id, data, token):
     elif rv.status_code == 500:
         raise Exception("Cannot connect to the projects module")
     return None
+
 
 def get_space_by_id(space_id, token):
     headers = {'Authorization': token}
@@ -286,6 +293,7 @@ def get_space_by_id(space_id, token):
         raise Exception("Cannot connect to the spaces module")
     return None
 
+
 def get_floor_by_ids(building_id, floor_id, token):
     headers = {'Authorization': token}
     api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + '/floors/'+ str(floor_id)
@@ -295,6 +303,7 @@ def get_floor_by_ids(building_id, floor_id, token):
     elif rv.status_code == 500:
         raise Exception("Cannot connect to the buildings module")
     return None
+
 
 def get_floor_polygons_by_ids(building_id, floor_id, token):
     headers = {'Authorization': token}
@@ -306,6 +315,7 @@ def get_floor_polygons_by_ids(building_id, floor_id, token):
         raise Exception("Cannot connect to the buildings module")
     return None
 
+
 def get_subcategories(token):
     headers = {'Authorization': token}
     api_url = SPACES_URL + SPACES_MODULE_API + 'subcategories'
@@ -315,6 +325,7 @@ def get_subcategories(token):
     elif rv.status_code == 500:
         raise Exception("Cannot connect to the buildings module")
     return None
+
 
 def token_required(f):
     @wraps(f)
@@ -346,6 +357,7 @@ def token_required(f):
 
     return decorator
 
+
 @app.route("/api/layouts/spec", methods=['GET'])
 @token_required
 def spec():
@@ -357,6 +369,7 @@ def spec():
         "description": "Methods to configure layouts"
     }]
     return jsonify(swag)
+
 
 @app.route('/api/layouts/data/<layout_gen_id>', methods = ['GET'])
 @token_required
@@ -393,6 +406,7 @@ def get_layout_by_layout_gen_id(layout_gen_id):
       msg = f"Error: mesg ->{exp}"
       app.logger.error(msg)
       return msg, 404
+
 
 @app.route("/api/layouts/<project_id>", methods=['POST'])
 @token_required
@@ -592,6 +606,7 @@ def generate_layout(project_id):
         app.logger.error(msg)
         return msg, 500
 
+
 @app.route("/api/layouts/<project_id>", methods=['GET'])
 @token_required
 def get_layout_by_project(project_id):
@@ -656,6 +671,7 @@ def get_layout_by_project(project_id):
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
         return msg, 500
+
 
 @app.route("/api/layouts/<project_id>", methods=['PUT'])
 @token_required
@@ -753,6 +769,7 @@ def update_layout_by_project(project_id):
         app.logger.error(msg)
         return msg, 500
 
+
 @app.route("/api/layouts/configs", methods=['GET'])
 @token_required
 def get_layout_config():
@@ -778,6 +795,7 @@ def get_layout_config():
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
         return msg, 500
+
 
 @app.route("/api/layouts/configs", methods=['PUT'])
 @token_required
@@ -1145,6 +1163,7 @@ def get_layout():
         app.logger.error(msg)
         return msg, 500
 
+
 @app.route("/api/layouts/zones", methods=['POST'])
 @token_required
 def create_zones():
@@ -1422,5 +1441,6 @@ def get_all_zones():
         logging.error(f'Internal error: {e}')
         abort(500, description=f'Internal error: {e}')
 
+
 if __name__ == '__main__':
-    app.run(host = APP_HOST, port = APP_PORT, debug = True)
+    app.run(host=APP_HOST, port=APP_PORT, debug=True)
