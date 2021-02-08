@@ -371,7 +371,7 @@ def spec():
     return jsonify(swag)
 
 
-@app.route('/api/layouts/data/<layout_gen_id>', methods = ['GET'])
+@app.route('/api/layouts/data/<layout_gen_id>', methods=['GET'])
 @token_required
 def get_layout_by_layout_gen_id(layout_gen_id):
     """

@@ -15,13 +15,13 @@ import matplotlib.pyplot as plt
 
 #import viewer
 #import restrictions
-from random import randrange
+# from random import randrange
 #from get_areas2 import get_area2
 #from get_areas import get_area
-# from Layout_App import viewer
-# from Layout_App import restrictions
-# from Layout_App.randrange import randrange
-# from Layout_App.get_areas2 import get_area2
+from Layout_App import viewer
+from Layout_App import restrictions
+from Layout_App.randrange import randrange
+from Layout_App.get_areas2 import get_area2
 #from lines_areas_test import get_pol_zones
 random.seed(100)
 
