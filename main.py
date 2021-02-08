@@ -34,19 +34,19 @@ DB_SCHEMA = os.getenv('DB_SCHEMA', 'wys')
 APP_HOST = os.getenv('APP_HOST', '127.0.0.1')
 APP_PORT = os.getenv('APP_PORT', 5006)
 
-#Buildings module info
+# Buildings module info
 BUILDINGS_MODULE_HOST = os.getenv('BUILDINGS_MODULE_HOST', '127.0.0.1')
 BUILDINGS_MODULE_PORT = os.getenv('BUILDINGS_MODULE_PORT', 5004)
 BUILDINGS_MODULE_API = os.getenv('BUILDINGS_MODULE_API', '/api/buildings/')
 BUILDINGS_URL = f"http://{BUILDINGS_MODULE_HOST}:{BUILDINGS_MODULE_PORT}"
 
-#Spaces module info
+# Spaces module info
 SPACES_MODULE_HOST = os.getenv('SPACES_MODULE_IP', '127.0.0.1')
 SPACES_MODULE_PORT = os.getenv('SPACES_MODULE_PORT', 5002)
 SPACES_MODULE_API = os.getenv('SPACES_MODULE_API', '/api/spaces/')
 SPACES_URL = f"http://{SPACES_MODULE_HOST}:{SPACES_MODULE_PORT}"
 
-#Projects module info
+# Projects module info
 PROJECTS_MODULE_HOST = os.getenv('PROJECTS_MODULE_HOST', '127.0.0.1')
 PROJECTS_MODULE_PORT = os.getenv('PROJECTS_MODULE_PORT', 5000)
 PROJECTS_MODULE_API = os.getenv('PROJECTS_MODULE_API', '/api/projects/')
@@ -68,6 +68,7 @@ except Exception as e:
 
 app.logger.setLevel(logging.DEBUG)
 db = SQLAlchemy(app)
+
 
 class LayoutGenerated(db.Model):
     """
@@ -108,6 +109,7 @@ class LayoutGenerated(db.Model):
         Serialize to json
         """
         return jsonify(self.to_dict())
+
 
 class LayoutGeneratedWorkspace(db.Model):
     """
@@ -163,6 +165,7 @@ class LayoutGeneratedWorkspace(db.Model):
         """
         return jsonify(self.to_dict())
 
+
 class LayoutZone(db.Model):
     """
     LayoutZone.
@@ -204,6 +207,7 @@ class LayoutZone(db.Model):
         """
         return jsonify(self.to_dict())
 
+
 class LayoutConfig(db.Model):
     """
     LayoutConfig.
@@ -239,6 +243,7 @@ class LayoutConfig(db.Model):
         """
         return jsonify(self.to_dict())
 
+
 db.create_all() # Create all tables
 
 # Swagger Config
@@ -266,6 +271,7 @@ def get_project_by_id(project_id, token):
         raise Exception("Cannot connect to the projects module")
     return None
 
+
 def update_project_by_id(project_id, data, token):
     headers = {'Authorization': token}
     api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
@@ -275,6 +281,7 @@ def update_project_by_id(project_id, data, token):
     elif rv.status_code == 500:
         raise Exception("Cannot connect to the projects module")
     return None
+
 
 def get_space_by_id(space_id, token):
     headers = {'Authorization': token}
@@ -286,6 +293,7 @@ def get_space_by_id(space_id, token):
         raise Exception("Cannot connect to the spaces module")
     return None
 
+
 def get_floor_by_ids(building_id, floor_id, token):
     headers = {'Authorization': token}
     api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + '/floors/'+ str(floor_id)
@@ -295,6 +303,7 @@ def get_floor_by_ids(building_id, floor_id, token):
     elif rv.status_code == 500:
         raise Exception("Cannot connect to the buildings module")
     return None
+
 
 def get_floor_polygons_by_ids(building_id, floor_id, token):
     headers = {'Authorization': token}
@@ -306,6 +315,7 @@ def get_floor_polygons_by_ids(building_id, floor_id, token):
         raise Exception("Cannot connect to the buildings module")
     return None
 
+
 def get_subcategories(token):
     headers = {'Authorization': token}
     api_url = SPACES_URL + SPACES_MODULE_API + 'subcategories'
@@ -315,6 +325,7 @@ def get_subcategories(token):
     elif rv.status_code == 500:
         raise Exception("Cannot connect to the buildings module")
     return None
+
 
 def token_required(f):
     @wraps(f)
@@ -346,6 +357,7 @@ def token_required(f):
 
     return decorator
 
+
 @app.route("/api/layouts/spec", methods=['GET'])
 @token_required
 def spec():
@@ -357,6 +369,7 @@ def spec():
         "description": "Methods to configure layouts"
     }]
     return jsonify(swag)
+
 
 @app.route("/api/layouts/<project_id>", methods=['POST'])
 @token_required
@@ -488,7 +501,8 @@ def generate_layout(project_id):
 
         if len(workspaces) == 0:
             return "No spaces were entered in the body.", 400
-        workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap','right_gap','subcategory_id','points'}
+        workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap',
+                            'right_gap','subcategory_id','points'}
         token = request.headers.get('Authorization', None)
         subcategories = get_subcategories(token)
         for workspace in workspaces:
@@ -515,8 +529,10 @@ def generate_layout(project_id):
         config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
 
-        layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 50, config.generations if config is not None else 50)
-        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces, SPACES_URL+SPACES_MODULE_API, token)
+        layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 50,
+                                         config.generations if config is not None else 50)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
+                                                             SPACES_URL+SPACES_MODULE_API, token)
 
         layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
         if layout_gen is not None:
@@ -541,7 +557,8 @@ def generate_layout(project_id):
         del floor['polygons']
         layout_gen['selected_floor'] = floor
         for wk in layout_gen['workspaces']:
-            wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]), None)
+            wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]),
+                               None)
 
         layout_gen['floor_elements'] = floor_elements
 
@@ -555,6 +572,7 @@ def generate_layout(project_id):
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
         return msg, 500
+
 
 @app.route("/api/layouts/<project_id>", methods=['GET'])
 @token_required
@@ -620,6 +638,7 @@ def get_layout_by_project(project_id):
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
         return msg, 500
+
 
 @app.route("/api/layouts/<project_id>", methods=['PUT'])
 @token_required
@@ -717,6 +736,7 @@ def update_layout_by_project(project_id):
         app.logger.error(msg)
         return msg, 500
 
+
 @app.route("/api/layouts/configs", methods=['GET'])
 @token_required
 def get_layout_config():
@@ -742,6 +762,7 @@ def get_layout_config():
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
         return msg, 500
+
 
 @app.route("/api/layouts/configs", methods=['PUT'])
 @token_required
@@ -927,7 +948,8 @@ def generate_layout_async():
 
         if len(workspaces) == 0:
             return "No spaces were entered in the body.", 400
-        workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap','right_gap','subcategory_id','points'}
+        workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap',
+                            'right_gap','subcategory_id','points'}
         token = request.headers.get('Authorization', None)
         subcategories = get_subcategories(token)
         for workspace in workspaces:
@@ -1065,7 +1087,8 @@ def get_layout():
             return "The project doesn't exist", 404
 
         layout_workspaces, layout_data = job.result
-        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces, SPACES_URL + SPACES_MODULE_API, token)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
+                                                             SPACES_URL + SPACES_MODULE_API, token)
 
         floor = layout_data['selected_floor']
 
@@ -1094,7 +1117,7 @@ def get_layout():
         for wk in layout_gen['workspaces']:
             wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]),
                                None)
-                               
+
         layout_gen['floor_elements'] = floor_elements
 
         return jsonify(layout_gen), 201
@@ -1108,6 +1131,7 @@ def get_layout():
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
         return msg, 500
+
 
 @app.route("/api/layouts/zones", methods=['POST'])
 @token_required
@@ -1167,7 +1191,6 @@ def create_zones():
             w_space = db.session.query(LayoutGeneratedWorkspace).filter_by(id=w_space_id).first()
             if w_space is not None:
                 zone.spaces_gen.append(w_space)
-
 
         db.session.add(zone)
         db.session.commit()
@@ -1386,5 +1409,6 @@ def get_all_zones():
         logging.error(f'Internal error: {e}')
         abort(500, description=f'Internal error: {e}')
 
+
 if __name__ == '__main__':
-    app.run(host = APP_HOST, port = APP_PORT, debug = True)
+    app.run(host=APP_HOST, port=APP_PORT, debug=True)
