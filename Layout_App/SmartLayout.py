@@ -1588,7 +1588,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                     ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
                     ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6, 1],
                     ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             25, 3.37, 3.37, 2],
-                    #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            0, 3.82, 1.4],
+                    ['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            0, 3.82, 1.4, 2],
                     ['WYS_PRIVADO_1PERSONA',                        2, 3.5, 2.8, 3],
                     ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
                     ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    0, 3.54, 3.02, 4],
