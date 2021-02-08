@@ -54,25 +54,9 @@ PROJECTS_URL = f"http://{PROJECTS_MODULE_HOST}:{PROJECTS_MODULE_PORT}"
 
 app = Flask(__name__)
 CORS(app)
-
-#sqlalchemy configurations
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql://{DB_USER}:{DB_PASS}@{DB_IP}:{DB_PORT}/{DB_SCHEMA}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Swagger Configurations
-SWAGGER_URL = '/api/layouts/docs/'
-API_URL = '/api/layouts/spec'
-swaggerui_blueprint = get_swaggerui_blueprint(
-    SWAGGER_URL,
-    API_URL,
-    config={  # Swagger UI config overrides
-        'app_name': "WYS API - Layouts Service"
-    }
-)
-app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-
-
-# Reading public key
 try:
     f = open('oauth-public.key', 'r')
     key: str = f.read()
@@ -257,6 +241,21 @@ class LayoutConfig(db.Model):
 
 db.create_all() # Create all tables
 
+# Swagger Config
+
+SWAGGER_URL = '/api/layouts/docs/'
+API_URL = '/api/layouts/spec'
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={  # Swagger UI config overrides
+        'app_name': "WYS API - Layout Service"
+    }
+)
+
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+
 def get_project_by_id(project_id, token):
     headers = {'Authorization': token}
     api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
@@ -382,6 +381,7 @@ def get_layout_by_layout_gen_id(layout_gen_id):
     """
     try:
         token = request.headers.get('Authorization', None)
+        print(layout_gen_id)
         layout_generated = LayoutGenerated.query.filter_by(id=layout_gen_id).first()
         if layout_generated is not None:
           return jsonify({'layout': 'completed'}), 200
