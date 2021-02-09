@@ -538,7 +538,8 @@ def generate_layout(project_id):
 
         if len(workspaces) == 0:
             return "No spaces were entered in the body.", 400
-        workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap','right_gap','subcategory_id','points'}
+        workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap',
+                            'right_gap','subcategory_id','points'}
         token = request.headers.get('Authorization', None)
         subcategories = get_subcategories(token)
         for workspace in workspaces:
@@ -565,8 +566,10 @@ def generate_layout(project_id):
         config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
 
-        layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 50, config.generations if config is not None else 50)
-        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces, SPACES_URL+SPACES_MODULE_API, token)
+        layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 20,
+                                         config.generations if config is not None else 50)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
+                                                             SPACES_URL+SPACES_MODULE_API, token)
 
         layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
         if layout_gen is not None:

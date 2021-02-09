@@ -53,7 +53,7 @@ def get_floor_elements_p(floor_dict: dict, floor_loc=None):
     for i in range(len(x)):
         points_ex_env.append((x[i], y[i]))
     plant_exterior_env.append(points_ex_env)
-    element = FloorPolygon(0, plant_exterior_env[0])
+    element = FloorPolygon(1, plant_exterior_env[0])
     i = 0
     for point in plant_exterior_env[1]:
         # (point_m - origin) multiplied for the pixel/meters reason.
