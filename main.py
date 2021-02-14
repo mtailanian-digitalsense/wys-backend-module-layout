@@ -383,14 +383,14 @@ def get_layout_by_layout_gen_id(layout_gen_id):
             type: integer
             description: Layout Gen Id
         tags:
-        - "Layouts"
+         - Layouts
         responses:
           200:
-            description: "completed" if there's a record
+            description: completed if there's a record
           404:
             description: Record Not Found.
           500:
-            description: "Database error"
+            description: Database error
     """
     try:
         token = request.headers.get('Authorization', None)
