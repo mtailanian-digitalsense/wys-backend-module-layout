@@ -1151,7 +1151,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 1,
-    'subcategory_id': 2,
+    'subcategory_id': 1,
     'up_gap': 1,
     'width': 4,
     'quantity': 1
@@ -1165,7 +1165,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 0,
-    'subcategory_id': 4,
+    'subcategory_id': 2,
     'up_gap': 0,
     'width': 3.82,
     'quantity': 10
@@ -1179,7 +1179,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 1,
-    'subcategory_id': 5,
+    'subcategory_id': 3,
     'up_gap': 1,
     'width': 3.5,
     'quantity': 2
@@ -1193,7 +1193,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 2,
-    'subcategory_id': 6,
+    'subcategory_id': 3,
     'up_gap': 2,
     'width': 6.4,
     'quantity': 1
@@ -1207,7 +1207,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 1,
-    'subcategory_id': 7,
+    'subcategory_id': 4,
     'up_gap': 1,
     'width': 3.54,
     'quantity': 4
@@ -1221,7 +1221,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 1,
-    'subcategory_id': 8,
+    'subcategory_id': 4,
     'up_gap': 1,
     'width': 1.6,
     'quantity': 1
@@ -1235,7 +1235,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 1,
-    'subcategory_id': 9,
+    'subcategory_id': 4,
     'up_gap': 1,
     'width': 1.5,
     'quantity': 1
@@ -1249,7 +1249,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 1,
-    'subcategory_id': 13,
+    'subcategory_id': 4,
     'up_gap': 1,
     'width': 1.5,
     'quantity': 2
@@ -1263,7 +1263,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 2,
-    'subcategory_id': 18,
+    'subcategory_id': 5,
     'up_gap': 1,
     'width': 2.7,
     'quantity': 1
@@ -1277,7 +1277,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 1,
-    'subcategory_id': 20,
+    'subcategory_id': 5,
     'up_gap': 1,
     'width': 2.05,
     'quantity': 1
@@ -1291,7 +1291,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 1,
-    'subcategory_id': 21,
+    'subcategory_id': 5,
     'up_gap': 1,
     'width': 2.05,
     'quantity': 1
@@ -1305,7 +1305,7 @@ dict_ex= {
     'points': [],
     'regular': True,
     'right_gap': 3,
-    'subcategory_id': 27,
+    'subcategory_id': 6,
     'up_gap': 2,
     'width': 1.95,
     'quantity': 1
