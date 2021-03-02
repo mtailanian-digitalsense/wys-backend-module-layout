@@ -1465,41 +1465,41 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
-    # input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
-    #                 ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
-    #                 ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
-    #                 ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
-    #                 #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
-    #                 ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
-    #                 ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
-    #                 ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
-    #                 ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
-    #                 ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
-    #                 ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
-    #                 ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
-    #                 ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
-    #                 ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
-    #                 ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
-    #                 ['WYS_COLABORATIVO_BARRA6PERSONAS',             2, 1.95, 2.4, 6],
-    #                 ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   1, 4, 5, 7]]
+    # input_list = [['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
+    #               ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
+    #               ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
+    #               ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
+    #               ['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4, 2],
+    #               ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
+    #               ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
+    #               ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
+    #               ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
+    #               ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
+    #               ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
+    #               ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
+    #               ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
+    #               ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
+    #               ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
+    #               ['WYS_COLABORATIVO_BARRA6PERSONAS',             2, 1.95, 2.4, 6],
+    #               ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   1, 4, 5, 7]]
     
-    # input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
-    #                 ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
-    #                 ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6, 1],
-    #                 ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             25, 3.37, 3.37, 2],
-    #                 ['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            0, 3.82, 1.4, 2],
-    #                 ['WYS_PRIVADO_1PERSONA',                        2, 3.5, 2.8, 3],
-    #                 ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
-    #                 ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    0, 3.54, 3.02, 4],
-    #                 ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   2, 3.54, 3.02, 4],
-    #                 ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
-    #                 ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
-    #                 ['WYS_SOPORTE_PRINT1',                          3, 1.5, 1.3, 4],
-    #                 ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
-    #                 ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
-    #                 ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
-    #                 ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6],
-    #                 ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   0, 4, 5, 7]]
+    input_list = [['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
+                  ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
+                  ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        1, 5.4, 6, 1],
+                  ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             0, 3.37, 3.37, 2],
+                  ['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            25, 3.82, 2.8, 2],
+                  ['WYS_PRIVADO_1PERSONA',                        2, 3.5, 2.8, 3],
+                  ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
+                  ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    0, 3.54, 3.02, 4],
+                  ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   2, 3.54, 3.02, 4],
+                  ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
+                  ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
+                  ['WYS_SOPORTE_PRINT1',                          3, 1.5, 1.3, 4],
+                  ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
+                  ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
+                  ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
+                  ['WYS_COLABORATIVO_BARRA6PERSONAS',             0, 1.95, 2.4, 6],
+                  ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   0, 4, 5, 7]]
     voids = []
 
     border = outline[0][1]
@@ -1883,25 +1883,6 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                     area += boxes[i][0].intersection(boxes[j][0]).area
         return area
 
-    # def feasible(ind):  # Need too add if boxes collide
-    #     """Feasibility function for the individual. Returns True if feasible False
-    #     otherwise."""
-    #     boxes = []
-    #     for mod in ind:
-    #         boxes.append(mod.get_box())
-    #     nb = len(boxes)
-    #     print("¿ Is Feasible ? Boxes = "+str(nb))
-    #     for i in range(nb):
-    #         if not planta.contains(boxes[i]):
-    #             print("Feasible.boxes 1 " + str(len(boxes)))
-    #             return False
-    #         for j in range(i + 1, nb):
-    #             if boxes[i].intersects(boxes[j]):
-    #                 print("Feasible.boxes 2 " + str(j))
-    #                 # print(i,j)
-    #                 return False
-    #     print("Yes")
-    #     return True
 
     creator.create("FitnessMax", base.Fitness, weights=(1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -1939,8 +1920,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         ind.fitness.values = fit
         # print('Fitness Población Inicial: ', round(fit[0], 2))
 
-    #fig, ax = viewer.viewer_viz(planta, As, viz, areas= areas, zones=zones)
-    fig, ax = viewer.viewer_viz(planta, As, viz)
+    fig, ax = viewer.viewer_viz(planta, As, viz, areas=areas, zones=zones)
+    #fig, ax = viewer.viewer_viz(planta, As, viz)
 
     print(round(time.time() - start_time, 2), 'Start of genetic evolution:')
 
