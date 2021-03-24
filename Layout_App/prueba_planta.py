@@ -210,17 +210,24 @@ def get_input(data):
 border = get_input(example_data_v3.dict_ex)
 borde = Polygon(border)
 borde_buff = borde.buffer(0.5, cap_style=3, join_style=2)
+
 plant_exterior = []
 points_ex = []
 plant_exterior.append('WYS_PLANT_EXTERIOR')
-x, y = borde_buff.envelope.exterior.xy
+x, y = borde.exterior.xy
 for i in range(len(x)):
     points_ex.append((x[i], y[i]))
 plant_exterior.append(points_ex)
+plt.plot(x, y, color='green', marker='o')
 
-plt.plot(x, y, color='black')
-x, y = borde.exterior.xy
-plt.plot(x, y, color='green')
+plant_exterior_env = []
+points_ex_env = []
+plant_exterior_env.append('WYS_PLANT_EXTERIOR_ENV')
+x, y = borde_buff.envelope.exterior.xy
+for i in range(len(x)):
+    points_ex_env.append((x[i], y[i]))
+plant_exterior_env.append(points_ex_env)
+plt.plot(x, y, color='black', marker='o')
 
 # # Planta Exterior
 # x, y = planta.exterior.xy

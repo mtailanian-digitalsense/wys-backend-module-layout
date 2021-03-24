@@ -4,7 +4,7 @@ from io import BytesIO
 import json
 import base64
 from shapely.geometry.polygon import Polygon
-from Layout_App import example_data_v3          # temporal
+# from Layout_App import example_data_v3          # temporal
 
 def get_floor_elements_p(floor_dict: dict, floor_loc=None):
     """
@@ -20,8 +20,6 @@ def get_floor_elements_p(floor_dict: dict, floor_loc=None):
     floor_elements = []
 
     border = 0
-    plant_exterior = []
-    points_ex = []
     for Area in floor_polygons:
         if Area.get('name') == 'WYS_AREA_UTIL':
             border = [(round(a.get('x') / 100, 2), round(a.get('y') / 100, 2)) for a in Area.get('points')]
@@ -336,4 +334,4 @@ def resize_base64_image(image_base64: str, width_p: int, height_p: int):
     return f"{image_base64.split(',')[0]},{new_image_str.decode('utf-8')}"
 
 
-#elementos = get_floor_elements_p(example_data_v3.dict_ex)
+# elementos = get_floor_elements_p(example_data_v3.dict_ex)

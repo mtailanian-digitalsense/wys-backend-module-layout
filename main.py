@@ -594,7 +594,8 @@ def generate_layout(project_id):
         del floor['polygons']
         layout_gen['selected_floor'] = floor
         for wk in layout_gen['workspaces']:
-            wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]), None)
+            wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]),
+                               None)
 
         layout_gen['floor_elements'] = floor_elements
 
@@ -984,7 +985,8 @@ def generate_layout_async():
 
         if len(workspaces) == 0:
             return "No spaces were entered in the body.", 400
-        workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap','right_gap','subcategory_id','points'}
+        workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap',
+                            'right_gap','subcategory_id','points'}
         token = request.headers.get('Authorization', None)
         subcategories = get_subcategories(token)
         for workspace in workspaces:
@@ -1122,7 +1124,8 @@ def get_layout():
             return "The project doesn't exist", 404
 
         layout_workspaces, layout_data = job.result
-        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces, SPACES_URL + SPACES_MODULE_API, token)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
+                                                             SPACES_URL + SPACES_MODULE_API, token)
 
         floor = layout_data['selected_floor']
 
@@ -1151,7 +1154,7 @@ def get_layout():
         for wk in layout_gen['workspaces']:
             wk['image'] = next((space['image'] for space in workspaces_coords if space["space_id"] == wk["space_id"]),
                                None)
-                               
+
         layout_gen['floor_elements'] = floor_elements
 
         return jsonify(layout_gen), 201
@@ -1225,7 +1228,6 @@ def create_zones():
             w_space = db.session.query(LayoutGeneratedWorkspace).filter_by(id=w_space_id).first()
             if w_space is not None:
                 zone.spaces_gen.append(w_space)
-
 
         db.session.add(zone)
         db.session.commit()

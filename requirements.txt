@@ -11,14 +11,12 @@ pillow
 pyjwt
 gunicorn
 Rtree
-flask-cors
-requests
 xlrd
 deap
-shapely
 matplotlib
 redis
 rq
+requests
 
 #certifi==2020.11.8
 #cffi==1.14.3
