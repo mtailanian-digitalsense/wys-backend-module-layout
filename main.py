@@ -41,7 +41,7 @@ BUILDINGS_MODULE_API = os.getenv('BUILDINGS_MODULE_API', '/api/buildings/')
 BUILDINGS_URL = f"http://{BUILDINGS_MODULE_HOST}:{BUILDINGS_MODULE_PORT}"
 
 # Spaces module info
-SPACES_MODULE_HOST = os.getenv('SPACES_MODULE_IP', '127.0.0.1')
+SPACES_MODULE_HOST = os.getenv('SPACES_MODULE_HOST', '127.0.0.1')
 SPACES_MODULE_PORT = os.getenv('SPACES_MODULE_PORT', 5002)
 SPACES_MODULE_API = os.getenv('SPACES_MODULE_API', '/api/spaces/')
 SPACES_URL = f"http://{SPACES_MODULE_HOST}:{SPACES_MODULE_PORT}"
@@ -342,7 +342,8 @@ def token_required(f):
             app.logger.debug("token_required")
             return jsonify({'message': 'a valid token is missing'})
 
-        app.logger.debug("Token: " + token)
+        #app.logger.debug("Token: " + token)
+        app.logger.debug(f"Token: {token[0:10]} ... {token[-10:]}")
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'],
                               algorithms=['RS256'], audience="1")
@@ -1010,6 +1011,7 @@ def generate_layout_async():
         floor['polygons'] = floor_polygons
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
         config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+
         job = redis_queue.enqueue(smart_layout_async,
                                   args=(layout_data, config.pop_size, config.generations),
                                   job_timeout=7200)
@@ -1099,6 +1101,7 @@ def get_layout():
 
 
     """
+
     req_params = ["project_id", "job_id"]
     for param in req_params:
         if param not in request.json.keys():

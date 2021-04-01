@@ -3,9 +3,10 @@ from shapely.geometry import box
 from shapely.geometry.polygon import Polygon, LineString
 
 
-def viz_end():
-    plt.ioff()
-    plt.show()
+def viz_end(viz):
+    if viz:
+        plt.ioff()
+        plt.show()
 
 
 def viz_clear(viz, g, NGEN, viz_period, boxes):
