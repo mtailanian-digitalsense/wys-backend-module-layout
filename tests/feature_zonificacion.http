@@ -1,0 +1,193 @@
+@token = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDUwY2E2NzBhZmY4M2IyMjBkOGZkNThkOTU4NDM2NTYxNGZjZWFmMjEwYzhkYjJjZjQ3NTQ4NjQzMThiNWEzOThjZjYyNTA3MTk5MzY4MGQiLCJpYXQiOjE1OTIzMDkxMTcsIm5iZiI6MTU5MjMwOTExNywiZXhwIjoxNjI0MjI1MDM4LCJzdWIiOiIyMyIsInVzZXJfaWQiOjIzLCJzY29wZXMiOltdLCJ1aWQiOjIzfQ.kXmM-nt7HdEmmWqgNLpssvrxjoVkRP0f0akOoDNWLEUAxTfUKx8Egk6PXodDuSl5T2AsO5fIth8E_k9z-sPCm1ayaSD-yGFxdp2cT_O4KjOuBF1uTaGdQ_e69My9hr0p08sQg9lvplmJyMRkdCtce8u_YMOMF9a18edzQsUe7f_u1ae0jllS4y2kA53mQ7ofdHeWtN8wcx31CBaVo3g0EndPK0sYS2DRgBRBNQuVAedS5rkogRNeQKhjZCqL1d-n8b1L1OdyOKwkgbfKQG4Ee6kdjrrZDDDeEja8ReMqzW0q2sjTkLDkNbBuqGS8Zz6Ai4blUyEI6o6o6SHh1qaeGVXBHiVO0971FcH9FjUy2T5amyAJ41e7A9xy6iOVnIxGJ9pRgDo-UAIgFMNGuQDSaKRXhqm76-CkTBqzY7imyx0W6pvHM4XEX3yAGXFsTL9prq64k8RqFfCWPYUy7f25LbyjL__YaXijCXZMN9FfY8LOnKHhthRNkIGD5M5PiiTNOmB0DA1xR_QXGYlO1y8SWeZ9p_S9XYVygNJTh44xyDYIRj40RjSlOnh5gLfquca2EZxgeTSIyDDSXD43_iYmBm8JX-fS2hzqgoL8_0ATlYbW32DAT2ecfIS3nSGqYSv519HOXjAguFVJ0bzU-ZPcXrkynC2f6zNCEJtnJNxdpQ4
+
+
+# localhost service
+@hostname = localhost
+@port = 8086
+
+# devwant service
+#@hostname = wysdev.ac3eplatforms.com
+#@port = 80
+
+@host = {{hostname}}:{{port}}
+@url =  http://{{host}}/api/layouts
+
+
+
+
+### Crear un layout para un proyecto
+
+# @name getJobId
+POST {{url}}/v2
+Authorization: bearer {{token}}
+Content-Type: application/json
+
+{
+  "selected_floor": {
+    "active": true,
+    "building_id": 9,
+    "elevators_number": 4,
+    "id": 17,
+    "image_link": "http://wysdev.ac3eplatforms.com/api/filestorage/NjNhZjIwMjYzN2ZkMjVmZDkzNzI5MzEwYTAxOTQwYTFmZTA2ZTk5ZS5wbmcxNjAxNjU5NzI2LjUwODk5MQ==.png",
+    "m2": 642.72,
+    "rent_value": 5353,
+    "wys_id": "CL17"
+  },
+  "workspaces": [
+    {
+      "active": true,
+      "down_gap": 2,
+      "height": 4.05,
+      "id": 2,
+      "left_gap": 2,
+      "name": "WYS_SALAREUNION_RECTA6PERSONAS",
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "regular": true,
+      "right_gap": 2,
+      "subcategory_id": 1,
+      "up_gap": 2,
+      "width": 3,
+      "quantity": 1
+    },
+    {
+      "active": true,
+      "down_gap": 2,
+      "height": 3.37,
+      "id": 1,
+      "left_gap": 1,
+      "name": "WYS_PUESTOTRABAJO_CELL3PERSONAS",
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "regular": true,
+      "right_gap": 1,
+      "subcategory_id": 4,
+      "up_gap": 2,
+      "width": 3.37,
+      "quantity": 1
+    },
+    {
+      "active": true,
+      "down_gap": 1,
+      "height": 2.8,
+      "id": 30,
+      "left_gap": 1,
+      "name": "WYS_PRIVADO_1PERSONA",
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "regular": true,
+      "right_gap": 1,
+      "subcategory_id": 5,
+      "up_gap": 1,
+      "width": 3.5,
+      "quantity": 1
+    },
+    {
+      "active": true,
+      "down_gap": 1,
+      "height": 3.02,
+      "id": 15,
+      "left_gap": 1,
+      "name": "WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS",
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "regular": true,
+      "right_gap": 1,
+      "subcategory_id": 7,
+      "up_gap": 1,
+      "width": 3.54,
+      "quantity": 1
+    }
+  ]
+}
+
+
+
+
+### Verificar estado de avance de tarea
+@jobId = {{getJobId.response.body.$.job_id}}
+
+GET {{url}}/v2/job/{{jobId}}
+Authorization: bearer {{token}}
+
+
+
+
+### Obtener datos de tarea desde redis queue
+
+POST {{url}}/v2/job
+Authorization: bearer {{token}}
+Content-Type: application/json
+
+{
+    "job_id": "{{jobId}}",
+    "project_id": 48
+}
+
+
+
+
+### Obtener datos de layout de base de datos
+
+GET {{url}}/v2/48
+Authorization: bearer {{token}}
+
+
+
+
+### Actualizar los datos de layout de la base de datos.
+
+PUT {{url}}/v2/48
+Authorization: bearer {{token}}
+Content-Type: application/json
+
+[
+  {
+    "alias": "pomodoro", 
+    "color": "#123456", 
+    "id": 4969, 
+    "position_x": 90.9545, 
+    "position_y": 620.958, 
+    "rotation": "0"
+  }, 
+  {
+    "alias": "flower", 
+    "color": "#Ff0000", 
+    "id": 4970, 
+    "position_x": 1116.49, 
+    "position_y": 504.705, 
+    "rotation": "90"
+  }, 
+  {
+    "alias": "walter", 
+    "color": "fFFfFf", 
+    "id": 4971, 
+    "position_x": 64.7429, 
+    "position_y": 459.495, 
+    "rotation": "0"
+  }, 
+  {
+    "alias": "", 
+    "color": "", 
+    "id": 4972, 
+    "position_x": 801.946, 
+    "position_y": 449.807, 
+    "rotation": "90"
+  }
+]

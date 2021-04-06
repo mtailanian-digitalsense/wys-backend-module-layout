@@ -140,6 +140,8 @@ class LayoutGeneratedWorkspace(db.Model):
         'layout_generated.id'), nullable=False)
     layout_zone_id = db.Column(db.Integer, db.ForeignKey(
         'layout_zone.id'), nullable=True)
+    color = db.Column(db.String(6), nullable=True)
+    alias = db.Column(db.String(45), nullable=True)
 
     def to_dict(self):
         """
@@ -155,7 +157,9 @@ class LayoutGeneratedWorkspace(db.Model):
             'width': self.width,
             'space_id': self.space_id,
             'layout_gen_id': self.layout_gen_id,
-            'layout_zone_id': self.layout_zone_id
+            'layout_zone_id': self.layout_zone_id,
+            'color': self.color if self.color != None else "",
+            'alias': self.alias if self.alias != None else ""
         }
         return dict
 
@@ -1161,6 +1165,231 @@ def get_layout():
         layout_gen['floor_elements'] = floor_elements
 
         return jsonify(layout_gen), 201
+
+    except SQLAlchemyError as e:
+        msg = f'Error saving data: {e}'
+        app.logger.error(msg)
+        return msg, 500
+
+    except Exception as exp:
+        msg = f"Error: mesg ->{exp}"
+        app.logger.error(msg)
+        return msg, 500
+
+
+@app.route("/api/layouts/v2/<project_id>", methods=['GET'])
+@token_required
+def get_db_layout(project_id):
+    """
+        Get latest configuration of the layout in the database.
+        ---
+        parameters:
+          - in: path
+            name: project_id
+            type: integer
+            description: Project ID
+        tags:
+        - Layouts
+        responses:
+          200:
+            description: Layout data Object.
+          404:
+            description: Project Not Found or the Proyect doesn't have a Layout created.
+          500:
+            description: "Database error"
+    """
+    token = request.headers.get('Authorization', None)
+
+    try:
+
+        # Get Project data
+        ##################
+
+        project = get_project_by_id(project_id, token)
+
+        if project is None:
+            return "The project doesn't exist", 404
+
+        # Get Layout data
+        #################
+
+        layout_gen = LayoutGenerated.query.get(project['layout_gen_id'])
+
+        if layout_gen is None:
+            return "The project doesn't have a layout created", 404
+
+        layout_gen = layout_gen.to_dict()
+
+        # Get Floor data
+        ################
+
+        floor = get_floor_by_ids(layout_gen['building_id'], layout_gen['floor_id'], token)
+
+        if floor is None:
+            return "A layout floor doesn't exist", 404
+
+        floor_polygons = get_floor_polygons_by_ids(floor['building_id'], floor['id'], token)
+
+        if floor_polygons is None or len(floor_polygons) == 0:
+            return "The floor doesn't exist or not have a polygons.", 404
+
+        floor['polygons'] = floor_polygons
+        floor_elements = get_floor_elements_p({'selected_floor': floor})
+
+
+        # Process and merge data
+        ########################
+
+        layout_gen['floor_elements']  = floor_elements
+
+        del floor['polygons']
+
+        layout_gen['selected_floor'] = floor
+
+        for wk in layout_gen['workspaces']:
+            space = get_space_by_id(wk['space_id'], token)
+            if space is None:
+                return "A layout space doesn't exist", 404
+            image = resize_base64_image(space['model_2d'], wk['width'], wk['height'])
+            wk['image'] = image
+
+        return jsonify(layout_gen), 200
+
+    except SQLAlchemyError as e:
+        msg = f'Error saving data: {e}'
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f"Error: mesg ->{exp}"
+        app.logger.error(msg)
+        return msg, 500
+
+
+@app.route("/api/layouts/v2/<project_id>", methods=['PUT'])
+@token_required
+def update_db_layout(project_id):
+    """
+        Updates the configuration of the spaces in the layout made by the user in the current project.
+        ---
+        consumes:
+        - "application/json"
+        tags:
+        - Layouts
+        produces:
+        - application/json
+        parameters:
+        - in: path
+          name: project_id
+          type: integer
+          description: Project ID
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: Unique ID of each layout workspace.
+                rotation:
+                  type: string
+                  description: Rotation of the space in layout.
+                position_x:
+                  type: number
+                  format: float
+                  description: X coordinate of the space position in layout.
+                position_y:
+                  type: number
+                  format: float
+                  description: Y coordinate of the space position in layout.
+                color:
+                  type: string
+                  description: rgb color, may be '#123ABC' or '123ABC'
+                alias:
+                  type: string
+                  description: alias given by the client.
+        responses:
+            200:
+                description: Layout data Object updated.
+            400:
+                description: Request error, bad format or type.
+            404:
+                description: Data object not found.
+            500:
+                description: Internal Error Server
+    """
+    try:
+
+        # Get project and layout data
+        #############################
+
+        token = request.headers.get('Authorization', None)
+        project = get_project_by_id(project_id, token)
+
+        if project is None:
+            return "The project doesn't exist", 404
+
+        layout_gen = LayoutGenerated.query.get(project['layout_gen_id'])
+
+        if layout_gen is None:
+            return "The project doesn't have a layout created", 404
+
+
+        # Input Verification
+        ####################
+
+        params = {'id', 'rotation', 'position_x', 'position_y', 'color', 'alias'}
+
+        if not request.json:
+            return "The body isn\'t application/json", 400
+        
+        elif len(request.json) == 0:
+            return 'Body data required', 400
+
+        request_params = tuple(set(a) for a in request.json)
+
+        # ws = workspace
+        if any("id" not in ws_params for ws_params in request_params):
+            return "there is not 'id' in a workspace data", 400
+
+        elif any(not ws_params.issubset(params) for ws_params in request_params):
+            return "there are extra fields, only support id, rotation, position_x, position_y, color, alias", 400
+
+
+        # Update data
+        #############
+
+        for data in request.json:
+
+            workspace = LayoutGeneratedWorkspace.query \
+                        .filter_by(id=data['id'], layout_gen_id=layout_gen.id) \
+                        .first()
+
+            if not workspace:
+                db.session.rollback()
+                return f"workspace with id={workspace['id']} is not in the database.", 400
+
+
+            if ('rotation' in data) and (data['rotation'] != ''):
+                workspace.rotation = str(data['rotation'])
+
+            if ('position_x' in data) and (data['position_x'] != ''):
+                workspace.position_x = float(data['position_x'])
+
+            if ('position_y' in data) and (data['position_y'] != ''):
+                workspace.position_y = float(data['position_y'])
+
+            if ('alias' in data) and (data['alias'] != ''):
+                workspace.alias = str(data['alias'])
+
+            if ('color' in data) and (data['color'] != ''):
+                workspace.color = str(data['color'].strip("# ").upper())
+
+        db.session.commit()
+
+        return jsonify({"status": "ok"}), 200
 
     except SQLAlchemyError as e:
         msg = f'Error saving data: {e}'
