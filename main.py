@@ -27,32 +27,52 @@ from redis_resc import redis_conn, redis_queue
 
 # Loading Config Parameters
 DB_USER = os.getenv('DB_USER', 'wys')
+"""Config Parameters"""
 DB_PASS = os.getenv('DB_PASSWORD', 'rac3e/07')
+"""Config Parameters"""
 DB_IP = os.getenv('DB_IP_ADDRESS', '10.2.19.195')
+"""Config Parameters"""
 DB_PORT = os.getenv('DB_PORT', '3307')
+"""Config Parameters"""
 DB_SCHEMA = os.getenv('DB_SCHEMA', 'wys')
+"""Config Parameters"""
 APP_HOST = os.getenv('APP_HOST', '127.0.0.1')
+"""Config Parameters"""
 APP_PORT = os.getenv('APP_PORT', 5006)
+"""Config Parameters"""
 
 # Buildings module info
 BUILDINGS_MODULE_HOST = os.getenv('BUILDINGS_MODULE_HOST', '127.0.0.1')
+""" Connect with building module"""
 BUILDINGS_MODULE_PORT = os.getenv('BUILDINGS_MODULE_PORT', 5004)
+""" Connect with building module"""
 BUILDINGS_MODULE_API = os.getenv('BUILDINGS_MODULE_API', '/api/buildings/')
+""" Connect with building module"""
 BUILDINGS_URL = f"http://{BUILDINGS_MODULE_HOST}:{BUILDINGS_MODULE_PORT}"
+""" Connect with building module"""
 
 # Spaces module info
 SPACES_MODULE_HOST = os.getenv('SPACES_MODULE_IP', '127.0.0.1')
+""" Connect with space module"""
 SPACES_MODULE_PORT = os.getenv('SPACES_MODULE_PORT', 5002)
+""" Connect with space module"""
 SPACES_MODULE_API = os.getenv('SPACES_MODULE_API', '/api/spaces/')
+""" Connect with space module"""
 SPACES_URL = f"http://{SPACES_MODULE_HOST}:{SPACES_MODULE_PORT}"
+""" Connect with space module"""
 
 # Projects module info
 PROJECTS_MODULE_HOST = os.getenv('PROJECTS_MODULE_HOST', '127.0.0.1')
+""" Connect with projects module"""
 PROJECTS_MODULE_PORT = os.getenv('PROJECTS_MODULE_PORT', 5000)
+""" Connect with projects module"""
 PROJECTS_MODULE_API = os.getenv('PROJECTS_MODULE_API', '/api/projects/')
+""" Connect with projects module"""
 PROJECTS_URL = f"http://{PROJECTS_MODULE_HOST}:{PROJECTS_MODULE_PORT}"
+""" Connect with projects module"""
 
 app = Flask(__name__)
+""" Flask configuration"""
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql://{DB_USER}:{DB_PASS}@{DB_IP}:{DB_PORT}/{DB_SCHEMA}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -68,6 +88,7 @@ except Exception as e:
 
 app.logger.setLevel(logging.DEBUG)
 db = SQLAlchemy(app)
+""" Flask configuration"""
 
 
 class LayoutGenerated(db.Model):
@@ -77,10 +98,10 @@ class LayoutGenerated(db.Model):
 
     Attributes
     ----------
-    id: Represent the unique id of a Layout Generated
-    floor_id: ID of the floor selected by the user.
-    workspaces: Spaces selected and positioned by the user in the layout.
-    zones : Zones created by the user within the layout.
+    - id: Represent the unique id of a Layout Generated
+    - floor_id: ID of the floor selected by the user
+    - workspaces: Spaces selected and positioned by the user in the layout
+    - zones : Zones created by the user within the layout
     """
     id = db.Column(db.Integer, primary_key=True)
     floor_id = db.Column(db.Integer, nullable=False)
@@ -119,14 +140,14 @@ class LayoutGeneratedWorkspace(db.Model):
 
     Attributes
     ----------
-    id: Represent the unique id of a M2 generated
-    position_x: X coordinate of the position of the space figure in the layout.
-    position_Y: Y coordinate of the position of the space figure in the layout.
-    height: Height size of the space image in px.
-    width: Width size of the space image in px.
-    rotation: Direction of rotation of space.
-    space_id: Foreign key of associated space.
-    layout_gen_id: Foreign key of associated layout generated.
+    - id: Represent the unique id of a M2 generated
+    - position_x: X coordinate of the position of the space figure in the layout
+    - position_Y: Y coordinate of the position of the space figure in the layout
+    - height: Height size of the space image in px
+    - width: Width size of the space image in px
+    - rotation: Direction of rotation of space
+    - space_id: Foreign key of associated space
+    - layout_gen_id: Foreign key of associated layout generated
     """
 
     id = db.Column(db.Integer, primary_key=True)
@@ -173,10 +194,10 @@ class LayoutZone(db.Model):
 
     Attributes
     ----------
-    id: Represent the unique id of a Zone.
-    name: Name of a Zone.
-    color: Name of region where the Zone are located
-    spaces_gen: List of spaces associated with this zone
+    - id: Represent the unique id of a Zone
+    - name: Name of a Zone
+    - color: Name of region where the Zone are located
+    - spaces_gen: List of spaces associated with this zone
     """
 
     id = db.Column(db.Integer, primary_key=True)
@@ -215,9 +236,9 @@ class LayoutConfig(db.Model):
 
     Attributes
     ----------
-    id: Represent the unique id of a layout config.
-    pop_size: Value of pop size.
-    generations: Value of number of generations.
+    - id: Represent the unique id of a layout config
+    - pop_size: Value of pop size
+    - generations: Value of number of generations
     """
 
     id = db.Column(db.Integer, primary_key=True)
@@ -262,6 +283,7 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 
 def get_project_by_id(project_id, token):
+    """Returns the project by projectId"""
     headers = {'Authorization': token}
     api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
     rv = requests.get(api_url, headers=headers)
@@ -273,6 +295,7 @@ def get_project_by_id(project_id, token):
 
 
 def update_project_by_id(project_id, data, token):
+    """Update the project by projectId"""
     headers = {'Authorization': token}
     api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
     rv = requests.put(api_url, json=data, headers=headers)
@@ -284,6 +307,7 @@ def update_project_by_id(project_id, data, token):
 
 
 def get_space_by_id(space_id, token):
+    """Returns the space by spaceId"""
     headers = {'Authorization': token}
     api_url = SPACES_URL + SPACES_MODULE_API + str(space_id)
     rv = requests.get(api_url, headers=headers)
@@ -295,6 +319,7 @@ def get_space_by_id(space_id, token):
 
 
 def get_floor_by_ids(building_id, floor_id, token):
+    """Returns the floor by buildingId and floorId"""
     headers = {'Authorization': token}
     api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + '/floors/'+ str(floor_id)
     rv = requests.get(api_url, headers=headers)
@@ -306,6 +331,7 @@ def get_floor_by_ids(building_id, floor_id, token):
 
 
 def get_floor_polygons_by_ids(building_id, floor_id, token):
+    """Returns the polygons by buildingId and floorId"""
     headers = {'Authorization': token}
     api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + '/floors/'+ str(floor_id) + '/polygons'
     rv = requests.get(api_url, headers=headers)
@@ -317,6 +343,7 @@ def get_floor_polygons_by_ids(building_id, floor_id, token):
 
 
 def get_subcategories(token):
+    """Returns SubCategories of the Project"""
     headers = {'Authorization': token}
     api_url = SPACES_URL + SPACES_MODULE_API + 'subcategories'
     rv = requests.get(api_url, headers=headers)
@@ -328,6 +355,7 @@ def get_subcategories(token):
 
 
 def token_required(f):
+    """Function to get the token for the swagger"""
     @wraps(f)
     def decorator(*args, **kwargs):
 
@@ -361,6 +389,7 @@ def token_required(f):
 @app.route("/api/layouts/spec", methods=['GET'])
 @token_required
 def spec():
+    """Function to load the swagger app"""
     swag = swagger(app)
     swag['info']['version'] = "1.0"
     swag['info']['title'] = "WYS Layout API Service"
@@ -375,19 +404,27 @@ def spec():
 @token_required
 def generate_layout(project_id):
     """
-        Generates the smart layout according to the floor and workspaces selected by the user in the current project.
-        ---
-        consumes:
+    Generates the smart layout according to the floor and workspaces selected by the user in the current project.
+    ---
+    consumes:
+
         - "application/json"
-        tags:
+
+    tags:
+
         - Layouts
-        produces:
+
+    produces:
+
         - application/json
-        parameters:
+
+    parameters:
+
         - in: path
           name: project_id
           type: integer
           description: Project ID
+
         - in: "body"
           name: "body"
           required:
@@ -478,15 +515,17 @@ def generate_layout(project_id):
                                         type: number
                                         format: float
                                         description: Y coordinate of the vertex/point.
-        responses:
-            201:
-                description: Return the Layout object data generated by the Smart Layout
-            400:
-                description: Data or missing field in body.
-            404:
-                description: Data object not found.
-            500:
-                description: Internal server error.
+
+    responses:
+
+        201:
+            description: Return the Layout object data generated by the Smart Layout
+        400:
+            description: Data or missing field in body.
+        404:
+            description: Data object not found.
+        500:
+            description: Internal server error.
     """
     try:
         params = {'selected_floor', 'workspaces'}
@@ -578,16 +617,21 @@ def generate_layout(project_id):
 @token_required
 def get_layout_by_project(project_id):
     """
-        Get latest configuration of the layout made by the user for the current project.
-        ---
-        parameters:
+    Get latest configuration of the layout made by the user for the current project.
+    ---
+    parameters:
+
           - in: path
             name: project_id
             type: integer
             description: Project ID
-        tags:
+
+    tags:
+
         - Layouts
-        responses:
+
+    responses:
+
           200:
             description: Layout data Object.
           404:
@@ -644,19 +688,27 @@ def get_layout_by_project(project_id):
 @token_required
 def update_layout_by_project(project_id):
     """
-        Updates the configuration of the spaces in the layout made by the user in the current project.
-        ---
-        consumes:
+    Updates the configuration of the spaces in the layout made by the user in the current project.
+    ---
+    consumes:
+
         - "application/json"
-        tags:
+
+    tags:
+
         - Layouts
-        produces:
+
+    produces:
+
         - application/json
-        parameters:
+
+    parameters:
+
         - in: path
           name: project_id
           type: integer
           description: Project ID
+
         - in: "body"
           name: "body"
           required: true
@@ -690,15 +742,17 @@ def update_layout_by_project(project_id):
                         type: number
                         format: float
                         description: Y coordinate of the space position in layout.
-        responses:
-            200:
-                description: Layout data Object updated.
-            400:
-                description: Data or missing field in body.
-            404:
-                description: Data object not found.
-            500:
-                description: Internal Error Server
+
+    responses:
+
+        200:
+            description: Layout data Object updated.
+        400:
+            description: Data or missing field in body.
+        404:
+            description: Data object not found.
+        500:
+            description: Internal Error Server
     """
     try:
         params = {'id', 'space_id', 'rotation','height','width', 'position_x', 'position_y'}
@@ -741,17 +795,20 @@ def update_layout_by_project(project_id):
 @token_required
 def get_layout_config():
     """
-        Get latest configuration for the Smart Layout (parameters values).
-        ---
-        tags:
+    Get latest configuration for the Smart Layout (parameters values).
+    ---
+    tags:
+
         - Layouts/configs
-        responses:
-            200:
-                description: Layout Config data Object.
-            404:
-                description: Layout Config data has not been created.
-            500:
-                description: "Database error"
+
+    responses:
+
+        200:
+            description: Layout Config data Object.
+        404:
+            description: Layout Config data has not been created.
+        500:
+            description: "Database error"
     """
     try:
         config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
@@ -768,11 +825,14 @@ def get_layout_config():
 @token_required
 def update_layout_config():
     """
-        Update (or Create) the latest configuration for the Smart Layout (parameters values greater than 25).
-        ---
-        tags:
+    Update (or Create) the latest configuration for the Smart Layout (parameters values greater than 25).
+    ---
+    tags:
+
         - Layouts/configs
-        parameters:
+
+    parameters:
+
         - in: "body"
           name: "body"
           required:
@@ -785,13 +845,15 @@ def update_layout_config():
             generations:
                 type: integer
                 description: Value of number of generations.
-        responses:
-            200:
-                description: Layout Config data Object.
-            400:
-                description: Data or missing field in body.
-            500:
-                description: "Database error"
+
+    responses:
+
+        200:
+            description: Layout Config data Object.
+        400:
+            description: Data or missing field in body.
+        500:
+            description: "Database error"
     """
     try:
         params = {'pop_size', 'generations'}
@@ -825,16 +887,23 @@ def update_layout_config():
 @token_required
 def generate_layout_async():
     """
-        Generates the smart layout according to the floor and workspaces selected by the user in the
-        current project async
-        ---
-        consumes:
+    Generates the smart layout according to the floor and workspaces selected by the user in the
+    current project async
+    ---
+    consumes:
+
         - "application/json"
-        tags:
+
+    tags:
+
         - Layouts
-        produces:
+
+    produces:
+
         - application/json
-        parameters:
+
+    parameters:
+
         - in: "body"
           name: "body"
           required:
@@ -925,15 +994,17 @@ def generate_layout_async():
                                         type: number
                                         format: float
                                         description: Y coordinate of the vertex/point.
-        responses:
-            201:
-                description: Return the task id generated by the Smart Layout
-            400:
-                description: Data or missing field in body.
-            404:
-                description: Data object not found.
-            500:
-                description: Internal server error.
+
+    responses:
+
+        201:
+            description: Return the task id generated by the Smart Layout
+        400:
+            description: Data or missing field in body.
+        404:
+            description: Data object not found.
+        500:
+            description: Internal server error.
     """
     try:
         params = {'selected_floor', 'workspaces'}
@@ -992,16 +1063,22 @@ def generate_layout_async():
 @token_required
 def check_job(job_id):
     """
-        Takes a job_id and checks its status in redis queue.
-        ---
-        consumes:
+    Takes a job_id and checks its status in redis queue.
+    ---
+    consumes:
+
         - "application/json"
-        tags:
+
+    tags:
+
         - Layouts
-        produces:
+
+    produces:
+
         - application/json
 
-        parameters:
+    parameters:
+
         - in: path
           name: job_id
           type: string
@@ -1032,16 +1109,22 @@ def check_job(job_id):
 @token_required
 def get_layout():
     """
-        Takes a job_id and returns the job's result.
-        ---
-        consumes:
+    Takes a job_id and returns the job's result.
+    ---
+    consumes:
+
         - "application/json"
-        tags:
+
+    tags:
+
         - Layouts
-        produces:
+
+    produces:
+
         - application/json
 
-        parameters:
+    parameters:
+
         - in: "body"
           name: "body"
           required:
@@ -1054,13 +1137,13 @@ def get_layout():
             project_id:
                 type: integer
                 description: Project ID of the project that you want to assign the final layout
-        responses:
+
+    responses:
+
             201:
                 description: Return the final layout
             404:
                 description: Job not found. The job doesn't exist or isn't ready.
-
-
     """
     req_params = ["project_id", "job_id"]
     for param in req_params:
@@ -1139,34 +1222,41 @@ def create_zones():
     """
     Create Zones
     ---
-
     consumes:
-    - "application/json"
+
+        - "application/json"
+
     tags:
-    - Zones
+
+        - Zones
+
     produces:
-    - application/json
+
+        - application/json
 
     parameters:
-    - in: "body"
-      name: "body"
-      required:
-      - spaces_id
-      - name
-      - color
-      properties:
-        name:
-            type: string
-            description: Zone's name
-        color:
-            type: string
-            description: RGB color code.
-        w_spaces_id:
-            type: array
-            items:
-                type: number
-            description: Spaces id
+
+        - in: "body"
+          name: "body"
+          required:
+          - spaces_id
+          - name
+          - color
+          properties:
+            name:
+                type: string
+                description: Zone's name
+            color:
+                type: string
+                description: RGB color code.
+            w_spaces_id:
+                type: array
+                items:
+                    type: number
+                description: Spaces id
+
     responses:
+
             201:
                 description: Return the final layout
             404:
@@ -1210,21 +1300,27 @@ def create_zones():
 @token_required
 def updated_zone(zone_id: int):
     """
-        Update Zones
-        ---
+    Update Zones
+    ---
+    consumes:
 
-        consumes:
         - "application/json"
-        tags:
+
+    tags:
+
         - Zones
-        produces:
+
+    produces:
+
         - application/json
 
-        parameters:
+    parameters:
+
         - in: path
           name: zone_id
           type: integer
           description: zone id
+
         - in: "body"
           name: "body"
           required:
@@ -1243,9 +1339,11 @@ def updated_zone(zone_id: int):
                 items:
                     type: number
                 description: Spaces id
-        responses:
-                200:
-                    description: Updated
+
+    responses:
+
+            200:
+                description: Updated
 
     """
     try:
@@ -1283,26 +1381,33 @@ def updated_zone(zone_id: int):
 @token_required
 def delete_zone(zone_id: int):
     """
-        Update Zones
-        ---
+    Update Zones
+    ---
+    consumes:
 
-        consumes:
         - "application/json"
-        tags:
+
+    tags:
+
         - Zones
-        produces:
+
+    produces:
+
         - application/json
 
-        parameters:
+    parameters:
+
         - in: path
           name: zone_id
           type: integer
           description: zone id
-        responses:
-            204:
-                description: Deleted
-            500:
-                description: Internal Error
+
+    responses:
+
+        204:
+            description: Deleted
+        500:
+            description: Internal Error
     """
     try:
         # Verify inputs
@@ -1332,28 +1437,35 @@ def delete_zone(zone_id: int):
 @token_required
 def get_zone(zone_id: int):
     """
-        Get Zones
-        ---
+    Get Zones
+    ---
+    consumes:
 
-        consumes:
         - "application/json"
-        tags:
+
+    tags:
+
         - Zones
-        produces:
+
+    produces:
+
         - application/json
 
-        parameters:
+    parameters:
+
         - in: path
           name: zone_id
           type: integer
           description: zone id
-        responses:
-            200:
-                description: OK
-            500:
-                description: Internal Error
-            404:
-                description: Not Found
+
+    responses:
+
+        200:
+            description: OK
+        500:
+            description: Internal Error
+        404:
+            description: Not Found
         """
     # Verify params
     try:
@@ -1377,21 +1489,26 @@ def get_zone(zone_id: int):
 @token_required
 def get_all_zones():
     """
-        Get All Zones
-        ---
+    Get All Zones
+    ---
+    consumes:
 
-        consumes:
         - "application/json"
-        tags:
+
+    tags:
+
         - Zones
-        produces:
+
+    produces:
+
         - application/json
 
-        responses:
-            200:
-                description: OK
-            500:
-                description: Internal Error
+    responses:
+
+        200:
+            description: OK
+        500:
+            description: Internal Error
     """
     try:
         # Get all zones from db

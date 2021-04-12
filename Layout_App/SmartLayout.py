@@ -1,3 +1,8 @@
+"""
+This module contain all logic for Layouts
+
+"""
+
 import random
 import time
 import math
@@ -13,21 +18,23 @@ from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union, polygonize, linemerge, substring
 import matplotlib.pyplot as plt
 
-import viewer
-import restrictions
-from randrange import randrange
-from get_areas2 import get_area2
-from get_areas import get_area
-# from Layout_App import viewer
-# from Layout_App import restrictions
-# from Layout_App.randrange import randrange
-# from Layout_App.get_areas2 import get_area2
+# import viewer
+# import restrictions
+# from randrange import randrange
+# from get_areas2 import get_area2
+
+from Layout_App import viewer
+from Layout_App import restrictions
+from Layout_App.randrange import randrange
+from Layout_App.get_areas2 import get_area2
+
 #from lines_areas_test import get_pol_zones
 random.seed(100)
 
 # Función que lee la planta en formato JSON, luego separa y entrega sus partes importantes
 # Recibe como entrada un diccionario con información de la planta y los módulos en ella
 def get_input(dictionary):
+    """Function that read the plant and the selected modules from a dictionary"""
     Planta = dictionary.get('selected_floor').get('polygons')
     Workspaces = dictionary.get('workspaces')
     plant = []
@@ -81,6 +88,7 @@ class Module:
 
 
 def select_zone(zones, zone, mod_cat, n):
+    """Function that selects a zone for each module"""
     z_names_qty = 0
     if mod_cat == 1:
         z_names = [k for k,v in zones.items() if 'ZONA SALAS REUNION FORMAL' in k]
@@ -139,6 +147,7 @@ makeposcnt = 0
 curr_bx = []
 # Función que posiciona inicialmente los módulos en la planta
 def makePos(planta, in_list, zones):
+    """Function that initially positions the modules in the plant"""
     make_time = time.time()
     global makeposcnt
     global curr_bx
@@ -244,6 +253,7 @@ def makePos(planta, in_list, zones):
 
 # Calcula la minima distancia de un módulo a una determinada área
 def min_dist_to_area(lista):
+    """Function that calculates the minimum distance of a module to a certain area"""
     my_output = []
     i = 0
     curr_min = lista[0]
@@ -276,6 +286,7 @@ def smart_layout_async(dictionary, POP_SIZE=50, GENERATIONS=50):
 
 # Evalúa la factibilidad del polígono
 def feasible_polygon(dims, polygon):
+    """Function that evaluates the feasibility of the polygon"""
     pol_centroid = polygon.centroid
     base_polygon = box(pol_centroid.x - dims['max_width'] / 2, pol_centroid.y - dims['max_height'] / 2, pol_centroid.x + dims['max_width'] / 2, pol_centroid.y + dims['max_height'] / 2)
     diff_polygon = base_polygon.difference(polygon)
@@ -307,7 +318,7 @@ def feasible_polygon(dims, polygon):
 def assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor, prev_sv_selected_zone, 
                         sv_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
                         entrances_adj_qty, core_adj_qty, zones, cat_dims):
-
+    """Function that assigns the service zones"""
     if has_shaft:
         sv_candidate_idx = [k for k, v in shafts_adj_qty.items() if v > min(shafts_adj_qty.values()) and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
         if not sv_candidate_idx:
@@ -392,6 +403,7 @@ def assign_services_zone(has_shaft, circs_bounds, elements_idx, cat_area, factor
 def assign_pt_zones(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_selected_zone,
                     sv_nearest_idx, pt_selected_zones, pt_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
                     entrances_adj_qty, core_adj_qty, zones, cat_dims):
+    """Function that assigns workstation zones"""
     pt_candidate_idx = []
     '''if sv_selected_zone:
         # Arreglo de indices de zonas cercanas al area de servicios
@@ -494,7 +506,7 @@ def assign_pt_zones(has_shaft, circs_bounds, elements_idx, cat_area, factor, sv_
 def assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_idx, cat_area, factor, prev_sp_selected_zone,
                         sp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
                         entrances_adj_qty, core_adj_qty, zones, cat_dims):
-    
+    """Function that assigns support zones"""
     sp_candidate_idx = [k for k, v in entrances_adj_qty.items() if v > 0]
     sp_candidate_filter = [idx for idx in sp_candidate_idx if feasible_polygon(cat_dims, areas[idx])]
     entrances_idx = True
@@ -601,7 +613,7 @@ def assign_support_zone(core_bounds, entrances_bounds, circs_bounds, elements_id
 def assign_ptp_zone(circs_bounds, sv_selected_zone, sv_nearest_idx, sp_selected_zone, sp_nearest_idx, elements_idx, 
                     cat_area, factor, ptp_selected_zone, ptp_nearest_idx, areas, shafts_adj_qty, 
                     crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones, cat_dims):
-
+    """Function that assigns private work zones"""
     # Indices de areas cercanas a zona de soporte
     if sp_selected_zone and sv_selected_zone:
         # Se buscan candidatos que tengan fachadas de cristal adyacentes y que no esten cerca de la zona de soporte
@@ -689,7 +701,7 @@ def assign_ptp_zone(circs_bounds, sv_selected_zone, sv_nearest_idx, sp_selected_
 def assign_rf_zone(sv_nearest_idx, sp_nearest_idx, ptp_selected_zone, ptp_nearest_idx,
                     elements_idx, cat_area, factor, prev_rf_selected_zone, rf_nearest_idx,
                     areas, shafts_adj_qty, crystal_adj_qty, entrances_adj_qty, core_adj_qty, zones):
-
+    """Function that maps the zones of formal meeting rooms"""
     nearest_len = None
     if ptp_selected_zone:
         # Se buscan indices de areas disponibles cercanas a la zona seleccionada como trabajo privado
@@ -815,6 +827,7 @@ def assign_rf_zone(sv_nearest_idx, sp_nearest_idx, ptp_selected_zone, ptp_neares
 def assign_esp_zone(sp_nearest_idx, elements_idx, cat_area, factor, esp_selected_zone, 
                     esp_nearest, esp_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
                     entrances_adj_qty, core_adj_qty, zones, cat_dims):
+    """Function that assigns the zones of special zones"""
     if sp_nearest_idx:
         esp_candidate_idx = [k for k,v in areas.items() if k in sp_nearest_idx and feasible_polygon(cat_dims, areas[k].minimum_rotated_rectangle)]
         if not esp_candidate_idx:
@@ -884,7 +897,7 @@ def assign_esp_zone(sp_nearest_idx, elements_idx, cat_area, factor, esp_selected
 def assign_ri_zone(pt_nearest_idx, elements_idx, cat_area, factor, prev_ri_selected_zone, 
                     ri_nearest_idx, areas, shafts_adj_qty, crystal_adj_qty, 
                     entrances_adj_qty, core_adj_qty, zones, ri_fill):
-
+    """Function that assigns informal meeting areas"""
     if not prev_ri_selected_zone:
         # Se buscan como candidatos, indices de areas disponibles cercanas a la zonas seleccionadas como puestos de trabajo
         if pt_nearest_idx:
@@ -966,6 +979,7 @@ def assign_ri_zone(pt_nearest_idx, elements_idx, cat_area, factor, prev_ri_selec
     
 # Función que crea las zonas donde se ubicarán los módulos
 def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_area, cat_dims):
+    """Function that creates the zones where the modules will be located"""
     zones = {}
     assigned_zones = {}
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
@@ -1174,6 +1188,7 @@ def make_zones(planta, shafts, core, circs, entrances, crystal_facs, areas, cat_
 
 # Función que crea las circulaciones
 def make_circ_ring(planta, core, shafts, entrances, voids, ring_width):
+    """Function that creates circulations"""
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
     c_minx, c_miny, c_maxx, c_maxy = core.bounds
     #e_minx, e_miny, e_maxx, e_maxy = entrances.bounds
@@ -1375,6 +1390,7 @@ def make_circ_ring(planta, core, shafts, entrances, voids, ring_width):
 
 # Función que une áreas hasta lograr un área (en m2) mínima para cada área
 def merge_min_areas(areas, max_dim):
+    """Function that joins areas to achieve a minimum area (in m2) for each area"""
     while not all([a.area > max_dim for a in areas.values()]):
         areas_idx = rtree.index.Index()
         for i, e in enumerate([a.bounds for a in areas.values()]):
@@ -1441,6 +1457,7 @@ def merge_min_areas(areas, max_dim):
 
 
 def merge_voids(voids, circ_pols):
+    """Function that joins circulations and holes in a list"""
     voids_pols = [Polygon(v) for v in voids]
     circ_voids_pols = list(unary_union(voids_pols + circ_pols))
 
@@ -1448,6 +1465,7 @@ def merge_voids(voids, circ_pols):
 
 # Obtiene los módulos con las dimensiones máximas por categoría
 def get_category_max_dims(inlist):
+    """Function that obtains the modules with the maximum dimensions by category"""
     cat_max_dims = {}
     for mod in inlist:
         cat_id = mod[4]
@@ -1462,26 +1480,9 @@ start_time = time.time()
 
 # Función principal que ejecuta el Smart Layout y su lógica
 def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
+    """Main function that executes the Smart Layout and all its logic"""
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
-
-    # input_list = [['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
-    #               ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
-    #               ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
-    #               ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
-    #               ['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4, 2],
-    #               ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
-    #               ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
-    #               ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
-    #               ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
-    #               ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
-    #               ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
-    #               ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
-    #               ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
-    #               ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
-    #               ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
-    #               ['WYS_COLABORATIVO_BARRA6PERSONAS',             2, 1.95, 2.4, 6],
-    #               ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   1, 4, 5, 7]]
     
     input_list = [['WYS_SALAREUNION_RECTA6PERSONAS',              0, 3, 4.05, 1],
                   ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
@@ -1556,18 +1557,14 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     
     circ_width = 1.2
     circ_pols = make_circ_ring(planta, core, shafts, entrances, voids, circ_width)
-    #areas = make_areas(planta, core)
-
-    
+    # areas = make_areas(planta, core)
     areas = get_area2(planta, core, circ_pols, min_dim_area=max_dim, proporcional=False)
-
-    #areas = get_pol_zones(outline, voids, min_area=3, min_dim=3, boundbox_on_outline=False, boundbox_on_holes=True)
-
-    #areas = get_pol_zones(outline, circ_voids_coords, min_area=min_cat_area, min_dim=min_cat_area, boundbox_on_outline=False, boundbox_on_holes=False)
-    
+    # areas = get_pol_zones(outline, voids, min_area=3, min_dim=3, boundbox_on_outline=False, boundbox_on_holes=True)
+    # areas = get_pol_zones(outline, circ_voids_coords, min_area=min_cat_area, min_dim=min_cat_area, boundbox_on_outline=False, boundbox_on_holes=False)
     areas = merge_min_areas(areas, max_dim*3)
 
     def circ_buffer(circ_pols):
+        """Function that separates the polygons that make up the circulation"""
         circ_polygons = []
         for c in circ_pols:
             r_minx, r_miny, r_maxx, r_maxy = c.bounds
