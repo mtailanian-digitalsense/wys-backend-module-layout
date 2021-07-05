@@ -8,7 +8,7 @@ import SmartLayout_2
 
 
 def main():
-    pop_size = 20
-    generations = 20
-    output = SmartLayout.Smart_Layout(example_data_v3.dict_ex, pop_size, generations, viz= True, viz_period=10)
+    pop_size = 5
+    generations = 10
+    output = SmartLayout.Smart_Layout(example_data_v3.dict_ex, pop_size, generations, viz=True, viz_period=10)
 main()

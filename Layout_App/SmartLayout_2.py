@@ -515,8 +515,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
 
     toolbox = base.Toolbox()
     toolbox.register("attr_pos", makePos, planta, input_list, zones)
-    toolbox.register("individual", tools.initRepeat, creator.Individual,
-                     (toolbox.attr_pos), n=IND_SIZE)
+    toolbox.register("individual", tools.initRepeat, creator.Individual, (toolbox.attr_pos), n=IND_SIZE)
 
     toolbox.register("mate", tools.cxTwoPoint)
     toolbox.register("mutate", mutMod, planta=planta, mu=0, sigma=1, indpb=0.2)

@@ -1,11 +1,18 @@
 import random
 import time
 import math
+from deap import base
+from deap import creator
+from deap import tools
+from deap import algorithms
 from shapely.geometry import Point
 from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
-from shapely.ops import unary_union
+from shapely.ops import unary_union, polygonize, linemerge
+import matplotlib.pyplot as plt
+
 import viewer
+import restrictions
 
 random.seed(100)
 
@@ -118,6 +125,9 @@ def makePos(planta, in_list, zones):
         if (time.time() - make_time) > 0.1 and condition1:
             mod.x, mod.y = p.x, p.y
             curr_bx.append(b)
+            # for cb in curr_bx:
+            #    x, y = cb.exterior.xy
+            #    plt.plot(x, y, color='b')
             makeposcnt += 1
             if makeposcnt >= in_cnt:
                 makeposcnt = 0
@@ -136,6 +146,9 @@ def makePos(planta, in_list, zones):
         if condition1 and condition2:
             mod.x, mod.y = p.x, p.y
             curr_bx.append(b)
+            # for cb in curr_bx:
+            #    x, y = cb.exterior.xy
+            #    plt.plot(x, y, color='b')
             makeposcnt += 1
             if makeposcnt >= in_cnt:
                 makeposcnt = 0
@@ -239,7 +252,6 @@ def make_zones(planta, shafts, core, entrances, cat_area):
 
     return zones
 
-
 start_time = time.time()
 
 
@@ -248,6 +260,23 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
+    input_list= [   ['WYS_SALAREUNION_RECTA6PERSONAS',              1, 3, 4.05, 1],
+                    ['WYS_SALAREUNION_DIRECTORIO10PERSONAS',        1, 4, 6.05, 1],
+                    ['WYS_SALAREUNION_DIRECTORIO20PERSONAS',        0, 5.4, 6, 1],
+                    ['WYS_PUESTOTRABAJO_CELL3PERSONAS',             10, 3.37, 3.37, 2],
+                    #['WYS_PUESTOTRABAJO_RECTO2PERSONAS',            2, 3.82, 1.4],
+                    ['WYS_PRIVADO_1PERSONA',                        1, 3.5, 2.8, 3],
+                    ['WYS_PRIVADO_1PERSONAESTAR',                   1, 6.4, 2.9, 3],
+                    ['WYS_SOPORTE_BAÑOBATERIAFEMENINO3PERSONAS',    1, 3.54, 3.02, 4],
+                    ['WYS_SOPORTE_BAÑOBATERIAMASCULINO3PERSONAS',   1, 3.54, 3.02, 4],
+                    ['WYS_SOPORTE_KITCHENETTE',                     1, 1.6, 2.3, 4],
+                    ['WYS_SOPORTE_SERVIDOR1BASTIDOR',               1, 1.5, 2.4, 4],
+                    ['WYS_SOPORTE_PRINT1',                          1, 1.5, 1.3, 4],
+                    ['WYS_RECEPCION_1PERSONA',                      1, 2.7, 3.25, 5],
+                    ['WYS_TRABAJOINDIVIDUAL_QUIETROOM2PERSONAS',    0, 2.05, 1.9, 5],
+                    ['WYS_TRABAJOINDIVIDUAL_PHONEBOOTH1PERSONA',    0, 2.05, 2.01, 5],
+                    ['WYS_COLABORATIVO_BARRA6PERSONAS',             2, 1.95, 2.4, 6],
+                    ['WYS_ESPECIALES_TALLERLABORATORIO4PERSONAS',   1, 4, 5, 7]]
     voids = []
     border = outline[0][1]
     for h in holes:
@@ -279,6 +308,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
         if a[0] == 'WYS_CORE':
             core = As[-1][0]
         if a[0] == 'WYS_SHAFT':
+            #s_minx, s_miny, s_maxx, s_maxy = As[-1][0].bounds
             shafts.append(As[-1][0])
             '''if(shaft_minx > s_minx):
                 shaft_minx = s_minx
@@ -288,10 +318,29 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
 
     zones = make_zones(planta, shafts, core, entrances, cat_area)
 
+    # creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+    # creator.create("Individual", list, fitness=creator.FitnessMax)
+    # toolbox = base.Toolbox()
+    #
+    # toolbox.register("attr_pos", makePos, planta, input_list, zones)
+    # toolbox.register("individual", tools.initRepeat, creator.Individual, (toolbox.attr_pos), n=IND_SIZE)
+    # toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+    #
+    # pop = toolbox.population(n=POP_SIZE)
+    # print(pop[0])
+
     pop_1 = []
     for k in range(N):
         pop_mod = makePos(planta, input_list, zones)
         pop_1.append(pop_mod)
+    print(pop_1)
+    g = 0
+    NGEN = 0
+
+    fig, ax = viewer.viewer_viz_1(planta, As, viz)
+    boxes = viewer.viz_update_1(viz, viz_period, g, pop_1, fig, ax)
+    viewer.viz_clear(viz, g, NGEN, viz_period, boxes)
+    viewer.viz_end()
 
     out = []
     for mod in pop_1:
