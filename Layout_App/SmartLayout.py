@@ -5,7 +5,7 @@ from shapely.geometry import Point
 from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union
-import viewer
+#import viewer
 
 random.seed(100)
 
