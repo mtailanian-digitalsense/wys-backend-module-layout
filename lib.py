@@ -1,3 +1,8 @@
+"""
+This module contain useful functions to deliver the information to
+the front end
+
+"""
 from PIL import Image
 import requests
 from io import BytesIO
@@ -7,10 +12,16 @@ from shapely.geometry.polygon import Polygon
 # from Layout_App import example_data_v3          # temporal
 
 def get_floor_elements_p(floor_dict: dict, floor_loc=None):
-    """
-    :param floor_dict: data given to smart layout
-    :param floor_loc: FloorLocation object
-    :return: Floor elements with his points coordinates in pixels
+    """ Get elements of the floor
+    ___
+    parameters:
+
+        floor_dict: data given to smart layout
+        floor_loc: FloorLocation object
+
+    return:
+
+        Floor elements with his points coordinates in pixels
     """
     if floor_loc is None:
         floor_loc = init_floor(floor_dict)
@@ -51,7 +62,7 @@ def get_floor_elements_p(floor_dict: dict, floor_loc=None):
     for i in range(len(x)):
         points_ex_env.append((x[i], y[i]))
     plant_exterior_env.append(points_ex_env)
-    element = FloorPolygon(0, plant_exterior_env[0])
+    element = FloorPolygon(1, plant_exterior_env[0])
     i = 0
     for point in plant_exterior_env[1]:
         # (point_m - origin) multiplied for the pixel/meters reason.
@@ -81,8 +92,14 @@ def get_floor_elements_p(floor_dict: dict, floor_loc=None):
 def get_extremes_m(polygons: []):
     """
     Returns the extremes points in meters
-    :param polygons: list with all floor polygons
-    :return: extreme points in meters.
+    ___
+    parameters:
+
+        polygons: list with all floor polygons
+
+    return:
+
+        extreme points in meters.
     """
     width = 0.0
     height = 0.0
@@ -111,9 +128,14 @@ def get_extremes_m(polygons: []):
     return x_min, y_min, x_max, y_max
 
 def init_floor(floor_dict: dict):
-    """
-    :param floor_dict: data given to smart layout
-    :return: FloorLocation object
+    """ Return the location of objects in the floor
+    parameters:
+
+        floor_dict: data given to smart layout
+
+    return:
+
+        FloorLocation object
     """
 
     # Init floor
@@ -148,13 +170,18 @@ def init_floor(floor_dict: dict):
 
 
 def transform_coords(floor_dict: dict, coordinates: [], space_images_url, token):
-    """
+    """Transform coordinates into pixels
+    ___
+    parameters:
 
-    :param token: Token for the connection
-    :param space_images_url: Where we want to find the image for every space
-    :param floor_dict: data given to smart layout
-    :param coordinates: list of all spaces with their coordinates
-    :return: spaces and floor elements with their coordinates in pixels
+        token: Token for the connection
+        space_images_url: Where we want to find the image for every space
+        floor_dict: data given to smart layout
+        coordinates: list of all spaces with their coordinates
+
+    return:
+
+        spaces and floor elements with their coordinates in pixels
     """
     # Init floor
     floor_loc = init_floor(floor_dict)
@@ -227,6 +254,10 @@ def transform_coords(floor_dict: dict, coordinates: [], space_images_url, token)
 
 
 class SpaceLocation:
+    """Spatial location of modules
+    ___
+
+    """
 
     def __init__(self):
         self.position_x = 0
@@ -238,6 +269,9 @@ class SpaceLocation:
         self.image = ""
 
     def to_dict(self):
+        """
+        Convert to dictionary
+        """
         return {
             'position_x': self.position_x,
             'position_y': self.position_y,
@@ -250,6 +284,9 @@ class SpaceLocation:
 
 
 class FloorLocation:
+    """Spatial location of modules
+    ___
+    """
 
     def __init__(self):
         self.width_m = 0.0
@@ -260,6 +297,9 @@ class FloorLocation:
         self.y_pixel_m = 0
 
     def to_dict(self):
+        """
+        Convert to dictionary
+        """
         return {
             'width_m': self.width_m,
             'height_m': self.height_m,
@@ -268,7 +308,10 @@ class FloorLocation:
         }
 
 class FloorPolygon:
-
+    """
+    Add a element to the list of points of a polygon
+    ___
+    """
     def __init__(self, _id, name):
         self.id = _id
         self.name = name
@@ -286,6 +329,10 @@ class FloorPolygon:
         }
 
 class PolygonPoint:
+    """
+    Add a point to the list of points of a polygon
+    ___
+    """
     def __init__(self, order, position_x, position_y):
         self.order = order
         self.position_x = position_x
@@ -301,9 +348,14 @@ class PolygonPoint:
 def get_image_size(link):
     """
     Get the size of a image in pixels
+    ___
+    parameters:
 
-    :param link: link of a image
-    :return: width and height in pixels
+        link: link of a image
+
+    return:
+
+        width and height in pixels
     """
 
     # Get image from internet
@@ -317,12 +369,17 @@ def get_image_size(link):
 
 
 def resize_base64_image(image_base64: str, width_p: int, height_p: int):
-    """
-    Resize a image from base64
-    :param image_base64: base64 image with header
-    :param width_p: new width in pixels
-    :param height_p: new height in pixels
-    :return: base64 image resizing
+    """Resize a image from base64
+    ___
+    parameters:
+
+        image_base64: base64 image with header
+        width_p: new width in pixels
+        height_p: new height in pixels
+
+    return:
+
+        base64 image resizing
     """
     image_str = image_base64.split(',')[1]
     image_bin = base64.b64decode(image_str)
