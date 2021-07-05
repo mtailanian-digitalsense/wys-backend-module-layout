@@ -1,3 +1,7 @@
+"""
+This module contains the code necessary to divide the plant into smaller areas.
+Previous step for zoning.
+"""
 import numpy as np
 from rtree import index
 from shapely.geometry import Point, MultiLineString
@@ -10,6 +14,17 @@ from shapely.ops import unary_union, polygonize
 
 
 def crear_areas(planta, core, circ_pols, min_dim_area, proporcional=True):
+    """Divide the plant into subareas whose dimensions will depend on the min_dim_area parameter
+    ___
+    parameters:
+
+        planta: Plant
+        core: Core of the floor
+        circ_pols: Polygons that make up the circulation
+        min_dim_area: Minimum dimension for subareas
+        proporcional: It establishes if the division of the plant will be proportional (True) or if this division will
+                      be carried out depending on the core (False).
+    """
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
     c_minx, c_miny, c_maxx, c_maxy = core.bounds
     core_bbox_points = [Point(c_minx, c_miny), Point(c_maxx, c_maxy)]
@@ -85,8 +100,16 @@ def crear_areas(planta, core, circ_pols, min_dim_area, proporcional=True):
         del pols[e]
 
     return pols
+
+
 def areas_union(min_area, pols):
-    # Busca las áreas menores al área mínima y las une al vecino de mayor adyacencia
+    """Finds the areas smaller than the minimum area and joins them to the neighbor with the greatest adjacency
+    ___
+    parameters:
+
+        min_area: Minimum area
+        pols: Polygons from the previous stage (create_areas)
+    """
     areas_idx = index.Index()
     for i, p in enumerate(pols):
         areas_idx.insert(i, p.bounds)
@@ -131,7 +154,9 @@ def areas_union(min_area, pols):
         # min_areas_idx = {}
     return areas_dict
 
+
 def get_area2(planta, core, circ_pols, min_dim_area, proporcional):
+    """Function calling main functions"""
     pols = crear_areas(planta, core, circ_pols, min_dim_area, proporcional)
     # pols_a = pols.copy()
     min_area = min_dim_area

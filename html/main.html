@@ -1,0 +1,4630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>main API documentation</title>
+<meta name="description" content="This module run a microservice called Layout service. This module
+manage all logic for wys Layouts" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>main</code></h1>
+</header>
+<section id="section-intro">
+<p>This module run a microservice called Layout service. This module
+manage all logic for wys Layouts</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+This module run a microservice called Layout service. This module
+manage all logic for wys Layouts
+
+&#34;&#34;&#34;
+
+import jwt
+import os
+import logging
+import requests
+import json
+from sqlalchemy.exc import SQLAlchemyError
+from flask import Flask, jsonify, abort, request
+from flask_sqlalchemy import SQLAlchemy
+from flask_swagger import swagger
+from flask_swagger_ui import get_swaggerui_blueprint
+from functools import wraps
+from sqlalchemy.ext.hybrid import hybrid_property
+from flask_cors import CORS
+from http import HTTPStatus
+from xlrd import open_workbook, XLRDError
+from mockup_layout import layout
+from Layout_App.SmartLayout import Smart_Layout, smart_layout_async
+from lib import transform_coords, resize_base64_image, get_floor_elements_p
+from rq.job import Job
+from redis_resc import redis_conn, redis_queue
+
+# Loading Config Parameters
+DB_USER = os.getenv(&#39;DB_USER&#39;, &#39;wys&#39;)
+&#34;&#34;&#34;Config Parameters&#34;&#34;&#34;
+DB_PASS = os.getenv(&#39;DB_PASSWORD&#39;, &#39;rac3e/07&#39;)
+&#34;&#34;&#34;Config Parameters&#34;&#34;&#34;
+DB_IP = os.getenv(&#39;DB_IP_ADDRESS&#39;, &#39;10.2.19.195&#39;)
+&#34;&#34;&#34;Config Parameters&#34;&#34;&#34;
+DB_PORT = os.getenv(&#39;DB_PORT&#39;, &#39;3307&#39;)
+&#34;&#34;&#34;Config Parameters&#34;&#34;&#34;
+DB_SCHEMA = os.getenv(&#39;DB_SCHEMA&#39;, &#39;wys&#39;)
+&#34;&#34;&#34;Config Parameters&#34;&#34;&#34;
+APP_HOST = os.getenv(&#39;APP_HOST&#39;, &#39;127.0.0.1&#39;)
+&#34;&#34;&#34;Config Parameters&#34;&#34;&#34;
+APP_PORT = os.getenv(&#39;APP_PORT&#39;, 5006)
+&#34;&#34;&#34;Config Parameters&#34;&#34;&#34;
+
+# Buildings module info
+BUILDINGS_MODULE_HOST = os.getenv(&#39;BUILDINGS_MODULE_HOST&#39;, &#39;127.0.0.1&#39;)
+&#34;&#34;&#34; Connect with building module&#34;&#34;&#34;
+BUILDINGS_MODULE_PORT = os.getenv(&#39;BUILDINGS_MODULE_PORT&#39;, 5004)
+&#34;&#34;&#34; Connect with building module&#34;&#34;&#34;
+BUILDINGS_MODULE_API = os.getenv(&#39;BUILDINGS_MODULE_API&#39;, &#39;/api/buildings/&#39;)
+&#34;&#34;&#34; Connect with building module&#34;&#34;&#34;
+BUILDINGS_URL = f&#34;http://{BUILDINGS_MODULE_HOST}:{BUILDINGS_MODULE_PORT}&#34;
+&#34;&#34;&#34; Connect with building module&#34;&#34;&#34;
+
+# Spaces module info
+SPACES_MODULE_HOST = os.getenv(&#39;SPACES_MODULE_IP&#39;, &#39;127.0.0.1&#39;)
+&#34;&#34;&#34; Connect with space module&#34;&#34;&#34;
+SPACES_MODULE_PORT = os.getenv(&#39;SPACES_MODULE_PORT&#39;, 5002)
+&#34;&#34;&#34; Connect with space module&#34;&#34;&#34;
+SPACES_MODULE_API = os.getenv(&#39;SPACES_MODULE_API&#39;, &#39;/api/spaces/&#39;)
+&#34;&#34;&#34; Connect with space module&#34;&#34;&#34;
+SPACES_URL = f&#34;http://{SPACES_MODULE_HOST}:{SPACES_MODULE_PORT}&#34;
+&#34;&#34;&#34; Connect with space module&#34;&#34;&#34;
+
+# Projects module info
+PROJECTS_MODULE_HOST = os.getenv(&#39;PROJECTS_MODULE_HOST&#39;, &#39;127.0.0.1&#39;)
+&#34;&#34;&#34; Connect with projects module&#34;&#34;&#34;
+PROJECTS_MODULE_PORT = os.getenv(&#39;PROJECTS_MODULE_PORT&#39;, 5000)
+&#34;&#34;&#34; Connect with projects module&#34;&#34;&#34;
+PROJECTS_MODULE_API = os.getenv(&#39;PROJECTS_MODULE_API&#39;, &#39;/api/projects/&#39;)
+&#34;&#34;&#34; Connect with projects module&#34;&#34;&#34;
+PROJECTS_URL = f&#34;http://{PROJECTS_MODULE_HOST}:{PROJECTS_MODULE_PORT}&#34;
+&#34;&#34;&#34; Connect with projects module&#34;&#34;&#34;
+
+app = Flask(__name__)
+&#34;&#34;&#34; Flask configuration&#34;&#34;&#34;
+CORS(app)
+app.config[&#39;SQLALCHEMY_DATABASE_URI&#39;] = f&#34;mysql://{DB_USER}:{DB_PASS}@{DB_IP}:{DB_PORT}/{DB_SCHEMA}&#34;
+app.config[&#39;SQLALCHEMY_TRACK_MODIFICATIONS&#39;] = False
+
+try:
+    f = open(&#39;oauth-public.key&#39;, &#39;r&#39;)
+    key: str = f.read()
+    f.close()
+    app.config[&#39;SECRET_KEY&#39;] = key
+except Exception as e:
+    app.logger.error(f&#39;Can\&#39;t read public key f{e}&#39;)
+    exit(-1)
+
+app.logger.setLevel(logging.DEBUG)
+db = SQLAlchemy(app)
+&#34;&#34;&#34; Flask configuration&#34;&#34;&#34;
+
+
+class LayoutGenerated(db.Model):
+    &#34;&#34;&#34;
+    LayoutGenerated.
+    Represents the spaces configured by the user in the layout.
+
+    Attributes
+    ----------
+    - id: Represent the unique id of a Layout Generated
+    - floor_id: ID of the floor selected by the user
+    - workspaces: Spaces selected and positioned by the user in the layout
+    - zones : Zones created by the user within the layout
+    &#34;&#34;&#34;
+    id = db.Column(db.Integer, primary_key=True)
+    floor_id = db.Column(db.Integer, nullable=False)
+    building_id = db.Column(db.Integer, nullable=False)
+    project_id = db.Column(db.Integer, nullable=False)
+    workspaces = db.relationship(
+        &#34;LayoutGeneratedWorkspace&#34;,
+        backref=&#34;layout_generated&#34;,
+        cascade=&#34;all, delete, delete-orphan&#34;)
+
+    def to_dict(self):
+        &#34;&#34;&#34;
+        Convert to dictionary
+        &#34;&#34;&#34;
+
+        dict = {
+            &#39;id&#39;: self.id,
+            &#39;building_id&#39;: self.building_id,
+            &#39;floor_id&#39;: self.floor_id,
+            &#39;workspaces&#39;: [workspace.to_dict() for workspace in self.workspaces]
+        }
+        return dict
+
+    def serialize(self):
+        &#34;&#34;&#34;
+        Serialize to json
+        &#34;&#34;&#34;
+        return jsonify(self.to_dict())
+
+
+class LayoutGeneratedWorkspace(db.Model):
+    &#34;&#34;&#34;
+    LayoutGeneratedWorkspace.
+    Represents the position per space configured by the user 
+    or generated. All of this according to the positions in the layout of selected floor.
+
+    Attributes
+    ----------
+    - id: Represent the unique id of a M2 generated
+    - position_x: X coordinate of the position of the space figure in the layout
+    - position_Y: Y coordinate of the position of the space figure in the layout
+    - height: Height size of the space image in px
+    - width: Width size of the space image in px
+    - rotation: Direction of rotation of space
+    - space_id: Foreign key of associated space
+    - layout_gen_id: Foreign key of associated layout generated
+    &#34;&#34;&#34;
+
+    id = db.Column(db.Integer, primary_key=True)
+    position_x = db.Column(db.Float, nullable=False)
+    position_y =  db.Column(db.Float, nullable=False)
+    height = db.Column(db.Float, nullable=False)
+    width = db.Column(db.Float, nullable=False)
+    rotation = db.Column(db.String(20))
+    space_id = db.Column(db.Integer, nullable=False)
+    layout_gen_id = db.Column(db.Integer, db.ForeignKey(
+        &#39;layout_generated.id&#39;), nullable=False)
+    layout_zone_id = db.Column(db.Integer, db.ForeignKey(
+        &#39;layout_zone.id&#39;), nullable=True)
+
+    def to_dict(self):
+        &#34;&#34;&#34;
+        Convert to dictionary
+        &#34;&#34;&#34;
+
+        dict = {
+            &#39;id&#39;: self.id,
+            &#39;position_x&#39;: self.position_x,
+            &#39;position_y&#39;: self.position_y,
+            &#39;rotation&#39;: self.rotation,
+            &#39;height&#39;: self.height,
+            &#39;width&#39;: self.width,
+            &#39;space_id&#39;: self.space_id,
+            &#39;layout_gen_id&#39;: self.layout_gen_id,
+            &#39;layout_zone_id&#39;: self.layout_zone_id
+        }
+        return dict
+
+    def serialize(self):
+        &#34;&#34;&#34;
+        Serialize to json
+        &#34;&#34;&#34;
+        return jsonify(self.to_dict())
+
+
+class LayoutZone(db.Model):
+    &#34;&#34;&#34;
+    LayoutZone.
+    Represent the Zone created by the user within the layout.
+
+    Attributes
+    ----------
+    - id: Represent the unique id of a Zone
+    - name: Name of a Zone
+    - color: Name of region where the Zone are located
+    - spaces_gen: List of spaces associated with this zone
+    &#34;&#34;&#34;
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(45), nullable=False)
+    color = db.Column(db.String(20), nullable=False)
+    spaces_gen = db.relationship(
+        &#34;LayoutGeneratedWorkspace&#34;,
+        backref=&#34;layout_zone&#34;,
+        cascade=&#34;all, delete&#34;)
+
+    def to_dict(self):
+        &#34;&#34;&#34;
+        Convert to dictionary
+        &#34;&#34;&#34;
+        space: LayoutGeneratedWorkspace
+        obj_dict = {
+            &#39;id&#39;: self.id,
+            &#39;name&#39;: self.name,
+            &#39;color&#39;: self.color,
+            &#39;spaces_gen&#39;: [space.to_dict() for space in self.spaces_gen]
+        }
+
+        return obj_dict
+    
+    def serialize(self):
+        &#34;&#34;&#34;
+        Serialize to json
+        &#34;&#34;&#34;
+        return jsonify(self.to_dict())
+
+
+class LayoutConfig(db.Model):
+    &#34;&#34;&#34;
+    LayoutConfig.
+    Represents the configuration model of parameters setted for the Smart Layout
+
+    Attributes
+    ----------
+    - id: Represent the unique id of a layout config
+    - pop_size: Value of pop size
+    - generations: Value of number of generations
+    &#34;&#34;&#34;
+
+    id = db.Column(db.Integer, primary_key=True)
+    pop_size = db.Column(db.Integer, nullable=False)
+    generations = db.Column(db.Integer, nullable=False)
+
+    def to_dict(self):
+        &#34;&#34;&#34;
+        Convert to dictionary
+        &#34;&#34;&#34;
+
+        obj_dict = {
+            &#39;id&#39;: self.id,
+            &#39;pop_size&#39;: self.pop_size,
+            &#39;generations&#39;: self.generations
+        }
+
+        return obj_dict
+
+    def serialize(self):
+        &#34;&#34;&#34;
+        Serialize to json
+        &#34;&#34;&#34;
+        return jsonify(self.to_dict())
+
+
+db.create_all() # Create all tables
+
+# Swagger Config
+
+SWAGGER_URL = &#39;/api/layouts/docs/&#39;
+API_URL = &#39;/api/layouts/spec&#39;
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={  # Swagger UI config overrides
+        &#39;app_name&#39;: &#34;WYS API - Layout Service&#34;
+    }
+)
+
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+
+def get_project_by_id(project_id, token):
+    &#34;&#34;&#34;Returns the project by projectId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the projects module&#34;)
+    return None
+
+
+def update_project_by_id(project_id, data, token):
+    &#34;&#34;&#34;Update the project by projectId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
+    rv = requests.put(api_url, json=data, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the projects module&#34;)
+    return None
+
+
+def get_space_by_id(space_id, token):
+    &#34;&#34;&#34;Returns the space by spaceId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = SPACES_URL + SPACES_MODULE_API + str(space_id)
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the spaces module&#34;)
+    return None
+
+
+def get_floor_by_ids(building_id, floor_id, token):
+    &#34;&#34;&#34;Returns the floor by buildingId and floorId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + &#39;/floors/&#39;+ str(floor_id)
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the buildings module&#34;)
+    return None
+
+
+def get_floor_polygons_by_ids(building_id, floor_id, token):
+    &#34;&#34;&#34;Returns the polygons by buildingId and floorId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + &#39;/floors/&#39;+ str(floor_id) + &#39;/polygons&#39;
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the buildings module&#34;)
+    return None
+
+
+def get_subcategories(token):
+    &#34;&#34;&#34;Returns SubCategories of the Project&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = SPACES_URL + SPACES_MODULE_API + &#39;subcategories&#39;
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the buildings module&#34;)
+    return None
+
+
+def token_required(f):
+    &#34;&#34;&#34;Function to get the token for the swagger&#34;&#34;&#34;
+    @wraps(f)
+    def decorator(*args, **kwargs):
+
+        bearer_token = request.headers.get(&#39;Authorization&#39;, None)
+        try:
+            token = bearer_token.split(&#34; &#34;)[1]
+        except Exception as ierr:
+            app.logger.error(ierr)
+            return jsonify({&#39;message&#39;: &#39;a valid bearer token is missing&#39;}), 500
+
+        if not token:
+            app.logger.debug(&#34;token_required&#34;)
+            return jsonify({&#39;message&#39;: &#39;a valid token is missing&#39;})
+
+        app.logger.debug(&#34;Token: &#34; + token)
+        try:
+            data = jwt.decode(token, app.config[&#39;SECRET_KEY&#39;],
+                              algorithms=[&#39;RS256&#39;], audience=&#34;1&#34;)
+            user_id: int = data[&#39;user_id&#39;]
+            request.environ[&#39;user_id&#39;] = user_id
+        except Exception as err:
+            return jsonify({&#39;message&#39;: &#39;token is invalid&#39;, &#39;error&#39;: err})
+        except KeyError as kerr:
+            return jsonify({&#39;message&#39;: &#39;Can\&#39;t find user_id in token&#39;, &#39;error&#39;: kerr})
+
+        return f(*args, **kwargs)
+
+    return decorator
+
+
+@app.route(&#34;/api/layouts/spec&#34;, methods=[&#39;GET&#39;])
+@token_required
+def spec():
+    &#34;&#34;&#34;Function to load the swagger app&#34;&#34;&#34;
+    swag = swagger(app)
+    swag[&#39;info&#39;][&#39;version&#39;] = &#34;1.0&#34;
+    swag[&#39;info&#39;][&#39;title&#39;] = &#34;WYS Layout API Service&#34;
+    swag[&#39;tags&#39;] = [{
+        &#34;name&#34;: &#34;Layouts&#34;,
+        &#34;description&#34;: &#34;Methods to configure layouts&#34;
+    }]
+    return jsonify(swag)
+
+
+@app.route(&#34;/api/layouts/&lt;project_id&gt;&#34;, methods=[&#39;POST&#39;])
+@token_required
+def generate_layout(project_id):
+    &#34;&#34;&#34;
+    Generates the smart layout according to the floor and workspaces selected by the user in the current project.
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: project_id
+          type: integer
+          description: Project ID
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - selected_floor
+          - workspaces
+          properties:
+            selected_floor:
+                type: object
+                description: Data of the floor selected by the user.
+                properties:
+                    id:
+                        type: integer
+                        description: Unique ID of each building floor.
+                    active:
+                        type: boolean
+                        description: indicate if this floor is active.
+                    wys_id:
+                        type: string
+                        description: Unique internal ID of each building floor.
+                    rent_value:
+                        type: number
+                        format: float
+                        description: Rent value of the floor
+                    m2:
+                        type: number
+                        format: float
+                        description: Square meter value of the floor.
+                    elevators_number:
+                        type: integer
+                        description: Numbers of elevators in the floor.
+                    image_link:
+                        type: string
+                        description: Link of the floor image.
+                    building_id:
+                        type: integer
+                        description: Unique ID of each building associated to this floor.
+            workspaces:
+                type: array
+                items:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: Unique ID of each space.
+                        quantity:
+                            type: integer
+                            description: Quantity of the space
+                        name:
+                            type: string
+                            description: Name of the space
+                        height:
+                            type: number
+                            description: Height of the space
+                        width:
+                            type: number
+                            description: width of the space
+                        active:
+                            type: boolean
+                            description: indicate if this space is active
+                        regular:
+                            type: boolean
+                            description: indicate if this space is a regular space
+                        up_gap:
+                            type: number
+                            description: up padding
+                        down_gap:
+                            type: number
+                            description: down padding
+                        left_gap:
+                            type: number
+                            description: left padding
+                        right_gap:
+                            type: number
+                            description: right padding
+                        subcategory_id:
+                            type: integer
+                            description: subcategory Id
+                        points:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    x:
+                                        type: number
+                                        format: float
+                                        description: X coordinate of the vertex/point.
+                                    y:
+                                        type: number
+                                        format: float
+                                        description: Y coordinate of the vertex/point.
+
+    responses:
+
+        201:
+            description: Return the Layout object data generated by the Smart Layout
+        400:
+            description: Data or missing field in body.
+        404:
+            description: Data object not found.
+        500:
+            description: Internal server error.
+    &#34;&#34;&#34;
+    try:
+        params = {&#39;selected_floor&#39;, &#39;workspaces&#39;}
+        if request.json.keys() != params:
+            return &#34;A required field is missing in the body&#34;, 400
+        floor = request.json[&#39;selected_floor&#39;]
+        floor_params = {&#39;id&#39;, &#39;wys_id&#39;,&#39;rent_value&#39;,&#39;m2&#39;,&#39;elevators_number&#39;,&#39;image_link&#39;,&#39;active&#39;,&#39;building_id&#39;}
+        if floor.keys() != floor_params:
+            return &#34;A floor data field is missing in the body&#34;, 400
+
+        workspaces = request.json[&#39;workspaces&#39;]
+
+        if len(workspaces) == 0:
+            return &#34;No spaces were entered in the body.&#34;, 400
+        workspace_params = {&#39;id&#39;,&#39;quantity&#39;,&#39;name&#39;,&#39;height&#39;,&#39;width&#39;,&#39;active&#39;,&#39;regular&#39;,&#39;up_gap&#39;,&#39;down_gap&#39;,&#39;left_gap&#39;,
+                            &#39;right_gap&#39;,&#39;subcategory_id&#39;,&#39;points&#39;}
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        subcategories = get_subcategories(token)
+        for workspace in workspaces:
+            if workspace.keys() != workspace_params:
+                return &#34;A space data field is missing in the body&#34;, 400
+            found = False
+            for category in subcategories:
+                for subcategory in category[&#39;subcategories&#39;]:
+                    if subcategory[&#39;id&#39;] == workspace[&#39;subcategory_id&#39;]:
+                        workspace[&#39;category_id&#39;] = category[&#39;id&#39;]
+                        found = True
+                        break
+                if found:
+                    break
+            if not found:
+                return &#34;A Space subcategory doesn&#39;t exist&#34;, 404
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return &#34;The project doesn&#39;t exist&#34;, 404
+        floor_polygons = get_floor_polygons_by_ids(floor[&#39;building_id&#39;], floor[&#39;id&#39;], token)
+        if floor_polygons is None or len(floor_polygons) == 0:
+            return &#34;The floor doesn&#39;t exist or not have a polygons.&#34;, 404
+        floor[&#39;polygons&#39;] = floor_polygons
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        layout_data = {&#39;selected_floor&#39;: floor, &#39;workspaces&#39;: workspaces}
+
+        layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 50,
+                                         config.generations if config is not None else 50)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
+                                                             SPACES_URL+SPACES_MODULE_API, token)
+
+        layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
+        if layout_gen is not None:
+            db.session.delete(layout_gen)
+            db.session.commit()
+        layout_gen = LayoutGenerated()
+        layout_gen.floor_id = floor[&#39;id&#39;]
+        layout_gen.building_id = floor[&#39;building_id&#39;]
+        layout_gen.project_id = project_id
+        for l_workspace in workspaces_coords:
+            layout_gen_workspace = LayoutGeneratedWorkspace()
+            for key, value in l_workspace.items():
+                setattr(layout_gen_workspace, key, value)
+            layout_gen.workspaces.append(layout_gen_workspace)
+        db.session.add(layout_gen)
+        db.session.commit()
+        project = update_project_by_id(project_id, {&#39;layout_gen_id&#39;: layout_gen.id}, token)
+        if project is None:
+            return &#34;The project could not be updated.&#34;, 404
+
+        layout_gen = layout_gen.to_dict()
+        del floor[&#39;polygons&#39;]
+        layout_gen[&#39;selected_floor&#39;] = floor
+        for wk in layout_gen[&#39;workspaces&#39;]:
+            wk[&#39;image&#39;] = next((space[&#39;image&#39;] for space in workspaces_coords if space[&#34;space_id&#34;] == wk[&#34;space_id&#34;]),
+                               None)
+
+        layout_gen[&#39;floor_elements&#39;] = floor_elements
+
+        return jsonify(layout_gen), 201
+
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500
+
+
+@app.route(&#34;/api/layouts/&lt;project_id&gt;&#34;, methods=[&#39;GET&#39;])
+@token_required
+def get_layout_by_project(project_id):
+    &#34;&#34;&#34;
+    Get latest configuration of the layout made by the user for the current project.
+    ---
+    parameters:
+
+          - in: path
+            name: project_id
+            type: integer
+            description: Project ID
+
+    tags:
+
+        - Layouts
+
+    responses:
+
+          200:
+            description: Layout data Object.
+          404:
+            description: Project Not Found or the Proyect doesn&#39;t have a Layout created.
+          500:
+            description: &#34;Database error&#34;
+    &#34;&#34;&#34;
+    try:
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return &#34;The project doesn&#39;t exist&#34;, 404
+        layout_gen = LayoutGenerated.query.get(project[&#39;layout_gen_id&#39;])
+        if layout_gen is None:
+            return &#34;The project doesn&#39;t have a layout created&#34;, 404
+
+        layout_gen = layout_gen.to_dict()
+        floor = get_floor_by_ids(layout_gen[&#39;building_id&#39;], layout_gen[&#39;floor_id&#39;], token)
+        if floor is None:
+            return &#34;A layout floor doesn&#39;t exist&#34;, 404
+
+        floor_polygons = get_floor_polygons_by_ids(floor[&#39;building_id&#39;], floor[&#39;id&#39;], token)
+        if floor_polygons is None or len(floor_polygons) == 0:
+            return &#34;The floor doesn&#39;t exist or not have a polygons.&#34;, 404
+        floor[&#39;polygons&#39;] = floor_polygons
+
+        floor_elements = get_floor_elements_p({&#39;selected_floor&#39;: floor})
+
+        layout_gen[&#39;floor_elements&#39;]  = floor_elements
+        
+        del floor[&#39;polygons&#39;]
+
+        layout_gen[&#39;selected_floor&#39;] = floor
+        
+        for wk in layout_gen[&#39;workspaces&#39;]:
+            space = get_space_by_id(wk[&#39;space_id&#39;], token)
+            if space is None:
+                return &#34;A layout space doesn&#39;t exist&#34;, 404
+            image = resize_base64_image(space[&#39;model_2d&#39;], wk[&#39;width&#39;], wk[&#39;height&#39;])
+            wk[&#39;image&#39;] = image
+
+        return jsonify(layout_gen), 200
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500
+
+
+@app.route(&#34;/api/layouts/&lt;project_id&gt;&#34;, methods=[&#39;PUT&#39;])
+@token_required
+def update_layout_by_project(project_id):
+    &#34;&#34;&#34;
+    Updates the configuration of the spaces in the layout made by the user in the current project.
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: project_id
+          type: integer
+          description: Project ID
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required: true
+          schema:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: integer
+                        description: Unique ID of each layout workspace.
+                    space_id:
+                        type: integer
+                        description: Unique ID of each space.
+                    rotation:
+                        type: string
+                        description: Rotation of the space in layout.
+                    height:
+                        type: number
+                        format: float
+                        description: Height size of the space image in px.
+                    width:
+                        type: number
+                        format: float
+                        description: Width size of the space image in px.
+                    position_x:
+                        type: number
+                        format: float
+                        description: X coordinate of the space position in layout.
+                    position_y:
+                        type: number
+                        format: float
+                        description: Y coordinate of the space position in layout.
+
+    responses:
+
+        200:
+            description: Layout data Object updated.
+        400:
+            description: Data or missing field in body.
+        404:
+            description: Data object not found.
+        500:
+            description: Internal Error Server
+    &#34;&#34;&#34;
+    try:
+        params = {&#39;id&#39;, &#39;space_id&#39;, &#39;rotation&#39;,&#39;height&#39;,&#39;width&#39;, &#39;position_x&#39;, &#39;position_y&#39;}
+        if not request.json:
+            return &#34;The body isn\&#39;t application/json&#34;, 400
+        elif any(workspace.keys() != params for workspace in request.json):
+            return &#34;A required field is missing in worskpaces data&#34;, 400
+        elif len(request.json) == 0:
+            return &#39;Body data required&#39;, 400
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return &#34;The project doesn&#39;t exist&#34;, 404
+        layout_gen = LayoutGenerated.query.get(project[&#39;layout_gen_id&#39;])
+        if layout_gen is None:
+            return &#34;The project doesn&#39;t have a layout created&#34;, 404
+        for data in request.json:
+            workspace = LayoutGeneratedWorkspace.query.filter_by(id=data[&#39;id&#39;], layout_gen_id=layout_gen.id).first()
+            if workspace is not None:
+                for key, value in data.items():
+                    setattr(workspace, key, value)
+            else:
+                workspace = LayoutGeneratedWorkspace(**data)
+                layout_gen.workspaces.append(workspace)
+                db.session.add(workspace)
+            db.session.commit()
+        
+        return layout_gen.serialize(), 200
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500
+
+
+@app.route(&#34;/api/layouts/configs&#34;, methods=[&#39;GET&#39;])
+@token_required
+def get_layout_config():
+    &#34;&#34;&#34;
+    Get latest configuration for the Smart Layout (parameters values).
+    ---
+    tags:
+
+        - Layouts/configs
+
+    responses:
+
+        200:
+            description: Layout Config data Object.
+        404:
+            description: Layout Config data has not been created.
+        500:
+            description: &#34;Database error&#34;
+    &#34;&#34;&#34;
+    try:
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        if config is None:
+            return &#34;Layout Config data has not been created.&#34;, 404
+        return config.serialize(), 200
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500
+
+
+@app.route(&#34;/api/layouts/configs&#34;, methods=[&#39;PUT&#39;])
+@token_required
+def update_layout_config():
+    &#34;&#34;&#34;
+    Update (or Create) the latest configuration for the Smart Layout (parameters values greater than 25).
+    ---
+    tags:
+
+        - Layouts/configs
+
+    parameters:
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - pop_size
+          - generations
+          properties:
+            pop_size:
+                type: integer
+                description: Value of pop size.
+            generations:
+                type: integer
+                description: Value of number of generations.
+
+    responses:
+
+        200:
+            description: Layout Config data Object.
+        400:
+            description: Data or missing field in body.
+        500:
+            description: &#34;Database error&#34;
+    &#34;&#34;&#34;
+    try:
+        params = {&#39;pop_size&#39;, &#39;generations&#39;}
+        if not request.json:
+            return &#34;The body isn\&#39;t application/json&#34;, 400
+        elif request.json.keys() != params:
+            return &#34;A required field is missing in worskpaces data&#34;, 400
+        elif request.json[&#39;pop_size&#39;] &lt; 25 or request.json[&#39;generations&#39;] &lt; 25:
+            return &#39;The values must be greater than 25&#39;, 400
+
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        if config is None:
+            config = LayoutConfig()
+            db.session.add(config)
+        config.pop_size = request.json[&#39;pop_size&#39;]
+        config.generations = request.json[&#39;generations&#39;]
+        db.session.commit()
+
+        return config.serialize(), 200
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500
+
+
+@app.route(&#34;/api/layouts/v2&#34;, methods=[&#39;POST&#39;])
+@token_required
+def generate_layout_async():
+    &#34;&#34;&#34;
+    Generates the smart layout according to the floor and workspaces selected by the user in the
+    current project async
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - selected_floor
+          - workspaces
+          properties:
+            selected_floor:
+                type: object
+                description: Data of the floor selected by the user.
+                properties:
+                    id:
+                        type: integer
+                        description: Unique ID of each building floor.
+                    active:
+                        type: boolean
+                        description: indicate if this floor is active.
+                    wys_id:
+                        type: string
+                        description: Unique internal ID of each building floor.
+                    rent_value:
+                        type: number
+                        format: float
+                        description: Rent value of the floor
+                    m2:
+                        type: number
+                        format: float
+                        description: Square meter value of the floor.
+                    elevators_number:
+                        type: integer
+                        description: Numbers of elevators in the floor.
+                    image_link:
+                        type: string
+                        description: Link of the floor image.
+                    building_id:
+                        type: integer
+                        description: Unique ID of each building associated to this floor.
+            workspaces:
+                type: array
+                items:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: Unique ID of each space.
+                        quantity:
+                            type: integer
+                            description: Quantity of the space
+                        name:
+                            type: string
+                            description: Name of the space
+                        height:
+                            type: number
+                            description: Height of the space
+                        width:
+                            type: number
+                            description: width of the space
+                        active:
+                            type: boolean
+                            description: indicate if this space is active
+                        regular:
+                            type: boolean
+                            description: indicate if this space is a regular space
+                        up_gap:
+                            type: number
+                            description: up padding
+                        down_gap:
+                            type: number
+                            description: down padding
+                        left_gap:
+                            type: number
+                            description: left padding
+                        right_gap:
+                            type: number
+                            description: right padding
+                        subcategory_id:
+                            type: integer
+                            description: subcategory Id
+                        points:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    x:
+                                        type: number
+                                        format: float
+                                        description: X coordinate of the vertex/point.
+                                    y:
+                                        type: number
+                                        format: float
+                                        description: Y coordinate of the vertex/point.
+
+    responses:
+
+        201:
+            description: Return the task id generated by the Smart Layout
+        400:
+            description: Data or missing field in body.
+        404:
+            description: Data object not found.
+        500:
+            description: Internal server error.
+    &#34;&#34;&#34;
+    try:
+        params = {&#39;selected_floor&#39;, &#39;workspaces&#39;}
+        if request.json.keys() != params:
+            return &#34;A required field is missing in the body&#34;, 400
+        floor = request.json[&#39;selected_floor&#39;]
+        floor_params = {&#39;id&#39;, &#39;wys_id&#39;,&#39;rent_value&#39;,&#39;m2&#39;,&#39;elevators_number&#39;,&#39;image_link&#39;,&#39;active&#39;,&#39;building_id&#39;}
+        if floor.keys() != floor_params:
+            return &#34;A floor data field is missing in the body&#34;, 400
+
+        workspaces = request.json[&#39;workspaces&#39;]
+
+        if len(workspaces) == 0:
+            return &#34;No spaces were entered in the body.&#34;, 400
+        workspace_params = {&#39;id&#39;,&#39;quantity&#39;,&#39;name&#39;,&#39;height&#39;,&#39;width&#39;,&#39;active&#39;,&#39;regular&#39;,&#39;up_gap&#39;,&#39;down_gap&#39;,&#39;left_gap&#39;,
+                            &#39;right_gap&#39;,&#39;subcategory_id&#39;,&#39;points&#39;}
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        subcategories = get_subcategories(token)
+        for workspace in workspaces:
+            if workspace.keys() != workspace_params:
+                return &#34;A space data field is missing in the body&#34;, 400
+            found = False
+            for category in subcategories:
+                for subcategory in category[&#39;subcategories&#39;]:
+                    if subcategory[&#39;id&#39;] == workspace[&#39;subcategory_id&#39;]:
+                        workspace[&#39;category_id&#39;] = category[&#39;id&#39;]
+                        found = True
+                        break
+                if found:
+                    break
+            if not found:
+                return &#34;A Space subcategory doesn&#39;t exist&#34;, 404
+
+        floor_polygons = get_floor_polygons_by_ids(floor[&#39;building_id&#39;], floor[&#39;id&#39;], token)
+        if floor_polygons is None or len(floor_polygons) == 0:
+            return &#34;The floor doesn&#39;t exist or not have a polygons.&#34;, 404
+        floor[&#39;polygons&#39;] = floor_polygons
+        layout_data = {&#39;selected_floor&#39;: floor, &#39;workspaces&#39;: workspaces}
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        job = redis_queue.enqueue(smart_layout_async,
+                                  args=(layout_data, config.pop_size, config.generations),
+                                  job_timeout=7200)
+        return jsonify({&#39;job_id&#39;: job.id}), 201
+
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        abort(500, description=msg)
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500
+
+
+@app.route(&#34;/api/layouts/v2/job/&lt;job_id&gt;&#34;, methods=[&#39;GET&#39;])
+@token_required
+def check_job(job_id):
+    &#34;&#34;&#34;
+    Takes a job_id and checks its status in redis queue.
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: job_id
+          type: string
+          description: Job ID
+    &#34;&#34;&#34;
+
+    try:
+        job = Job.fetch(job_id, connection=redis_conn)
+    except Exception as exception:
+        abort(404, description=exception)
+
+    job.refresh()
+
+    progress = 0.0
+
+    if &#34;progress&#34; in job.meta:
+        progress = job.meta[&#34;progress&#34;]
+
+    if job.get_status() == &#34;finished&#34;:
+        progress = 100.0
+
+    return jsonify({&#34;job_id&#34;: job.id,
+                    &#34;job_status&#34;: job.get_status(),
+                    &#34;progress&#34;:  progress})
+
+
+@app.route(&#34;/api/layouts/v2/job&#34;, methods=[&#39;POST&#39;])
+@token_required
+def get_layout():
+    &#34;&#34;&#34;
+    Takes a job_id and returns the job&#39;s result.
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - job_id
+          - project_id
+          properties:
+            job_id:
+                type: string
+                description: Resultant Job ID.
+            project_id:
+                type: integer
+                description: Project ID of the project that you want to assign the final layout
+
+    responses:
+
+            201:
+                description: Return the final layout
+            404:
+                description: Job not found. The job doesn&#39;t exist or isn&#39;t ready.
+    &#34;&#34;&#34;
+    req_params = [&#34;project_id&#34;, &#34;job_id&#34;]
+    for param in req_params:
+        if param not in request.json.keys():
+            abort(400, description=f&#34;{param} isn&#39;t in body&#34;)
+
+    job_id = request.json[&#34;job_id&#34;]
+    project_id = request.json[&#34;project_id&#34;]
+
+    try:
+        job = Job.fetch(job_id, connection=redis_conn)
+    except Exception as exception:
+        abort(500, description=exception)
+
+    if not job.result:
+        abort(
+            404,
+            description=f&#34;No result found for job_id {job.id}. Try checking the job&#39;s status.&#34;,
+        )
+    try:
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return &#34;The project doesn&#39;t exist&#34;, 404
+
+        layout_workspaces, layout_data = job.result
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
+                                                             SPACES_URL + SPACES_MODULE_API, token)
+
+        floor = layout_data[&#39;selected_floor&#39;]
+
+        layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
+        if layout_gen is not None:
+            db.session.delete(layout_gen)
+            db.session.commit()
+        layout_gen = LayoutGenerated()
+        layout_gen.floor_id = floor[&#39;id&#39;]
+        layout_gen.building_id = floor[&#39;building_id&#39;]
+        layout_gen.project_id = project_id
+        for l_workspace in workspaces_coords:
+            layout_gen_workspace = LayoutGeneratedWorkspace()
+            for key, value in l_workspace.items():
+                setattr(layout_gen_workspace, key, value)
+            layout_gen.workspaces.append(layout_gen_workspace)
+        db.session.add(layout_gen)
+        db.session.commit()
+        project = update_project_by_id(project_id, {&#39;layout_gen_id&#39;: layout_gen.id}, token)
+        if project is None:
+            return &#34;The project could not be updated.&#34;, 404
+
+        layout_gen = layout_gen.to_dict()
+        del floor[&#39;polygons&#39;]
+        layout_gen[&#39;selected_floor&#39;] = floor
+        for wk in layout_gen[&#39;workspaces&#39;]:
+            wk[&#39;image&#39;] = next((space[&#39;image&#39;] for space in workspaces_coords if space[&#34;space_id&#34;] == wk[&#34;space_id&#34;]),
+                               None)
+
+        layout_gen[&#39;floor_elements&#39;] = floor_elements
+
+        return jsonify(layout_gen), 201
+
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500
+
+
+@app.route(&#34;/api/layouts/zones&#34;, methods=[&#39;POST&#39;])
+@token_required
+def create_zones():
+    &#34;&#34;&#34;
+    Create Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - spaces_id
+          - name
+          - color
+          properties:
+            name:
+                type: string
+                description: Zone&#39;s name
+            color:
+                type: string
+                description: RGB color code.
+            w_spaces_id:
+                type: array
+                items:
+                    type: number
+                description: Spaces id
+
+    responses:
+
+            201:
+                description: Return the final layout
+            404:
+                description: Job not found. The job doesn&#39;t exist or isn&#39;t ready.
+    &#34;&#34;&#34;
+
+    req_params = [&#39;w_spaces_id&#39;, &#39;name&#39;, &#39;color&#39;]
+    for param in req_params:
+        if param not in request.json.keys():
+            abort(400, description=f&#34;{param} isn&#39;t in body&#34;)
+
+    w_spaces_id: [] = request.json[&#34;w_spaces_id&#34;]
+    name: str = request.json[&#34;name&#34;]
+    color: str = request.json[&#34;color&#34;]
+
+    zone = LayoutZone()
+    zone.name = name
+    zone.color = color
+
+    try:
+        for w_space_id in w_spaces_id:
+            w_space = db.session.query(LayoutGeneratedWorkspace).filter_by(id=w_space_id).first()
+            if w_space is not None:
+                zone.spaces_gen.append(w_space)
+
+        db.session.add(zone)
+        db.session.commit()
+
+        return jsonify(zone.to_dict()), 201
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logging.error(f&#39;Error saving data: {e}&#39;)
+        abort(500, description=f&#39;Error saving data: {e}&#39;)
+
+    except Exception as e:
+        abort(500, description=f&#39;Error saving data: {e}&#39;)
+
+
+@app.route(&#34;/api/layouts/zones/&lt;zone_id&gt;&#34;, methods=[&#39;PUT&#39;])
+@token_required
+def updated_zone(zone_id: int):
+    &#34;&#34;&#34;
+    Update Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: zone_id
+          type: integer
+          description: zone id
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - spaces_id
+          - name
+          - color
+          properties:
+            name:
+                type: string
+                description: Zone&#39;s name
+            color:
+                type: string
+                description: RGB color code.
+            w_spaces_id:
+                type: array
+                items:
+                    type: number
+                description: Spaces id
+
+    responses:
+
+            200:
+                description: Updated
+
+    &#34;&#34;&#34;
+    try:
+        zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
+        if zone is None:
+            abort(404, description=&#39;Layout Zone not found&#39;)
+
+        req_params = [&#39;w_spaces_id&#39;, &#39;name&#39;, &#39;color&#39;]
+        for param in req_params:
+            if param not in request.json.keys():
+                abort(400, description=f&#34;{param} isn&#39;t in body&#34;)
+
+        # Empty w_spaces in zone
+        zone.spaces_gen.clear()
+        db.session.commit()
+
+        # Add new w_spaces
+        for w_space_id in request.json[&#34;w_spaces_id&#34;]:
+            w_space = db.session.query(LayoutGeneratedWorkspace).filter_by(id=w_space_id).first()
+            if w_space is not None:
+                zone.spaces_gen.append(w_space)
+        # Update name
+        zone.name = request.json[&#34;name&#34;]
+        # Update color
+        zone.color = request.json[&#34;color&#34;]
+        db.session.commit()
+        return jsonify(zone.to_dict())
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        abort(500, description=f&#39;Database error: {e}&#39;)
+
+
+@app.route(&#34;/api/layouts/zones/&lt;zone_id&gt;&#34;, methods=[&#39;DELETE&#39;])
+@token_required
+def delete_zone(zone_id: int):
+    &#34;&#34;&#34;
+    Update Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: zone_id
+          type: integer
+          description: zone id
+
+    responses:
+
+        204:
+            description: Deleted
+        500:
+            description: Internal Error
+    &#34;&#34;&#34;
+    try:
+        # Verify inputs
+        zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
+        if zone is None:
+            return jsonify({&#39;error&#39;: &#39;Zone Not Found&#39;}), 404
+
+        # Get w_spaces_ids for detach it from LayoutZone
+        zone.spaces_gen.clear()
+
+        # Delete Zone
+        db.session.delete(zone)
+        db.session.commit()
+        return &#34;&#34;, 204
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logging.error(f&#39;Database error: {e}&#39;)
+        abort(500, description=f&#39;Database error: {e}&#39;)
+
+    except Exception as e:
+        logging.error(f&#39;Internal error: {e}&#39;)
+        abort(500, description=f&#39;Internal error: {e}&#39;)
+
+
+@app.route(&#34;/api/layouts/zones/&lt;zone_id&gt;&#34;, methods=[&#39;GET&#39;])
+@token_required
+def get_zone(zone_id: int):
+    &#34;&#34;&#34;
+    Get Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: zone_id
+          type: integer
+          description: zone id
+
+    responses:
+
+        200:
+            description: OK
+        500:
+            description: Internal Error
+        404:
+            description: Not Found
+        &#34;&#34;&#34;
+    # Verify params
+    try:
+        zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
+        if zone is None:
+            return jsonify({&#39;error&#39;: &#39;Zone Not Found&#39;}), 404
+
+        # Return
+        return zone.serialize()
+
+    except SQLAlchemyError as e:
+        logging.error(f&#39;Database error: {e}&#39;)
+        abort(500, description=f&#39;Database error: {e}&#39;)
+
+    except Exception as e:
+        logging.error(f&#39;Internal error: {e}&#39;)
+        abort(500, description=f&#39;Internal error: {e}&#39;)
+
+
+@app.route(&#34;/api/layouts/zones&#34;, methods=[&#39;GET&#39;])
+@token_required
+def get_all_zones():
+    &#34;&#34;&#34;
+    Get All Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    responses:
+
+        200:
+            description: OK
+        500:
+            description: Internal Error
+    &#34;&#34;&#34;
+    try:
+        # Get all zones from db
+        zones = LayoutZone.query.all()
+
+        zone: LayoutZone
+        # Return all zones as a list
+        return jsonify([zone.to_dict() for zone in zones])
+
+    except SQLAlchemyError as e:
+        logging.error(f&#39;Database error: {e}&#39;)
+        abort(500, description=f&#39;Database error: {e}&#39;)
+
+    except Exception as e:
+        logging.error(f&#39;Internal error: {e}&#39;)
+        abort(500, description=f&#39;Internal error: {e}&#39;)
+
+
+if __name__ == &#39;__main__&#39;:
+    app.run(host=APP_HOST, port=APP_PORT, debug=True)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="main.APP_HOST"><code class="name">var <span class="ident">APP_HOST</span></code></dt>
+<dd>
+<div class="desc"><p>Config Parameters</p></div>
+</dd>
+<dt id="main.APP_PORT"><code class="name">var <span class="ident">APP_PORT</span></code></dt>
+<dd>
+<div class="desc"><p>Config Parameters</p></div>
+</dd>
+<dt id="main.BUILDINGS_MODULE_API"><code class="name">var <span class="ident">BUILDINGS_MODULE_API</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with building module</p></div>
+</dd>
+<dt id="main.BUILDINGS_MODULE_HOST"><code class="name">var <span class="ident">BUILDINGS_MODULE_HOST</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with building module</p></div>
+</dd>
+<dt id="main.BUILDINGS_MODULE_PORT"><code class="name">var <span class="ident">BUILDINGS_MODULE_PORT</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with building module</p></div>
+</dd>
+<dt id="main.BUILDINGS_URL"><code class="name">var <span class="ident">BUILDINGS_URL</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with building module</p></div>
+</dd>
+<dt id="main.DB_IP"><code class="name">var <span class="ident">DB_IP</span></code></dt>
+<dd>
+<div class="desc"><p>Config Parameters</p></div>
+</dd>
+<dt id="main.DB_PASS"><code class="name">var <span class="ident">DB_PASS</span></code></dt>
+<dd>
+<div class="desc"><p>Config Parameters</p></div>
+</dd>
+<dt id="main.DB_PORT"><code class="name">var <span class="ident">DB_PORT</span></code></dt>
+<dd>
+<div class="desc"><p>Config Parameters</p></div>
+</dd>
+<dt id="main.DB_SCHEMA"><code class="name">var <span class="ident">DB_SCHEMA</span></code></dt>
+<dd>
+<div class="desc"><p>Config Parameters</p></div>
+</dd>
+<dt id="main.DB_USER"><code class="name">var <span class="ident">DB_USER</span></code></dt>
+<dd>
+<div class="desc"><p>Config Parameters</p></div>
+</dd>
+<dt id="main.PROJECTS_MODULE_API"><code class="name">var <span class="ident">PROJECTS_MODULE_API</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with projects module</p></div>
+</dd>
+<dt id="main.PROJECTS_MODULE_HOST"><code class="name">var <span class="ident">PROJECTS_MODULE_HOST</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with projects module</p></div>
+</dd>
+<dt id="main.PROJECTS_MODULE_PORT"><code class="name">var <span class="ident">PROJECTS_MODULE_PORT</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with projects module</p></div>
+</dd>
+<dt id="main.PROJECTS_URL"><code class="name">var <span class="ident">PROJECTS_URL</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with projects module</p></div>
+</dd>
+<dt id="main.SPACES_MODULE_API"><code class="name">var <span class="ident">SPACES_MODULE_API</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with space module</p></div>
+</dd>
+<dt id="main.SPACES_MODULE_HOST"><code class="name">var <span class="ident">SPACES_MODULE_HOST</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with space module</p></div>
+</dd>
+<dt id="main.SPACES_MODULE_PORT"><code class="name">var <span class="ident">SPACES_MODULE_PORT</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with space module</p></div>
+</dd>
+<dt id="main.SPACES_URL"><code class="name">var <span class="ident">SPACES_URL</span></code></dt>
+<dd>
+<div class="desc"><p>Connect with space module</p></div>
+</dd>
+<dt id="main.app"><code class="name">var <span class="ident">app</span></code></dt>
+<dd>
+<div class="desc"><p>Flask configuration</p></div>
+</dd>
+<dt id="main.db"><code class="name">var <span class="ident">db</span></code></dt>
+<dd>
+<div class="desc"><p>Flask configuration</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="main.check_job"><code class="name flex">
+<span>def <span class="ident">check_job</span></span>(<span>job_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="takes-a-job_id-and-checks-its-status-in-redis-queue">Takes a job_id and checks its status in redis queue.</h2>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Layouts
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: path
+  name: job_id
+  type: string
+  description: Job ID
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/v2/job/&lt;job_id&gt;&#34;, methods=[&#39;GET&#39;])
+@token_required
+def check_job(job_id):
+    &#34;&#34;&#34;
+    Takes a job_id and checks its status in redis queue.
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: job_id
+          type: string
+          description: Job ID
+    &#34;&#34;&#34;
+
+    try:
+        job = Job.fetch(job_id, connection=redis_conn)
+    except Exception as exception:
+        abort(404, description=exception)
+
+    job.refresh()
+
+    progress = 0.0
+
+    if &#34;progress&#34; in job.meta:
+        progress = job.meta[&#34;progress&#34;]
+
+    if job.get_status() == &#34;finished&#34;:
+        progress = 100.0
+
+    return jsonify({&#34;job_id&#34;: job.id,
+                    &#34;job_status&#34;: job.get_status(),
+                    &#34;progress&#34;:  progress})</code></pre>
+</details>
+</dd>
+<dt id="main.create_zones"><code class="name flex">
+<span>def <span class="ident">create_zones</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="create-zones">Create Zones</h2>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Zones
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: "body"
+  name: "body"
+  required:
+  - spaces_id
+  - name
+  - color
+  properties:
+    name:
+        type: string
+        description: Zone's name
+    color:
+        type: string
+        description: RGB color code.
+    w_spaces_id:
+        type: array
+        items:
+            type: number
+        description: Spaces id
+</code></pre>
+<p>responses:</p>
+<pre><code>    201:
+        description: Return the final layout
+    404:
+        description: Job not found. The job doesn't exist or isn't ready.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/zones&#34;, methods=[&#39;POST&#39;])
+@token_required
+def create_zones():
+    &#34;&#34;&#34;
+    Create Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - spaces_id
+          - name
+          - color
+          properties:
+            name:
+                type: string
+                description: Zone&#39;s name
+            color:
+                type: string
+                description: RGB color code.
+            w_spaces_id:
+                type: array
+                items:
+                    type: number
+                description: Spaces id
+
+    responses:
+
+            201:
+                description: Return the final layout
+            404:
+                description: Job not found. The job doesn&#39;t exist or isn&#39;t ready.
+    &#34;&#34;&#34;
+
+    req_params = [&#39;w_spaces_id&#39;, &#39;name&#39;, &#39;color&#39;]
+    for param in req_params:
+        if param not in request.json.keys():
+            abort(400, description=f&#34;{param} isn&#39;t in body&#34;)
+
+    w_spaces_id: [] = request.json[&#34;w_spaces_id&#34;]
+    name: str = request.json[&#34;name&#34;]
+    color: str = request.json[&#34;color&#34;]
+
+    zone = LayoutZone()
+    zone.name = name
+    zone.color = color
+
+    try:
+        for w_space_id in w_spaces_id:
+            w_space = db.session.query(LayoutGeneratedWorkspace).filter_by(id=w_space_id).first()
+            if w_space is not None:
+                zone.spaces_gen.append(w_space)
+
+        db.session.add(zone)
+        db.session.commit()
+
+        return jsonify(zone.to_dict()), 201
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logging.error(f&#39;Error saving data: {e}&#39;)
+        abort(500, description=f&#39;Error saving data: {e}&#39;)
+
+    except Exception as e:
+        abort(500, description=f&#39;Error saving data: {e}&#39;)</code></pre>
+</details>
+</dd>
+<dt id="main.delete_zone"><code class="name flex">
+<span>def <span class="ident">delete_zone</span></span>(<span>zone_id: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="update-zones">Update Zones</h2>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Zones
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: path
+  name: zone_id
+  type: integer
+  description: zone id
+</code></pre>
+<p>responses:</p>
+<pre><code>204:
+    description: Deleted
+500:
+    description: Internal Error
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/zones/&lt;zone_id&gt;&#34;, methods=[&#39;DELETE&#39;])
+@token_required
+def delete_zone(zone_id: int):
+    &#34;&#34;&#34;
+    Update Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: zone_id
+          type: integer
+          description: zone id
+
+    responses:
+
+        204:
+            description: Deleted
+        500:
+            description: Internal Error
+    &#34;&#34;&#34;
+    try:
+        # Verify inputs
+        zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
+        if zone is None:
+            return jsonify({&#39;error&#39;: &#39;Zone Not Found&#39;}), 404
+
+        # Get w_spaces_ids for detach it from LayoutZone
+        zone.spaces_gen.clear()
+
+        # Delete Zone
+        db.session.delete(zone)
+        db.session.commit()
+        return &#34;&#34;, 204
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logging.error(f&#39;Database error: {e}&#39;)
+        abort(500, description=f&#39;Database error: {e}&#39;)
+
+    except Exception as e:
+        logging.error(f&#39;Internal error: {e}&#39;)
+        abort(500, description=f&#39;Internal error: {e}&#39;)</code></pre>
+</details>
+</dd>
+<dt id="main.generate_layout"><code class="name flex">
+<span>def <span class="ident">generate_layout</span></span>(<span>project_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="generates-the-smart-layout-according-to-the-floor-and-workspaces-selected-by-the-user-in-the-current-project">Generates the smart layout according to the floor and workspaces selected by the user in the current project.</h2>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Layouts
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: path
+  name: project_id
+  type: integer
+  description: Project ID
+
+- in: "body"
+  name: "body"
+  required:
+  - selected_floor
+  - workspaces
+  properties:
+    selected_floor:
+        type: object
+        description: Data of the floor selected by the user.
+        properties:
+            id:
+                type: integer
+                description: Unique ID of each building floor.
+            active:
+                type: boolean
+                description: indicate if this floor is active.
+            wys_id:
+                type: string
+                description: Unique internal ID of each building floor.
+            rent_value:
+                type: number
+                format: float
+                description: Rent value of the floor
+            m2:
+                type: number
+                format: float
+                description: Square meter value of the floor.
+            elevators_number:
+                type: integer
+                description: Numbers of elevators in the floor.
+            image_link:
+                type: string
+                description: Link of the floor image.
+            building_id:
+                type: integer
+                description: Unique ID of each building associated to this floor.
+    workspaces:
+        type: array
+        items:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique ID of each space.
+                quantity:
+                    type: integer
+                    description: Quantity of the space
+                name:
+                    type: string
+                    description: Name of the space
+                height:
+                    type: number
+                    description: Height of the space
+                width:
+                    type: number
+                    description: width of the space
+                active:
+                    type: boolean
+                    description: indicate if this space is active
+                regular:
+                    type: boolean
+                    description: indicate if this space is a regular space
+                up_gap:
+                    type: number
+                    description: up padding
+                down_gap:
+                    type: number
+                    description: down padding
+                left_gap:
+                    type: number
+                    description: left padding
+                right_gap:
+                    type: number
+                    description: right padding
+                subcategory_id:
+                    type: integer
+                    description: subcategory Id
+                points:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            x:
+                                type: number
+                                format: float
+                                description: X coordinate of the vertex/point.
+                            y:
+                                type: number
+                                format: float
+                                description: Y coordinate of the vertex/point.
+</code></pre>
+<p>responses:</p>
+<pre><code>201:
+    description: Return the Layout object data generated by the Smart Layout
+400:
+    description: Data or missing field in body.
+404:
+    description: Data object not found.
+500:
+    description: Internal server error.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/&lt;project_id&gt;&#34;, methods=[&#39;POST&#39;])
+@token_required
+def generate_layout(project_id):
+    &#34;&#34;&#34;
+    Generates the smart layout according to the floor and workspaces selected by the user in the current project.
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: project_id
+          type: integer
+          description: Project ID
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - selected_floor
+          - workspaces
+          properties:
+            selected_floor:
+                type: object
+                description: Data of the floor selected by the user.
+                properties:
+                    id:
+                        type: integer
+                        description: Unique ID of each building floor.
+                    active:
+                        type: boolean
+                        description: indicate if this floor is active.
+                    wys_id:
+                        type: string
+                        description: Unique internal ID of each building floor.
+                    rent_value:
+                        type: number
+                        format: float
+                        description: Rent value of the floor
+                    m2:
+                        type: number
+                        format: float
+                        description: Square meter value of the floor.
+                    elevators_number:
+                        type: integer
+                        description: Numbers of elevators in the floor.
+                    image_link:
+                        type: string
+                        description: Link of the floor image.
+                    building_id:
+                        type: integer
+                        description: Unique ID of each building associated to this floor.
+            workspaces:
+                type: array
+                items:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: Unique ID of each space.
+                        quantity:
+                            type: integer
+                            description: Quantity of the space
+                        name:
+                            type: string
+                            description: Name of the space
+                        height:
+                            type: number
+                            description: Height of the space
+                        width:
+                            type: number
+                            description: width of the space
+                        active:
+                            type: boolean
+                            description: indicate if this space is active
+                        regular:
+                            type: boolean
+                            description: indicate if this space is a regular space
+                        up_gap:
+                            type: number
+                            description: up padding
+                        down_gap:
+                            type: number
+                            description: down padding
+                        left_gap:
+                            type: number
+                            description: left padding
+                        right_gap:
+                            type: number
+                            description: right padding
+                        subcategory_id:
+                            type: integer
+                            description: subcategory Id
+                        points:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    x:
+                                        type: number
+                                        format: float
+                                        description: X coordinate of the vertex/point.
+                                    y:
+                                        type: number
+                                        format: float
+                                        description: Y coordinate of the vertex/point.
+
+    responses:
+
+        201:
+            description: Return the Layout object data generated by the Smart Layout
+        400:
+            description: Data or missing field in body.
+        404:
+            description: Data object not found.
+        500:
+            description: Internal server error.
+    &#34;&#34;&#34;
+    try:
+        params = {&#39;selected_floor&#39;, &#39;workspaces&#39;}
+        if request.json.keys() != params:
+            return &#34;A required field is missing in the body&#34;, 400
+        floor = request.json[&#39;selected_floor&#39;]
+        floor_params = {&#39;id&#39;, &#39;wys_id&#39;,&#39;rent_value&#39;,&#39;m2&#39;,&#39;elevators_number&#39;,&#39;image_link&#39;,&#39;active&#39;,&#39;building_id&#39;}
+        if floor.keys() != floor_params:
+            return &#34;A floor data field is missing in the body&#34;, 400
+
+        workspaces = request.json[&#39;workspaces&#39;]
+
+        if len(workspaces) == 0:
+            return &#34;No spaces were entered in the body.&#34;, 400
+        workspace_params = {&#39;id&#39;,&#39;quantity&#39;,&#39;name&#39;,&#39;height&#39;,&#39;width&#39;,&#39;active&#39;,&#39;regular&#39;,&#39;up_gap&#39;,&#39;down_gap&#39;,&#39;left_gap&#39;,
+                            &#39;right_gap&#39;,&#39;subcategory_id&#39;,&#39;points&#39;}
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        subcategories = get_subcategories(token)
+        for workspace in workspaces:
+            if workspace.keys() != workspace_params:
+                return &#34;A space data field is missing in the body&#34;, 400
+            found = False
+            for category in subcategories:
+                for subcategory in category[&#39;subcategories&#39;]:
+                    if subcategory[&#39;id&#39;] == workspace[&#39;subcategory_id&#39;]:
+                        workspace[&#39;category_id&#39;] = category[&#39;id&#39;]
+                        found = True
+                        break
+                if found:
+                    break
+            if not found:
+                return &#34;A Space subcategory doesn&#39;t exist&#34;, 404
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return &#34;The project doesn&#39;t exist&#34;, 404
+        floor_polygons = get_floor_polygons_by_ids(floor[&#39;building_id&#39;], floor[&#39;id&#39;], token)
+        if floor_polygons is None or len(floor_polygons) == 0:
+            return &#34;The floor doesn&#39;t exist or not have a polygons.&#34;, 404
+        floor[&#39;polygons&#39;] = floor_polygons
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        layout_data = {&#39;selected_floor&#39;: floor, &#39;workspaces&#39;: workspaces}
+
+        layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 50,
+                                         config.generations if config is not None else 50)
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
+                                                             SPACES_URL+SPACES_MODULE_API, token)
+
+        layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
+        if layout_gen is not None:
+            db.session.delete(layout_gen)
+            db.session.commit()
+        layout_gen = LayoutGenerated()
+        layout_gen.floor_id = floor[&#39;id&#39;]
+        layout_gen.building_id = floor[&#39;building_id&#39;]
+        layout_gen.project_id = project_id
+        for l_workspace in workspaces_coords:
+            layout_gen_workspace = LayoutGeneratedWorkspace()
+            for key, value in l_workspace.items():
+                setattr(layout_gen_workspace, key, value)
+            layout_gen.workspaces.append(layout_gen_workspace)
+        db.session.add(layout_gen)
+        db.session.commit()
+        project = update_project_by_id(project_id, {&#39;layout_gen_id&#39;: layout_gen.id}, token)
+        if project is None:
+            return &#34;The project could not be updated.&#34;, 404
+
+        layout_gen = layout_gen.to_dict()
+        del floor[&#39;polygons&#39;]
+        layout_gen[&#39;selected_floor&#39;] = floor
+        for wk in layout_gen[&#39;workspaces&#39;]:
+            wk[&#39;image&#39;] = next((space[&#39;image&#39;] for space in workspaces_coords if space[&#34;space_id&#34;] == wk[&#34;space_id&#34;]),
+                               None)
+
+        layout_gen[&#39;floor_elements&#39;] = floor_elements
+
+        return jsonify(layout_gen), 201
+
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500</code></pre>
+</details>
+</dd>
+<dt id="main.generate_layout_async"><code class="name flex">
+<span>def <span class="ident">generate_layout_async</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates the smart layout according to the floor and workspaces selected by the user in the
+Current Project Async</p>
+<hr>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Layouts
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: "body"
+  name: "body"
+  required:
+  - selected_floor
+  - workspaces
+  properties:
+    selected_floor:
+        type: object
+        description: Data of the floor selected by the user.
+        properties:
+            id:
+                type: integer
+                description: Unique ID of each building floor.
+            active:
+                type: boolean
+                description: indicate if this floor is active.
+            wys_id:
+                type: string
+                description: Unique internal ID of each building floor.
+            rent_value:
+                type: number
+                format: float
+                description: Rent value of the floor
+            m2:
+                type: number
+                format: float
+                description: Square meter value of the floor.
+            elevators_number:
+                type: integer
+                description: Numbers of elevators in the floor.
+            image_link:
+                type: string
+                description: Link of the floor image.
+            building_id:
+                type: integer
+                description: Unique ID of each building associated to this floor.
+    workspaces:
+        type: array
+        items:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: Unique ID of each space.
+                quantity:
+                    type: integer
+                    description: Quantity of the space
+                name:
+                    type: string
+                    description: Name of the space
+                height:
+                    type: number
+                    description: Height of the space
+                width:
+                    type: number
+                    description: width of the space
+                active:
+                    type: boolean
+                    description: indicate if this space is active
+                regular:
+                    type: boolean
+                    description: indicate if this space is a regular space
+                up_gap:
+                    type: number
+                    description: up padding
+                down_gap:
+                    type: number
+                    description: down padding
+                left_gap:
+                    type: number
+                    description: left padding
+                right_gap:
+                    type: number
+                    description: right padding
+                subcategory_id:
+                    type: integer
+                    description: subcategory Id
+                points:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            x:
+                                type: number
+                                format: float
+                                description: X coordinate of the vertex/point.
+                            y:
+                                type: number
+                                format: float
+                                description: Y coordinate of the vertex/point.
+</code></pre>
+<p>responses:</p>
+<pre><code>201:
+    description: Return the task id generated by the Smart Layout
+400:
+    description: Data or missing field in body.
+404:
+    description: Data object not found.
+500:
+    description: Internal server error.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/v2&#34;, methods=[&#39;POST&#39;])
+@token_required
+def generate_layout_async():
+    &#34;&#34;&#34;
+    Generates the smart layout according to the floor and workspaces selected by the user in the
+    current project async
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - selected_floor
+          - workspaces
+          properties:
+            selected_floor:
+                type: object
+                description: Data of the floor selected by the user.
+                properties:
+                    id:
+                        type: integer
+                        description: Unique ID of each building floor.
+                    active:
+                        type: boolean
+                        description: indicate if this floor is active.
+                    wys_id:
+                        type: string
+                        description: Unique internal ID of each building floor.
+                    rent_value:
+                        type: number
+                        format: float
+                        description: Rent value of the floor
+                    m2:
+                        type: number
+                        format: float
+                        description: Square meter value of the floor.
+                    elevators_number:
+                        type: integer
+                        description: Numbers of elevators in the floor.
+                    image_link:
+                        type: string
+                        description: Link of the floor image.
+                    building_id:
+                        type: integer
+                        description: Unique ID of each building associated to this floor.
+            workspaces:
+                type: array
+                items:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            description: Unique ID of each space.
+                        quantity:
+                            type: integer
+                            description: Quantity of the space
+                        name:
+                            type: string
+                            description: Name of the space
+                        height:
+                            type: number
+                            description: Height of the space
+                        width:
+                            type: number
+                            description: width of the space
+                        active:
+                            type: boolean
+                            description: indicate if this space is active
+                        regular:
+                            type: boolean
+                            description: indicate if this space is a regular space
+                        up_gap:
+                            type: number
+                            description: up padding
+                        down_gap:
+                            type: number
+                            description: down padding
+                        left_gap:
+                            type: number
+                            description: left padding
+                        right_gap:
+                            type: number
+                            description: right padding
+                        subcategory_id:
+                            type: integer
+                            description: subcategory Id
+                        points:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    x:
+                                        type: number
+                                        format: float
+                                        description: X coordinate of the vertex/point.
+                                    y:
+                                        type: number
+                                        format: float
+                                        description: Y coordinate of the vertex/point.
+
+    responses:
+
+        201:
+            description: Return the task id generated by the Smart Layout
+        400:
+            description: Data or missing field in body.
+        404:
+            description: Data object not found.
+        500:
+            description: Internal server error.
+    &#34;&#34;&#34;
+    try:
+        params = {&#39;selected_floor&#39;, &#39;workspaces&#39;}
+        if request.json.keys() != params:
+            return &#34;A required field is missing in the body&#34;, 400
+        floor = request.json[&#39;selected_floor&#39;]
+        floor_params = {&#39;id&#39;, &#39;wys_id&#39;,&#39;rent_value&#39;,&#39;m2&#39;,&#39;elevators_number&#39;,&#39;image_link&#39;,&#39;active&#39;,&#39;building_id&#39;}
+        if floor.keys() != floor_params:
+            return &#34;A floor data field is missing in the body&#34;, 400
+
+        workspaces = request.json[&#39;workspaces&#39;]
+
+        if len(workspaces) == 0:
+            return &#34;No spaces were entered in the body.&#34;, 400
+        workspace_params = {&#39;id&#39;,&#39;quantity&#39;,&#39;name&#39;,&#39;height&#39;,&#39;width&#39;,&#39;active&#39;,&#39;regular&#39;,&#39;up_gap&#39;,&#39;down_gap&#39;,&#39;left_gap&#39;,
+                            &#39;right_gap&#39;,&#39;subcategory_id&#39;,&#39;points&#39;}
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        subcategories = get_subcategories(token)
+        for workspace in workspaces:
+            if workspace.keys() != workspace_params:
+                return &#34;A space data field is missing in the body&#34;, 400
+            found = False
+            for category in subcategories:
+                for subcategory in category[&#39;subcategories&#39;]:
+                    if subcategory[&#39;id&#39;] == workspace[&#39;subcategory_id&#39;]:
+                        workspace[&#39;category_id&#39;] = category[&#39;id&#39;]
+                        found = True
+                        break
+                if found:
+                    break
+            if not found:
+                return &#34;A Space subcategory doesn&#39;t exist&#34;, 404
+
+        floor_polygons = get_floor_polygons_by_ids(floor[&#39;building_id&#39;], floor[&#39;id&#39;], token)
+        if floor_polygons is None or len(floor_polygons) == 0:
+            return &#34;The floor doesn&#39;t exist or not have a polygons.&#34;, 404
+        floor[&#39;polygons&#39;] = floor_polygons
+        layout_data = {&#39;selected_floor&#39;: floor, &#39;workspaces&#39;: workspaces}
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        job = redis_queue.enqueue(smart_layout_async,
+                                  args=(layout_data, config.pop_size, config.generations),
+                                  job_timeout=7200)
+        return jsonify({&#39;job_id&#39;: job.id}), 201
+
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        abort(500, description=msg)
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500</code></pre>
+</details>
+</dd>
+<dt id="main.get_all_zones"><code class="name flex">
+<span>def <span class="ident">get_all_zones</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="get-all-zones">Get All Zones</h2>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Zones
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>responses:</p>
+<pre><code>200:
+    description: OK
+500:
+    description: Internal Error
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/zones&#34;, methods=[&#39;GET&#39;])
+@token_required
+def get_all_zones():
+    &#34;&#34;&#34;
+    Get All Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    responses:
+
+        200:
+            description: OK
+        500:
+            description: Internal Error
+    &#34;&#34;&#34;
+    try:
+        # Get all zones from db
+        zones = LayoutZone.query.all()
+
+        zone: LayoutZone
+        # Return all zones as a list
+        return jsonify([zone.to_dict() for zone in zones])
+
+    except SQLAlchemyError as e:
+        logging.error(f&#39;Database error: {e}&#39;)
+        abort(500, description=f&#39;Database error: {e}&#39;)
+
+    except Exception as e:
+        logging.error(f&#39;Internal error: {e}&#39;)
+        abort(500, description=f&#39;Internal error: {e}&#39;)</code></pre>
+</details>
+</dd>
+<dt id="main.get_floor_by_ids"><code class="name flex">
+<span>def <span class="ident">get_floor_by_ids</span></span>(<span>building_id, floor_id, token)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the floor by buildingId and floorId</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_floor_by_ids(building_id, floor_id, token):
+    &#34;&#34;&#34;Returns the floor by buildingId and floorId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + &#39;/floors/&#39;+ str(floor_id)
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the buildings module&#34;)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="main.get_floor_polygons_by_ids"><code class="name flex">
+<span>def <span class="ident">get_floor_polygons_by_ids</span></span>(<span>building_id, floor_id, token)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the polygons by buildingId and floorId</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_floor_polygons_by_ids(building_id, floor_id, token):
+    &#34;&#34;&#34;Returns the polygons by buildingId and floorId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + &#39;/floors/&#39;+ str(floor_id) + &#39;/polygons&#39;
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the buildings module&#34;)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="main.get_layout"><code class="name flex">
+<span>def <span class="ident">get_layout</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="takes-a-job_id-and-returns-the-jobs-result">Takes a job_id and returns the job's result.</h2>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Layouts
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: "body"
+  name: "body"
+  required:
+  - job_id
+  - project_id
+  properties:
+    job_id:
+        type: string
+        description: Resultant Job ID.
+    project_id:
+        type: integer
+        description: Project ID of the project that you want to assign the final layout
+</code></pre>
+<p>responses:</p>
+<pre><code>    201:
+        description: Return the final layout
+    404:
+        description: Job not found. The job doesn't exist or isn't ready.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/v2/job&#34;, methods=[&#39;POST&#39;])
+@token_required
+def get_layout():
+    &#34;&#34;&#34;
+    Takes a job_id and returns the job&#39;s result.
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - job_id
+          - project_id
+          properties:
+            job_id:
+                type: string
+                description: Resultant Job ID.
+            project_id:
+                type: integer
+                description: Project ID of the project that you want to assign the final layout
+
+    responses:
+
+            201:
+                description: Return the final layout
+            404:
+                description: Job not found. The job doesn&#39;t exist or isn&#39;t ready.
+    &#34;&#34;&#34;
+    req_params = [&#34;project_id&#34;, &#34;job_id&#34;]
+    for param in req_params:
+        if param not in request.json.keys():
+            abort(400, description=f&#34;{param} isn&#39;t in body&#34;)
+
+    job_id = request.json[&#34;job_id&#34;]
+    project_id = request.json[&#34;project_id&#34;]
+
+    try:
+        job = Job.fetch(job_id, connection=redis_conn)
+    except Exception as exception:
+        abort(500, description=exception)
+
+    if not job.result:
+        abort(
+            404,
+            description=f&#34;No result found for job_id {job.id}. Try checking the job&#39;s status.&#34;,
+        )
+    try:
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return &#34;The project doesn&#39;t exist&#34;, 404
+
+        layout_workspaces, layout_data = job.result
+        workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
+                                                             SPACES_URL + SPACES_MODULE_API, token)
+
+        floor = layout_data[&#39;selected_floor&#39;]
+
+        layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
+        if layout_gen is not None:
+            db.session.delete(layout_gen)
+            db.session.commit()
+        layout_gen = LayoutGenerated()
+        layout_gen.floor_id = floor[&#39;id&#39;]
+        layout_gen.building_id = floor[&#39;building_id&#39;]
+        layout_gen.project_id = project_id
+        for l_workspace in workspaces_coords:
+            layout_gen_workspace = LayoutGeneratedWorkspace()
+            for key, value in l_workspace.items():
+                setattr(layout_gen_workspace, key, value)
+            layout_gen.workspaces.append(layout_gen_workspace)
+        db.session.add(layout_gen)
+        db.session.commit()
+        project = update_project_by_id(project_id, {&#39;layout_gen_id&#39;: layout_gen.id}, token)
+        if project is None:
+            return &#34;The project could not be updated.&#34;, 404
+
+        layout_gen = layout_gen.to_dict()
+        del floor[&#39;polygons&#39;]
+        layout_gen[&#39;selected_floor&#39;] = floor
+        for wk in layout_gen[&#39;workspaces&#39;]:
+            wk[&#39;image&#39;] = next((space[&#39;image&#39;] for space in workspaces_coords if space[&#34;space_id&#34;] == wk[&#34;space_id&#34;]),
+                               None)
+
+        layout_gen[&#39;floor_elements&#39;] = floor_elements
+
+        return jsonify(layout_gen), 201
+
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500</code></pre>
+</details>
+</dd>
+<dt id="main.get_layout_by_project"><code class="name flex">
+<span>def <span class="ident">get_layout_by_project</span></span>(<span>project_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="get-latest-configuration-of-the-layout-made-by-the-user-for-the-current-project">Get latest configuration of the layout made by the user for the current project.</h2>
+<p>parameters:</p>
+<pre><code>  - in: path
+    name: project_id
+    type: integer
+    description: Project ID
+</code></pre>
+<p>tags:</p>
+<pre><code>- Layouts
+</code></pre>
+<p>responses:</p>
+<pre><code>  200:
+    description: Layout data Object.
+  404:
+    description: Project Not Found or the Proyect doesn't have a Layout created.
+  500:
+    description: "Database error"
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/&lt;project_id&gt;&#34;, methods=[&#39;GET&#39;])
+@token_required
+def get_layout_by_project(project_id):
+    &#34;&#34;&#34;
+    Get latest configuration of the layout made by the user for the current project.
+    ---
+    parameters:
+
+          - in: path
+            name: project_id
+            type: integer
+            description: Project ID
+
+    tags:
+
+        - Layouts
+
+    responses:
+
+          200:
+            description: Layout data Object.
+          404:
+            description: Project Not Found or the Proyect doesn&#39;t have a Layout created.
+          500:
+            description: &#34;Database error&#34;
+    &#34;&#34;&#34;
+    try:
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return &#34;The project doesn&#39;t exist&#34;, 404
+        layout_gen = LayoutGenerated.query.get(project[&#39;layout_gen_id&#39;])
+        if layout_gen is None:
+            return &#34;The project doesn&#39;t have a layout created&#34;, 404
+
+        layout_gen = layout_gen.to_dict()
+        floor = get_floor_by_ids(layout_gen[&#39;building_id&#39;], layout_gen[&#39;floor_id&#39;], token)
+        if floor is None:
+            return &#34;A layout floor doesn&#39;t exist&#34;, 404
+
+        floor_polygons = get_floor_polygons_by_ids(floor[&#39;building_id&#39;], floor[&#39;id&#39;], token)
+        if floor_polygons is None or len(floor_polygons) == 0:
+            return &#34;The floor doesn&#39;t exist or not have a polygons.&#34;, 404
+        floor[&#39;polygons&#39;] = floor_polygons
+
+        floor_elements = get_floor_elements_p({&#39;selected_floor&#39;: floor})
+
+        layout_gen[&#39;floor_elements&#39;]  = floor_elements
+        
+        del floor[&#39;polygons&#39;]
+
+        layout_gen[&#39;selected_floor&#39;] = floor
+        
+        for wk in layout_gen[&#39;workspaces&#39;]:
+            space = get_space_by_id(wk[&#39;space_id&#39;], token)
+            if space is None:
+                return &#34;A layout space doesn&#39;t exist&#34;, 404
+            image = resize_base64_image(space[&#39;model_2d&#39;], wk[&#39;width&#39;], wk[&#39;height&#39;])
+            wk[&#39;image&#39;] = image
+
+        return jsonify(layout_gen), 200
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500</code></pre>
+</details>
+</dd>
+<dt id="main.get_layout_config"><code class="name flex">
+<span>def <span class="ident">get_layout_config</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="get-latest-configuration-for-the-smart-layout-parameters-values">Get latest configuration for the Smart Layout (parameters values).</h2>
+<p>tags:</p>
+<pre><code>- Layouts/configs
+</code></pre>
+<p>responses:</p>
+<pre><code>200:
+    description: Layout Config data Object.
+404:
+    description: Layout Config data has not been created.
+500:
+    description: "Database error"
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/configs&#34;, methods=[&#39;GET&#39;])
+@token_required
+def get_layout_config():
+    &#34;&#34;&#34;
+    Get latest configuration for the Smart Layout (parameters values).
+    ---
+    tags:
+
+        - Layouts/configs
+
+    responses:
+
+        200:
+            description: Layout Config data Object.
+        404:
+            description: Layout Config data has not been created.
+        500:
+            description: &#34;Database error&#34;
+    &#34;&#34;&#34;
+    try:
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        if config is None:
+            return &#34;Layout Config data has not been created.&#34;, 404
+        return config.serialize(), 200
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500</code></pre>
+</details>
+</dd>
+<dt id="main.get_project_by_id"><code class="name flex">
+<span>def <span class="ident">get_project_by_id</span></span>(<span>project_id, token)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the project by projectId</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_project_by_id(project_id, token):
+    &#34;&#34;&#34;Returns the project by projectId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the projects module&#34;)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="main.get_space_by_id"><code class="name flex">
+<span>def <span class="ident">get_space_by_id</span></span>(<span>space_id, token)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the space by spaceId</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_space_by_id(space_id, token):
+    &#34;&#34;&#34;Returns the space by spaceId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = SPACES_URL + SPACES_MODULE_API + str(space_id)
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the spaces module&#34;)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="main.get_subcategories"><code class="name flex">
+<span>def <span class="ident">get_subcategories</span></span>(<span>token)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns SubCategories of the Project</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_subcategories(token):
+    &#34;&#34;&#34;Returns SubCategories of the Project&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = SPACES_URL + SPACES_MODULE_API + &#39;subcategories&#39;
+    rv = requests.get(api_url, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the buildings module&#34;)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="main.get_zone"><code class="name flex">
+<span>def <span class="ident">get_zone</span></span>(<span>zone_id: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="get-zones">Get Zones</h2>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Zones
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: path
+  name: zone_id
+  type: integer
+  description: zone id
+</code></pre>
+<p>responses:</p>
+<pre><code>200:
+    description: OK
+500:
+    description: Internal Error
+404:
+    description: Not Found
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/zones/&lt;zone_id&gt;&#34;, methods=[&#39;GET&#39;])
+@token_required
+def get_zone(zone_id: int):
+    &#34;&#34;&#34;
+    Get Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: zone_id
+          type: integer
+          description: zone id
+
+    responses:
+
+        200:
+            description: OK
+        500:
+            description: Internal Error
+        404:
+            description: Not Found
+        &#34;&#34;&#34;
+    # Verify params
+    try:
+        zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
+        if zone is None:
+            return jsonify({&#39;error&#39;: &#39;Zone Not Found&#39;}), 404
+
+        # Return
+        return zone.serialize()
+
+    except SQLAlchemyError as e:
+        logging.error(f&#39;Database error: {e}&#39;)
+        abort(500, description=f&#39;Database error: {e}&#39;)
+
+    except Exception as e:
+        logging.error(f&#39;Internal error: {e}&#39;)
+        abort(500, description=f&#39;Internal error: {e}&#39;)</code></pre>
+</details>
+</dd>
+<dt id="main.spec"><code class="name flex">
+<span>def <span class="ident">spec</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to load the swagger app</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/spec&#34;, methods=[&#39;GET&#39;])
+@token_required
+def spec():
+    &#34;&#34;&#34;Function to load the swagger app&#34;&#34;&#34;
+    swag = swagger(app)
+    swag[&#39;info&#39;][&#39;version&#39;] = &#34;1.0&#34;
+    swag[&#39;info&#39;][&#39;title&#39;] = &#34;WYS Layout API Service&#34;
+    swag[&#39;tags&#39;] = [{
+        &#34;name&#34;: &#34;Layouts&#34;,
+        &#34;description&#34;: &#34;Methods to configure layouts&#34;
+    }]
+    return jsonify(swag)</code></pre>
+</details>
+</dd>
+<dt id="main.token_required"><code class="name flex">
+<span>def <span class="ident">token_required</span></span>(<span>f)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to get the token for the swagger</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def token_required(f):
+    &#34;&#34;&#34;Function to get the token for the swagger&#34;&#34;&#34;
+    @wraps(f)
+    def decorator(*args, **kwargs):
+
+        bearer_token = request.headers.get(&#39;Authorization&#39;, None)
+        try:
+            token = bearer_token.split(&#34; &#34;)[1]
+        except Exception as ierr:
+            app.logger.error(ierr)
+            return jsonify({&#39;message&#39;: &#39;a valid bearer token is missing&#39;}), 500
+
+        if not token:
+            app.logger.debug(&#34;token_required&#34;)
+            return jsonify({&#39;message&#39;: &#39;a valid token is missing&#39;})
+
+        app.logger.debug(&#34;Token: &#34; + token)
+        try:
+            data = jwt.decode(token, app.config[&#39;SECRET_KEY&#39;],
+                              algorithms=[&#39;RS256&#39;], audience=&#34;1&#34;)
+            user_id: int = data[&#39;user_id&#39;]
+            request.environ[&#39;user_id&#39;] = user_id
+        except Exception as err:
+            return jsonify({&#39;message&#39;: &#39;token is invalid&#39;, &#39;error&#39;: err})
+        except KeyError as kerr:
+            return jsonify({&#39;message&#39;: &#39;Can\&#39;t find user_id in token&#39;, &#39;error&#39;: kerr})
+
+        return f(*args, **kwargs)
+
+    return decorator</code></pre>
+</details>
+</dd>
+<dt id="main.update_layout_by_project"><code class="name flex">
+<span>def <span class="ident">update_layout_by_project</span></span>(<span>project_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="updates-the-configuration-of-the-spaces-in-the-layout-made-by-the-user-in-the-current-project">Updates the configuration of the spaces in the layout made by the user in the current project.</h2>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Layouts
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: path
+  name: project_id
+  type: integer
+  description: Project ID
+
+- in: "body"
+  name: "body"
+  required: true
+  schema:
+    type: array
+    items:
+        type: object
+        properties:
+            id:
+                type: integer
+                description: Unique ID of each layout workspace.
+            space_id:
+                type: integer
+                description: Unique ID of each space.
+            rotation:
+                type: string
+                description: Rotation of the space in layout.
+            height:
+                type: number
+                format: float
+                description: Height size of the space image in px.
+            width:
+                type: number
+                format: float
+                description: Width size of the space image in px.
+            position_x:
+                type: number
+                format: float
+                description: X coordinate of the space position in layout.
+            position_y:
+                type: number
+                format: float
+                description: Y coordinate of the space position in layout.
+</code></pre>
+<p>responses:</p>
+<pre><code>200:
+    description: Layout data Object updated.
+400:
+    description: Data or missing field in body.
+404:
+    description: Data object not found.
+500:
+    description: Internal Error Server
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/&lt;project_id&gt;&#34;, methods=[&#39;PUT&#39;])
+@token_required
+def update_layout_by_project(project_id):
+    &#34;&#34;&#34;
+    Updates the configuration of the spaces in the layout made by the user in the current project.
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Layouts
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: project_id
+          type: integer
+          description: Project ID
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required: true
+          schema:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: integer
+                        description: Unique ID of each layout workspace.
+                    space_id:
+                        type: integer
+                        description: Unique ID of each space.
+                    rotation:
+                        type: string
+                        description: Rotation of the space in layout.
+                    height:
+                        type: number
+                        format: float
+                        description: Height size of the space image in px.
+                    width:
+                        type: number
+                        format: float
+                        description: Width size of the space image in px.
+                    position_x:
+                        type: number
+                        format: float
+                        description: X coordinate of the space position in layout.
+                    position_y:
+                        type: number
+                        format: float
+                        description: Y coordinate of the space position in layout.
+
+    responses:
+
+        200:
+            description: Layout data Object updated.
+        400:
+            description: Data or missing field in body.
+        404:
+            description: Data object not found.
+        500:
+            description: Internal Error Server
+    &#34;&#34;&#34;
+    try:
+        params = {&#39;id&#39;, &#39;space_id&#39;, &#39;rotation&#39;,&#39;height&#39;,&#39;width&#39;, &#39;position_x&#39;, &#39;position_y&#39;}
+        if not request.json:
+            return &#34;The body isn\&#39;t application/json&#34;, 400
+        elif any(workspace.keys() != params for workspace in request.json):
+            return &#34;A required field is missing in worskpaces data&#34;, 400
+        elif len(request.json) == 0:
+            return &#39;Body data required&#39;, 400
+        token = request.headers.get(&#39;Authorization&#39;, None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return &#34;The project doesn&#39;t exist&#34;, 404
+        layout_gen = LayoutGenerated.query.get(project[&#39;layout_gen_id&#39;])
+        if layout_gen is None:
+            return &#34;The project doesn&#39;t have a layout created&#34;, 404
+        for data in request.json:
+            workspace = LayoutGeneratedWorkspace.query.filter_by(id=data[&#39;id&#39;], layout_gen_id=layout_gen.id).first()
+            if workspace is not None:
+                for key, value in data.items():
+                    setattr(workspace, key, value)
+            else:
+                workspace = LayoutGeneratedWorkspace(**data)
+                layout_gen.workspaces.append(workspace)
+                db.session.add(workspace)
+            db.session.commit()
+        
+        return layout_gen.serialize(), 200
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500</code></pre>
+</details>
+</dd>
+<dt id="main.update_layout_config"><code class="name flex">
+<span>def <span class="ident">update_layout_config</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="update-or-create-the-latest-configuration-for-the-smart-layout-parameters-values-greater-than-25">Update (or Create) the latest configuration for the Smart Layout (parameters values greater than 25).</h2>
+<p>tags:</p>
+<pre><code>- Layouts/configs
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: "body"
+  name: "body"
+  required:
+  - pop_size
+  - generations
+  properties:
+    pop_size:
+        type: integer
+        description: Value of pop size.
+    generations:
+        type: integer
+        description: Value of number of generations.
+</code></pre>
+<p>responses:</p>
+<pre><code>200:
+    description: Layout Config data Object.
+400:
+    description: Data or missing field in body.
+500:
+    description: "Database error"
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/configs&#34;, methods=[&#39;PUT&#39;])
+@token_required
+def update_layout_config():
+    &#34;&#34;&#34;
+    Update (or Create) the latest configuration for the Smart Layout (parameters values greater than 25).
+    ---
+    tags:
+
+        - Layouts/configs
+
+    parameters:
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - pop_size
+          - generations
+          properties:
+            pop_size:
+                type: integer
+                description: Value of pop size.
+            generations:
+                type: integer
+                description: Value of number of generations.
+
+    responses:
+
+        200:
+            description: Layout Config data Object.
+        400:
+            description: Data or missing field in body.
+        500:
+            description: &#34;Database error&#34;
+    &#34;&#34;&#34;
+    try:
+        params = {&#39;pop_size&#39;, &#39;generations&#39;}
+        if not request.json:
+            return &#34;The body isn\&#39;t application/json&#34;, 400
+        elif request.json.keys() != params:
+            return &#34;A required field is missing in worskpaces data&#34;, 400
+        elif request.json[&#39;pop_size&#39;] &lt; 25 or request.json[&#39;generations&#39;] &lt; 25:
+            return &#39;The values must be greater than 25&#39;, 400
+
+        config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
+        if config is None:
+            config = LayoutConfig()
+            db.session.add(config)
+        config.pop_size = request.json[&#39;pop_size&#39;]
+        config.generations = request.json[&#39;generations&#39;]
+        db.session.commit()
+
+        return config.serialize(), 200
+    except SQLAlchemyError as e:
+        msg = f&#39;Error saving data: {e}&#39;
+        app.logger.error(msg)
+        return msg, 500
+    except Exception as exp:
+        msg = f&#34;Error: mesg -&gt;{exp}&#34;
+        app.logger.error(msg)
+        return msg, 500</code></pre>
+</details>
+</dd>
+<dt id="main.update_project_by_id"><code class="name flex">
+<span>def <span class="ident">update_project_by_id</span></span>(<span>project_id, data, token)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update the project by projectId</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_project_by_id(project_id, data, token):
+    &#34;&#34;&#34;Update the project by projectId&#34;&#34;&#34;
+    headers = {&#39;Authorization&#39;: token}
+    api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
+    rv = requests.put(api_url, json=data, headers=headers)
+    if rv.status_code == 200:
+        return json.loads(rv.text)
+    elif rv.status_code == 500:
+        raise Exception(&#34;Cannot connect to the projects module&#34;)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="main.updated_zone"><code class="name flex">
+<span>def <span class="ident">updated_zone</span></span>(<span>zone_id: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="update-zones">Update Zones</h2>
+<p>consumes:</p>
+<pre><code>- "application/json"
+</code></pre>
+<p>tags:</p>
+<pre><code>- Zones
+</code></pre>
+<p>produces:</p>
+<pre><code>- application/json
+</code></pre>
+<p>parameters:</p>
+<pre><code>- in: path
+  name: zone_id
+  type: integer
+  description: zone id
+
+- in: "body"
+  name: "body"
+  required:
+  - spaces_id
+  - name
+  - color
+  properties:
+    name:
+        type: string
+        description: Zone's name
+    color:
+        type: string
+        description: RGB color code.
+    w_spaces_id:
+        type: array
+        items:
+            type: number
+        description: Spaces id
+</code></pre>
+<p>responses:</p>
+<pre><code>    200:
+        description: Updated
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/api/layouts/zones/&lt;zone_id&gt;&#34;, methods=[&#39;PUT&#39;])
+@token_required
+def updated_zone(zone_id: int):
+    &#34;&#34;&#34;
+    Update Zones
+    ---
+    consumes:
+
+        - &#34;application/json&#34;
+
+    tags:
+
+        - Zones
+
+    produces:
+
+        - application/json
+
+    parameters:
+
+        - in: path
+          name: zone_id
+          type: integer
+          description: zone id
+
+        - in: &#34;body&#34;
+          name: &#34;body&#34;
+          required:
+          - spaces_id
+          - name
+          - color
+          properties:
+            name:
+                type: string
+                description: Zone&#39;s name
+            color:
+                type: string
+                description: RGB color code.
+            w_spaces_id:
+                type: array
+                items:
+                    type: number
+                description: Spaces id
+
+    responses:
+
+            200:
+                description: Updated
+
+    &#34;&#34;&#34;
+    try:
+        zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
+        if zone is None:
+            abort(404, description=&#39;Layout Zone not found&#39;)
+
+        req_params = [&#39;w_spaces_id&#39;, &#39;name&#39;, &#39;color&#39;]
+        for param in req_params:
+            if param not in request.json.keys():
+                abort(400, description=f&#34;{param} isn&#39;t in body&#34;)
+
+        # Empty w_spaces in zone
+        zone.spaces_gen.clear()
+        db.session.commit()
+
+        # Add new w_spaces
+        for w_space_id in request.json[&#34;w_spaces_id&#34;]:
+            w_space = db.session.query(LayoutGeneratedWorkspace).filter_by(id=w_space_id).first()
+            if w_space is not None:
+                zone.spaces_gen.append(w_space)
+        # Update name
+        zone.name = request.json[&#34;name&#34;]
+        # Update color
+        zone.color = request.json[&#34;color&#34;]
+        db.session.commit()
+        return jsonify(zone.to_dict())
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        abort(500, description=f&#39;Database error: {e}&#39;)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="main.LayoutConfig"><code class="flex name class">
+<span>class <span class="ident">LayoutConfig</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>LayoutConfig.
+Represents the configuration model of parameters setted for the Smart Layout</p>
+<h2 id="attributes">Attributes</h2>
+<ul>
+<li>id: Represent the unique id of a layout config</li>
+<li>pop_size: Value of pop size</li>
+<li>generations: Value of number of generations</li>
+</ul>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LayoutConfig(db.Model):
+    &#34;&#34;&#34;
+    LayoutConfig.
+    Represents the configuration model of parameters setted for the Smart Layout
+
+    Attributes
+    ----------
+    - id: Represent the unique id of a layout config
+    - pop_size: Value of pop size
+    - generations: Value of number of generations
+    &#34;&#34;&#34;
+
+    id = db.Column(db.Integer, primary_key=True)
+    pop_size = db.Column(db.Integer, nullable=False)
+    generations = db.Column(db.Integer, nullable=False)
+
+    def to_dict(self):
+        &#34;&#34;&#34;
+        Convert to dictionary
+        &#34;&#34;&#34;
+
+        obj_dict = {
+            &#39;id&#39;: self.id,
+            &#39;pop_size&#39;: self.pop_size,
+            &#39;generations&#39;: self.generations
+        }
+
+        return obj_dict
+
+    def serialize(self):
+        &#34;&#34;&#34;
+        Serialize to json
+        &#34;&#34;&#34;
+        return jsonify(self.to_dict())</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Model</li>
+<li>flask_sqlalchemy.model.Model</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="main.LayoutConfig.generations"><code class="name">var <span class="ident">generations</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutConfig.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutConfig.pop_size"><code class="name">var <span class="ident">pop_size</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="main.LayoutConfig.serialize"><code class="name flex">
+<span>def <span class="ident">serialize</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Serialize to json</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def serialize(self):
+    &#34;&#34;&#34;
+    Serialize to json
+    &#34;&#34;&#34;
+    return jsonify(self.to_dict())</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutConfig.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert to dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_dict(self):
+    &#34;&#34;&#34;
+    Convert to dictionary
+    &#34;&#34;&#34;
+
+    obj_dict = {
+        &#39;id&#39;: self.id,
+        &#39;pop_size&#39;: self.pop_size,
+        &#39;generations&#39;: self.generations
+    }
+
+    return obj_dict</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="main.LayoutGenerated"><code class="flex name class">
+<span>class <span class="ident">LayoutGenerated</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>LayoutGenerated.
+Represents the spaces configured by the user in the layout.</p>
+<h2 id="attributes">Attributes</h2>
+<ul>
+<li>id: Represent the unique id of a Layout Generated</li>
+<li>floor_id: ID of the floor selected by the user</li>
+<li>workspaces: Spaces selected and positioned by the user in the layout</li>
+<li>zones : Zones created by the user within the layout</li>
+</ul>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LayoutGenerated(db.Model):
+    &#34;&#34;&#34;
+    LayoutGenerated.
+    Represents the spaces configured by the user in the layout.
+
+    Attributes
+    ----------
+    - id: Represent the unique id of a Layout Generated
+    - floor_id: ID of the floor selected by the user
+    - workspaces: Spaces selected and positioned by the user in the layout
+    - zones : Zones created by the user within the layout
+    &#34;&#34;&#34;
+    id = db.Column(db.Integer, primary_key=True)
+    floor_id = db.Column(db.Integer, nullable=False)
+    building_id = db.Column(db.Integer, nullable=False)
+    project_id = db.Column(db.Integer, nullable=False)
+    workspaces = db.relationship(
+        &#34;LayoutGeneratedWorkspace&#34;,
+        backref=&#34;layout_generated&#34;,
+        cascade=&#34;all, delete, delete-orphan&#34;)
+
+    def to_dict(self):
+        &#34;&#34;&#34;
+        Convert to dictionary
+        &#34;&#34;&#34;
+
+        dict = {
+            &#39;id&#39;: self.id,
+            &#39;building_id&#39;: self.building_id,
+            &#39;floor_id&#39;: self.floor_id,
+            &#39;workspaces&#39;: [workspace.to_dict() for workspace in self.workspaces]
+        }
+        return dict
+
+    def serialize(self):
+        &#34;&#34;&#34;
+        Serialize to json
+        &#34;&#34;&#34;
+        return jsonify(self.to_dict())</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Model</li>
+<li>flask_sqlalchemy.model.Model</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="main.LayoutGenerated.building_id"><code class="name">var <span class="ident">building_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGenerated.floor_id"><code class="name">var <span class="ident">floor_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGenerated.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGenerated.project_id"><code class="name">var <span class="ident">project_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGenerated.workspaces"><code class="name">var <span class="ident">workspaces</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="main.LayoutGenerated.serialize"><code class="name flex">
+<span>def <span class="ident">serialize</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Serialize to json</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def serialize(self):
+    &#34;&#34;&#34;
+    Serialize to json
+    &#34;&#34;&#34;
+    return jsonify(self.to_dict())</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGenerated.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert to dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_dict(self):
+    &#34;&#34;&#34;
+    Convert to dictionary
+    &#34;&#34;&#34;
+
+    dict = {
+        &#39;id&#39;: self.id,
+        &#39;building_id&#39;: self.building_id,
+        &#39;floor_id&#39;: self.floor_id,
+        &#39;workspaces&#39;: [workspace.to_dict() for workspace in self.workspaces]
+    }
+    return dict</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace"><code class="flex name class">
+<span>class <span class="ident">LayoutGeneratedWorkspace</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>LayoutGeneratedWorkspace.
+Represents the position per space configured by the user
+or generated. All of this according to the positions in the layout of selected floor.</p>
+<h2 id="attributes">Attributes</h2>
+<ul>
+<li>id: Represent the unique id of a M2 generated</li>
+<li>position_x: X coordinate of the position of the space figure in the layout</li>
+<li>position_Y: Y coordinate of the position of the space figure in the layout</li>
+<li>height: Height size of the space image in px</li>
+<li>width: Width size of the space image in px</li>
+<li>rotation: Direction of rotation of space</li>
+<li>space_id: Foreign key of associated space</li>
+<li>layout_gen_id: Foreign key of associated layout generated</li>
+</ul>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LayoutGeneratedWorkspace(db.Model):
+    &#34;&#34;&#34;
+    LayoutGeneratedWorkspace.
+    Represents the position per space configured by the user 
+    or generated. All of this according to the positions in the layout of selected floor.
+
+    Attributes
+    ----------
+    - id: Represent the unique id of a M2 generated
+    - position_x: X coordinate of the position of the space figure in the layout
+    - position_Y: Y coordinate of the position of the space figure in the layout
+    - height: Height size of the space image in px
+    - width: Width size of the space image in px
+    - rotation: Direction of rotation of space
+    - space_id: Foreign key of associated space
+    - layout_gen_id: Foreign key of associated layout generated
+    &#34;&#34;&#34;
+
+    id = db.Column(db.Integer, primary_key=True)
+    position_x = db.Column(db.Float, nullable=False)
+    position_y =  db.Column(db.Float, nullable=False)
+    height = db.Column(db.Float, nullable=False)
+    width = db.Column(db.Float, nullable=False)
+    rotation = db.Column(db.String(20))
+    space_id = db.Column(db.Integer, nullable=False)
+    layout_gen_id = db.Column(db.Integer, db.ForeignKey(
+        &#39;layout_generated.id&#39;), nullable=False)
+    layout_zone_id = db.Column(db.Integer, db.ForeignKey(
+        &#39;layout_zone.id&#39;), nullable=True)
+
+    def to_dict(self):
+        &#34;&#34;&#34;
+        Convert to dictionary
+        &#34;&#34;&#34;
+
+        dict = {
+            &#39;id&#39;: self.id,
+            &#39;position_x&#39;: self.position_x,
+            &#39;position_y&#39;: self.position_y,
+            &#39;rotation&#39;: self.rotation,
+            &#39;height&#39;: self.height,
+            &#39;width&#39;: self.width,
+            &#39;space_id&#39;: self.space_id,
+            &#39;layout_gen_id&#39;: self.layout_gen_id,
+            &#39;layout_zone_id&#39;: self.layout_zone_id
+        }
+        return dict
+
+    def serialize(self):
+        &#34;&#34;&#34;
+        Serialize to json
+        &#34;&#34;&#34;
+        return jsonify(self.to_dict())</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Model</li>
+<li>flask_sqlalchemy.model.Model</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="main.LayoutGeneratedWorkspace.height"><code class="name">var <span class="ident">height</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.layout_gen_id"><code class="name">var <span class="ident">layout_gen_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.layout_generated"><code class="name">var <span class="ident">layout_generated</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.layout_zone"><code class="name">var <span class="ident">layout_zone</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.layout_zone_id"><code class="name">var <span class="ident">layout_zone_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.position_x"><code class="name">var <span class="ident">position_x</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.position_y"><code class="name">var <span class="ident">position_y</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.rotation"><code class="name">var <span class="ident">rotation</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.space_id"><code class="name">var <span class="ident">space_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.width"><code class="name">var <span class="ident">width</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="main.LayoutGeneratedWorkspace.serialize"><code class="name flex">
+<span>def <span class="ident">serialize</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Serialize to json</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def serialize(self):
+    &#34;&#34;&#34;
+    Serialize to json
+    &#34;&#34;&#34;
+    return jsonify(self.to_dict())</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutGeneratedWorkspace.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert to dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_dict(self):
+    &#34;&#34;&#34;
+    Convert to dictionary
+    &#34;&#34;&#34;
+
+    dict = {
+        &#39;id&#39;: self.id,
+        &#39;position_x&#39;: self.position_x,
+        &#39;position_y&#39;: self.position_y,
+        &#39;rotation&#39;: self.rotation,
+        &#39;height&#39;: self.height,
+        &#39;width&#39;: self.width,
+        &#39;space_id&#39;: self.space_id,
+        &#39;layout_gen_id&#39;: self.layout_gen_id,
+        &#39;layout_zone_id&#39;: self.layout_zone_id
+    }
+    return dict</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="main.LayoutZone"><code class="flex name class">
+<span>class <span class="ident">LayoutZone</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>LayoutZone.
+Represent the Zone created by the user within the layout.</p>
+<h2 id="attributes">Attributes</h2>
+<ul>
+<li>id: Represent the unique id of a Zone</li>
+<li>name: Name of a Zone</li>
+<li>color: Name of region where the Zone are located</li>
+<li>spaces_gen: List of spaces associated with this zone</li>
+</ul>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LayoutZone(db.Model):
+    &#34;&#34;&#34;
+    LayoutZone.
+    Represent the Zone created by the user within the layout.
+
+    Attributes
+    ----------
+    - id: Represent the unique id of a Zone
+    - name: Name of a Zone
+    - color: Name of region where the Zone are located
+    - spaces_gen: List of spaces associated with this zone
+    &#34;&#34;&#34;
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(45), nullable=False)
+    color = db.Column(db.String(20), nullable=False)
+    spaces_gen = db.relationship(
+        &#34;LayoutGeneratedWorkspace&#34;,
+        backref=&#34;layout_zone&#34;,
+        cascade=&#34;all, delete&#34;)
+
+    def to_dict(self):
+        &#34;&#34;&#34;
+        Convert to dictionary
+        &#34;&#34;&#34;
+        space: LayoutGeneratedWorkspace
+        obj_dict = {
+            &#39;id&#39;: self.id,
+            &#39;name&#39;: self.name,
+            &#39;color&#39;: self.color,
+            &#39;spaces_gen&#39;: [space.to_dict() for space in self.spaces_gen]
+        }
+
+        return obj_dict
+    
+    def serialize(self):
+        &#34;&#34;&#34;
+        Serialize to json
+        &#34;&#34;&#34;
+        return jsonify(self.to_dict())</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Model</li>
+<li>flask_sqlalchemy.model.Model</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="main.LayoutZone.color"><code class="name">var <span class="ident">color</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutZone.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutZone.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutZone.spaces_gen"><code class="name">var <span class="ident">spaces_gen</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="main.LayoutZone.serialize"><code class="name flex">
+<span>def <span class="ident">serialize</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Serialize to json</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def serialize(self):
+    &#34;&#34;&#34;
+    Serialize to json
+    &#34;&#34;&#34;
+    return jsonify(self.to_dict())</code></pre>
+</details>
+</dd>
+<dt id="main.LayoutZone.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert to dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_dict(self):
+    &#34;&#34;&#34;
+    Convert to dictionary
+    &#34;&#34;&#34;
+    space: LayoutGeneratedWorkspace
+    obj_dict = {
+        &#39;id&#39;: self.id,
+        &#39;name&#39;: self.name,
+        &#39;color&#39;: self.color,
+        &#39;spaces_gen&#39;: [space.to_dict() for space in self.spaces_gen]
+    }
+
+    return obj_dict</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="main.APP_HOST" href="#main.APP_HOST">APP_HOST</a></code></li>
+<li><code><a title="main.APP_PORT" href="#main.APP_PORT">APP_PORT</a></code></li>
+<li><code><a title="main.BUILDINGS_MODULE_API" href="#main.BUILDINGS_MODULE_API">BUILDINGS_MODULE_API</a></code></li>
+<li><code><a title="main.BUILDINGS_MODULE_HOST" href="#main.BUILDINGS_MODULE_HOST">BUILDINGS_MODULE_HOST</a></code></li>
+<li><code><a title="main.BUILDINGS_MODULE_PORT" href="#main.BUILDINGS_MODULE_PORT">BUILDINGS_MODULE_PORT</a></code></li>
+<li><code><a title="main.BUILDINGS_URL" href="#main.BUILDINGS_URL">BUILDINGS_URL</a></code></li>
+<li><code><a title="main.DB_IP" href="#main.DB_IP">DB_IP</a></code></li>
+<li><code><a title="main.DB_PASS" href="#main.DB_PASS">DB_PASS</a></code></li>
+<li><code><a title="main.DB_PORT" href="#main.DB_PORT">DB_PORT</a></code></li>
+<li><code><a title="main.DB_SCHEMA" href="#main.DB_SCHEMA">DB_SCHEMA</a></code></li>
+<li><code><a title="main.DB_USER" href="#main.DB_USER">DB_USER</a></code></li>
+<li><code><a title="main.PROJECTS_MODULE_API" href="#main.PROJECTS_MODULE_API">PROJECTS_MODULE_API</a></code></li>
+<li><code><a title="main.PROJECTS_MODULE_HOST" href="#main.PROJECTS_MODULE_HOST">PROJECTS_MODULE_HOST</a></code></li>
+<li><code><a title="main.PROJECTS_MODULE_PORT" href="#main.PROJECTS_MODULE_PORT">PROJECTS_MODULE_PORT</a></code></li>
+<li><code><a title="main.PROJECTS_URL" href="#main.PROJECTS_URL">PROJECTS_URL</a></code></li>
+<li><code><a title="main.SPACES_MODULE_API" href="#main.SPACES_MODULE_API">SPACES_MODULE_API</a></code></li>
+<li><code><a title="main.SPACES_MODULE_HOST" href="#main.SPACES_MODULE_HOST">SPACES_MODULE_HOST</a></code></li>
+<li><code><a title="main.SPACES_MODULE_PORT" href="#main.SPACES_MODULE_PORT">SPACES_MODULE_PORT</a></code></li>
+<li><code><a title="main.SPACES_URL" href="#main.SPACES_URL">SPACES_URL</a></code></li>
+<li><code><a title="main.app" href="#main.app">app</a></code></li>
+<li><code><a title="main.db" href="#main.db">db</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="main.check_job" href="#main.check_job">check_job</a></code></li>
+<li><code><a title="main.create_zones" href="#main.create_zones">create_zones</a></code></li>
+<li><code><a title="main.delete_zone" href="#main.delete_zone">delete_zone</a></code></li>
+<li><code><a title="main.generate_layout" href="#main.generate_layout">generate_layout</a></code></li>
+<li><code><a title="main.generate_layout_async" href="#main.generate_layout_async">generate_layout_async</a></code></li>
+<li><code><a title="main.get_all_zones" href="#main.get_all_zones">get_all_zones</a></code></li>
+<li><code><a title="main.get_floor_by_ids" href="#main.get_floor_by_ids">get_floor_by_ids</a></code></li>
+<li><code><a title="main.get_floor_polygons_by_ids" href="#main.get_floor_polygons_by_ids">get_floor_polygons_by_ids</a></code></li>
+<li><code><a title="main.get_layout" href="#main.get_layout">get_layout</a></code></li>
+<li><code><a title="main.get_layout_by_project" href="#main.get_layout_by_project">get_layout_by_project</a></code></li>
+<li><code><a title="main.get_layout_config" href="#main.get_layout_config">get_layout_config</a></code></li>
+<li><code><a title="main.get_project_by_id" href="#main.get_project_by_id">get_project_by_id</a></code></li>
+<li><code><a title="main.get_space_by_id" href="#main.get_space_by_id">get_space_by_id</a></code></li>
+<li><code><a title="main.get_subcategories" href="#main.get_subcategories">get_subcategories</a></code></li>
+<li><code><a title="main.get_zone" href="#main.get_zone">get_zone</a></code></li>
+<li><code><a title="main.spec" href="#main.spec">spec</a></code></li>
+<li><code><a title="main.token_required" href="#main.token_required">token_required</a></code></li>
+<li><code><a title="main.update_layout_by_project" href="#main.update_layout_by_project">update_layout_by_project</a></code></li>
+<li><code><a title="main.update_layout_config" href="#main.update_layout_config">update_layout_config</a></code></li>
+<li><code><a title="main.update_project_by_id" href="#main.update_project_by_id">update_project_by_id</a></code></li>
+<li><code><a title="main.updated_zone" href="#main.updated_zone">updated_zone</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="main.LayoutConfig" href="#main.LayoutConfig">LayoutConfig</a></code></h4>
+<ul class="">
+<li><code><a title="main.LayoutConfig.generations" href="#main.LayoutConfig.generations">generations</a></code></li>
+<li><code><a title="main.LayoutConfig.id" href="#main.LayoutConfig.id">id</a></code></li>
+<li><code><a title="main.LayoutConfig.pop_size" href="#main.LayoutConfig.pop_size">pop_size</a></code></li>
+<li><code><a title="main.LayoutConfig.serialize" href="#main.LayoutConfig.serialize">serialize</a></code></li>
+<li><code><a title="main.LayoutConfig.to_dict" href="#main.LayoutConfig.to_dict">to_dict</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.LayoutGenerated" href="#main.LayoutGenerated">LayoutGenerated</a></code></h4>
+<ul class="two-column">
+<li><code><a title="main.LayoutGenerated.building_id" href="#main.LayoutGenerated.building_id">building_id</a></code></li>
+<li><code><a title="main.LayoutGenerated.floor_id" href="#main.LayoutGenerated.floor_id">floor_id</a></code></li>
+<li><code><a title="main.LayoutGenerated.id" href="#main.LayoutGenerated.id">id</a></code></li>
+<li><code><a title="main.LayoutGenerated.project_id" href="#main.LayoutGenerated.project_id">project_id</a></code></li>
+<li><code><a title="main.LayoutGenerated.serialize" href="#main.LayoutGenerated.serialize">serialize</a></code></li>
+<li><code><a title="main.LayoutGenerated.to_dict" href="#main.LayoutGenerated.to_dict">to_dict</a></code></li>
+<li><code><a title="main.LayoutGenerated.workspaces" href="#main.LayoutGenerated.workspaces">workspaces</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.LayoutGeneratedWorkspace" href="#main.LayoutGeneratedWorkspace">LayoutGeneratedWorkspace</a></code></h4>
+<ul class="two-column">
+<li><code><a title="main.LayoutGeneratedWorkspace.height" href="#main.LayoutGeneratedWorkspace.height">height</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.id" href="#main.LayoutGeneratedWorkspace.id">id</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.layout_gen_id" href="#main.LayoutGeneratedWorkspace.layout_gen_id">layout_gen_id</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.layout_generated" href="#main.LayoutGeneratedWorkspace.layout_generated">layout_generated</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.layout_zone" href="#main.LayoutGeneratedWorkspace.layout_zone">layout_zone</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.layout_zone_id" href="#main.LayoutGeneratedWorkspace.layout_zone_id">layout_zone_id</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.position_x" href="#main.LayoutGeneratedWorkspace.position_x">position_x</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.position_y" href="#main.LayoutGeneratedWorkspace.position_y">position_y</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.rotation" href="#main.LayoutGeneratedWorkspace.rotation">rotation</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.serialize" href="#main.LayoutGeneratedWorkspace.serialize">serialize</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.space_id" href="#main.LayoutGeneratedWorkspace.space_id">space_id</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.to_dict" href="#main.LayoutGeneratedWorkspace.to_dict">to_dict</a></code></li>
+<li><code><a title="main.LayoutGeneratedWorkspace.width" href="#main.LayoutGeneratedWorkspace.width">width</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.LayoutZone" href="#main.LayoutZone">LayoutZone</a></code></h4>
+<ul class="two-column">
+<li><code><a title="main.LayoutZone.color" href="#main.LayoutZone.color">color</a></code></li>
+<li><code><a title="main.LayoutZone.id" href="#main.LayoutZone.id">id</a></code></li>
+<li><code><a title="main.LayoutZone.name" href="#main.LayoutZone.name">name</a></code></li>
+<li><code><a title="main.LayoutZone.serialize" href="#main.LayoutZone.serialize">serialize</a></code></li>
+<li><code><a title="main.LayoutZone.spaces_gen" href="#main.LayoutZone.spaces_gen">spaces_gen</a></code></li>
+<li><code><a title="main.LayoutZone.to_dict" href="#main.LayoutZone.to_dict">to_dict</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
