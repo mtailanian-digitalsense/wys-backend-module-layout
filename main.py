@@ -1089,7 +1089,7 @@ def generate_layout_async():
 
         job = redis_queue.enqueue(smart_layout_async,
                                   args=(layout_data, config.pop_size, config.generations),
-                                  job_timeout=7200)
+                                  job_timeout=1500)
         return jsonify({'job_id': job.id}), 201
 
     except SQLAlchemyError as e:
