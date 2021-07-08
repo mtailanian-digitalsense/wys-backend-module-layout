@@ -239,10 +239,15 @@ def make_zones(planta, shafts, core, entrances, cat_area):
     return zones
 
 
+def smart_layout_async(dictionary, POP_SIZE=50, GENERATIONS=50):
+    result = Smart_Layout(dictionary, POP_SIZE, GENERATIONS, IS_ASYNC=True)
+    return result, dictionary
+
+
 start_time = time.time()
 
 
-def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
+def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, IS_ASYNC, viz=False, viz_period=10):
 
     print(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
