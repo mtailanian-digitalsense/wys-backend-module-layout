@@ -88,7 +88,7 @@ except Exception as e:
 
 app.logger.setLevel(logging.DEBUG)
 db = SQLAlchemy(app)
-""" Flask configuration"""
+# """ Flask configuration"""""" """  """ """
 
 
 class LayoutGenerated(db.Model):
@@ -374,20 +374,18 @@ def token_required(f):
             app.logger.debug("token_required")
             return jsonify({'message': 'a valid token is missing'})
 
-        #app.logger.debug("Token: " + token)
-        app.logger.debug(f"Token: {token[0:10]} ... {token[-10:]}")
         try:
+
             data = jwt.decode(token, app.config['SECRET_KEY'],
                               algorithms=['RS256'], audience="1")
             user_id: int = data['user_id']
             request.environ['user_id'] = user_id
+
         except Exception as err:
             return jsonify({'message': 'token is invalid', 'error': err})
         except KeyError as kerr:
             return jsonify({'message': 'Can\'t find user_id in token', 'error': kerr})
-
         return f(*args, **kwargs)
-
     return decorator
 
 
@@ -649,6 +647,50 @@ def generate_layout(project_id):
         msg = f'Error saving data: {e}'
         app.logger.error(msg)
         return msg, 500
+    except Exception as exp:
+        msg = f"Error: mesg ->{exp}"
+        app.logger.error(msg)
+        return msg, 500
+
+@app.route("/api/layouts/inf/<project_id>", methods=['GET'])
+@token_required
+def get_layout_inf_by_project(project_id):
+    """
+    Get onle latest Layout Generated of the layout made by the user for the current project.
+    ---
+    parameters:
+
+          - in: path
+            name: project_id
+            type: integer
+            description: Project ID
+
+    tags:
+
+        - Layouts
+
+    responses:
+
+          200:
+            description: Layout data Object.
+          404:
+            description: Project Not Found or the Proyect doesn't have a Layout created.
+          500:
+            description: "Database error"
+    """
+    try:
+        token = request.headers.get('Authorization', None)
+        project = get_project_by_id(project_id, token)
+        if project is None:
+            return "The project doesn't exist", 404
+        layout_gen = LayoutGenerated.query.get(project['layout_gen_id'])
+        if layout_gen is None:
+            return "The project doesn't have a layout created", 404
+
+        layout_gen = layout_gen.to_dict()
+
+        return jsonify(layout_gen), 200
+   
     except Exception as exp:
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
