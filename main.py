@@ -680,7 +680,9 @@ def get_layout_inf_by_project(project_id):
     """
     try:
         token = request.headers.get('Authorization', None)
+        print('inf',token)
         project = get_project_by_id(project_id, token)
+        print('hola inf')
         if project is None:
             return "The project doesn't exist", 404
         layout_gen = LayoutGenerated.query.get(project['layout_gen_id'])
