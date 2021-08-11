@@ -679,13 +679,8 @@ def get_layout_inf_by_project(project_id):
             description: "Database error"
     """
     try:
-        token = request.headers.get('Authorization', None)
-        print('inf',token)
-        project = get_project_by_id(project_id, token)
-        print('hola inf')
-        if project is None:
-            return "The project doesn't exist", 404
-        layout_gen = LayoutGenerated.query.get(project['layout_gen_id'])
+        print('en layout inf')
+        layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
         if layout_gen is None:
             return "The project doesn't have a layout created", 404
 
