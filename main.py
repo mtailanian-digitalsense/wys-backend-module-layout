@@ -1252,6 +1252,8 @@ def get_layout():
         if project is None:
             return "The project doesn't exist", 404
 
+        print(job.result)
+        print('------------------------------')
         layout_workspaces, layout_data = job.result
         print(layout_workspaces)
         print("============================")
