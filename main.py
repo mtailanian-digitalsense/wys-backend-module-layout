@@ -1253,6 +1253,9 @@ def get_layout():
             return "The project doesn't exist", 404
 
         layout_workspaces, layout_data = job.result
+        print(layout_workspaces)
+        print("============================")
+        print(layout_data)
         workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
                                                              SPACES_URL + SPACES_MODULE_API, token)
 
