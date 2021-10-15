@@ -26,13 +26,13 @@ from rq.job import Job
 from redis_resc import redis_conn, redis_queue
 
 # Loading Config Parameters
-DB_USER = os.getenv('DB_USER', 'wys')
+DB_USER = os.getenv('DB_USER', 'root')#'wys')
 """Config Parameters"""
-DB_PASS = os.getenv('DB_PASSWORD', 'rac3e/07')
+DB_PASS = os.getenv('DB_PASSWORD','root' )#'rac3e/07')
 """Config Parameters"""
-DB_IP = os.getenv('DB_IP_ADDRESS', '10.2.14.195')
+DB_IP = os.getenv('DB_IP_ADDRESS', 'localhost')#'10.2.14.195')
 """Config Parameters"""
-DB_PORT = os.getenv('DB_PORT', '3307')
+DB_PORT = os.getenv('DB_PORT', '3306')#'3307')
 """Config Parameters"""
 DB_SCHEMA = os.getenv('DB_SCHEMA', 'wys')
 """Config Parameters"""
@@ -856,6 +856,7 @@ def update_layout_by_project(project_id):
             return "The project doesn't have a layout created", 404
         for data in request.json:
             workspace = LayoutGeneratedWorkspace.query.filter_by(id=data['id'], layout_gen_id=layout_gen.id).first()
+            print(workspace)
             if workspace is not None:
                 for key, value in data.items():
                     setattr(workspace, key, value)
@@ -1441,6 +1442,9 @@ def update_db_layout(project_id):
                 alias:
                   type: string
                   description: alias given by the client.
+                space_id:
+                    type: integer
+                    description: space_id from workspaces, it could change
         responses:
             200:
                 description: Layout data Object updated.
@@ -1471,7 +1475,7 @@ def update_db_layout(project_id):
         # Input Verification
         ####################
 
-        params = {'id', 'rotation', 'position_x', 'position_y', 'color', 'alias'}
+        params = {'id', 'rotation', 'position_x', 'position_y', 'color', 'alias', 'space_id'}
 
         if not request.json:
             return "The body isn\'t application/json", 400
@@ -1493,7 +1497,6 @@ def update_db_layout(project_id):
         #############
 
         for data in request.json:
-
             workspace = LayoutGeneratedWorkspace.query \
                         .filter_by(id=data['id'], layout_gen_id=layout_gen.id) \
                         .first()
@@ -1517,6 +1520,9 @@ def update_db_layout(project_id):
 
             if ('color' in data) and (data['color'] != ''):
                 workspace.color = str(data['color'].strip("# ").upper())
+            
+            if ('space_id' in data) and (data['space_id'] != ''):
+                workspace.space_id = int(data['space_id'])
 
         db.session.commit()
 
