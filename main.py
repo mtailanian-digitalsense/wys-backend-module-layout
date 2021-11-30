@@ -426,7 +426,6 @@ def get_layout_by_layout_gen_id(layout_gen_id):
     """
     try:
         token = request.headers.get('Authorization', None)
-        print(layout_gen_id)
         layout_generated = LayoutGenerated.query.filter_by(id=layout_gen_id).first()
         if layout_generated is not None:
           return jsonify({'layout': 'completed'}), 200
@@ -602,21 +601,16 @@ def generate_layout(project_id):
         if project is None:
             return "The project doesn't exist", 404
         floor_polygons = get_floor_polygons_by_ids(floor['building_id'], floor['id'], token)
-        print("floor_polygons",floor_polygons)
         if floor_polygons is None or len(floor_polygons) == 0:
             return "The floor doesn't exist or not have a polygons.", 404
         floor['polygons'] = floor_polygons
-        print("floor",floor)
         config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
-        print("layout_data",layout_data)
         layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 20,
                                          config.generations if config is not None else 50)
-        print("layout_workspaces",layout_workspaces)
         workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
                                                              SPACES_URL+SPACES_MODULE_API, token)
-        print("workspaces_coords", workspaces_coords)
-        print("floor_elements",floor_elements)
+    
         layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
         if layout_gen is not None:
             db.session.delete(layout_gen)
@@ -683,7 +677,6 @@ def get_layout_inf_by_project(project_id):
             description: "Database error"
     """
     try:
-        print('en layout inf')
         layout_gen = LayoutGenerated.query.filter_by(project_id=project_id).first()
         if layout_gen is None:
             return "The project doesn't have a layout created", 404
@@ -856,7 +849,6 @@ def update_layout_by_project(project_id):
             return "The project doesn't have a layout created", 404
         for data in request.json:
             workspace = LayoutGeneratedWorkspace.query.filter_by(id=data['id'], layout_gen_id=layout_gen.id).first()
-            print(workspace)
             if workspace is not None:
                 for key, value in data.items():
                     setattr(workspace, key, value)
@@ -1257,12 +1249,8 @@ def get_layout():
         if project is None:
             return "The project doesn't exist", 404
 
-        print(job.result)
-        print('------------------------------')
         layout_workspaces, layout_data = job.result
-        print(layout_workspaces)
-        print("============================")
-        print(layout_data)
+ 
         workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
                                                              SPACES_URL + SPACES_MODULE_API, token)
 
@@ -1436,6 +1424,14 @@ def update_db_layout(project_id):
                   type: number
                   format: float
                   description: Y coordinate of the space position in layout.
+                height:
+                  type: number
+                  format: float
+                  description: height
+                width:
+                  type: number
+                  format: float
+                  description: width
                 color:
                   type: string
                   description: rgb color, may be '#123ABC' or '123ABC'
@@ -1475,7 +1471,7 @@ def update_db_layout(project_id):
         # Input Verification
         ####################
 
-        params = {'id', 'rotation', 'position_x', 'position_y', 'color', 'alias', 'space_id'}
+        params = {'id', 'rotation', 'position_x', 'position_y', 'color', 'alias', 'space_id','height','width'}
 
         if not request.json:
             return "The body isn\'t application/json", 400
@@ -1514,6 +1510,12 @@ def update_db_layout(project_id):
 
             if ('position_y' in data) and (data['position_y'] != ''):
                 workspace.position_y = float(data['position_y'])
+            
+            if ('height' in data) and (data['height'] != ''):
+                workspace.height = float(data['height'])
+
+            if ('width' in data) and (data['width'] != ''):
+                workspace.width = float(data['width'])
 
             if ('alias' in data) and (data['alias'] != ''):
                 workspace.alias = str(data['alias'])
