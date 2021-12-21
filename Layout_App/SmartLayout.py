@@ -148,7 +148,7 @@ def make_zones(planta, shafts, core, entrances, cat_area):
     e_zones = []
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
     print(core)
-    c_minx, c_miny, c_maxx, c_maxy = core.bounds
+    #c_minx, c_miny, c_maxx, c_maxy = core.bounds
     print(core.bounds)
 
     # Zona salas de reuniones
@@ -291,7 +291,7 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
                 shaft = As[-1][0]'''
         if a[0] == 'WYS_ENTRANCE':
             entrances.append(As[-1][0])
-
+    print(core)
     zones = make_zones(planta, shafts, core, entrances, cat_area)
 
     pop_1 = []
