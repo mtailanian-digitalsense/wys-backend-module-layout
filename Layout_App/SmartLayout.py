@@ -147,6 +147,7 @@ def make_zones(planta, shafts, core, entrances, cat_area):
     s_zones = []
     e_zones = []
     p_minx, p_miny, p_maxx, p_maxy = planta.bounds
+    print(core)
     c_minx, c_miny, c_maxx, c_maxy = core.bounds
     print(core.bounds)
 
