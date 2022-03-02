@@ -16,9 +16,9 @@ logging.basicConfig(
     datefmt='%d-%b-%y %H:%M:%S'
 )
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 logger.info("init script")
-
+import os
+os.mkdir("pathhh")
 
 def get_input(dictionary):
     Planta = dictionary.get('selected_floor').get('polygons')
