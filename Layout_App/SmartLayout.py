@@ -18,9 +18,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("init script")
 
-# import os
-# if not os.path.isdir("/home/ec2-user/asdf"):
-#     os.mkdir("/home/ec2-user/asdf")
+import os
+if not os.path.isdir("/home/ec2-user/asdf"):
+    os.mkdir("/home/ec2-user/asdf")
 
 
 def get_input(dictionary):
