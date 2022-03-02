@@ -20,7 +20,7 @@ from flask_cors import CORS
 from http import HTTPStatus
 from xlrd import open_workbook, XLRDError
 from mockup_layout import layout
-from Layout_App.SmartLayout import Smart_Layout, smart_layout_async
+from Layout_App.DS_SmartLayout import Smart_Layout, smart_layout_async
 from lib import transform_coords, resize_base64_image, get_floor_elements_p
 from rq.job import Job
 from redis_resc import redis_conn, redis_queue

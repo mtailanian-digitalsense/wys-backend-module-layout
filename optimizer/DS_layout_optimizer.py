@@ -1,4 +1,5 @@
 import os
+import logging
 import cv2 as cv
 import gurobipy as gp
 from gurobipy import GRB
@@ -14,6 +15,14 @@ from optimizer.DS_constraints import ConstraintBelongPartitions, ConstraintNoInt
 	ConstraintMakeItAccessible, ConstraintSetNumberOfWorkstations, ConstraintSetReceptionToEntrance, \
 	ConstraintAdjacencyThroughCirculation, ConstraintAdjacency, ConstraintPairAdjacency
 
+logging.basicConfig(
+    filename='smart_layout.log',
+    level=logging.DEBUG,
+    format='%(levelname)s | %(asctime)s | %(name)s - %(message)s',
+    datefmt='%d-%b-%y %H:%M:%S'
+)
+logger = logging.getLogger(__name__)
+
 
 class LayoutOptimizer:
 	def __init__(self, optimizer, layout, units):
@@ -27,6 +36,7 @@ class LayoutOptimizer:
 
 	@classmethod
 	def load(cls, planta, cores, shafts, circulations, entrances, windows, workspaces, show=0):
+		logger.debug("Creating optimizer")
 		# Optimizer
 		optimizer = gp.Model('Wys')
 		# Layout
