@@ -18,6 +18,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("init script")
 
+import os
+if not os.path.isdir("asdf"):
+    os.mkdir("asdf")
+
 
 def get_input(dictionary):
     Planta = dictionary.get('selected_floor').get('polygons')
