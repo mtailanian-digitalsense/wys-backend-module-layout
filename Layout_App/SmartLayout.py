@@ -16,7 +16,7 @@ logging.basicConfig(
     datefmt='%d-%b-%y %H:%M:%S'
 )
 logger = logging.getLogger(__name__)
-# logger.info("init script")
+logger.info("init script")
 
 
 def get_input(dictionary):
