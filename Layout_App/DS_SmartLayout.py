@@ -13,6 +13,8 @@ logging.basicConfig(
     datefmt='%d-%b-%y %H:%M:%S'
 )
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.info("init script")
 
 
 def Smart_Layout(dictionary, POP_SIZE=None, GENERATIONS=None, viz=False, viz_period=10):
