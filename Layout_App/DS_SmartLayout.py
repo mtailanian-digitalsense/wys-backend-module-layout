@@ -1,11 +1,5 @@
 import time
 import logging
-import cv2 as cv
-from shapely.geometry.polygon import Polygon
-
-from optimizer.DS_layout_optimizer import LayoutOptimizer
-from optimizer.DS_unit import UNITS_TYPE_EQUIVALENCE_INVERSE
-
 logging.basicConfig(
     filename='smart_layout.log',
     level=logging.DEBUG,
@@ -15,6 +9,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.info("init script")
+
+
+import cv2 as cv
+from shapely.geometry.polygon import Polygon
+
+from optimizer.DS_layout_optimizer import LayoutOptimizer
+from optimizer.DS_unit import UNITS_TYPE_EQUIVALENCE_INVERSE
 
 
 def Smart_Layout(dictionary, POP_SIZE=None, GENERATIONS=None, viz=False, viz_period=10):
