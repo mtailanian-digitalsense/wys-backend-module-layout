@@ -8,8 +8,8 @@ from shapely.ops import unary_union
 
 random.seed(100)
 
-with open("/tmp/logs/prueba.txt", 'w') as f:
-    f.write("asdfasdfasdf")
+# with open("/tmp/logs/prueba.txt", 'w') as f:
+#     f.write("asdfasdfasdf")
 
 # import logging
 # logging.basicConfig(
