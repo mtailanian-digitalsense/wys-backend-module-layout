@@ -10,13 +10,18 @@ random.seed(100)
 
 import logging
 logging.basicConfig(
-    filename='/tmp/smart_layout.log',
+    filename='/tmp/logs/smart_layout.log',
     level=logging.DEBUG,
-    format='%(levelname)s | %(asctime)s | %(name)s - %(message)s',
+    format='%(levelname)s | %(asctime)s | %(name)s | %(message)s',
     datefmt='%d-%b-%y %H:%M:%S'
 )
+stream = logging.StreamHandler()
+stream_format = logging.Formatter('%(levelname)s | %(asctime)s | %(name)s | %(message)s')
+stream.setFormatter(stream_format)
+
 logger = logging.getLogger(__name__)
-logger.debug("init script")
+logger.addHandler(stream)
+logger.info("init script")
 
 # import os
 # if not os.path.isdir("/home/ec2-user/asdf"):
