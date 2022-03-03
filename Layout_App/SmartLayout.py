@@ -6,21 +6,9 @@ from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union
 
+from optimizer.DS_logger import logger
+
 random.seed(100)
-
-import logging
-logging.basicConfig(
-    filename='smart_layout.log',
-    level=logging.DEBUG,
-    format='%(levelname)s | %(asctime)s | %(name)s | %(message)s',
-    datefmt='%d-%b-%y %H:%M:%S'
-)
-stream = logging.StreamHandler()
-stream_format = logging.Formatter('%(levelname)s | %(asctime)s | %(name)s | %(message)s')
-stream.setFormatter(stream_format)
-
-logger = logging.getLogger(__name__)
-logger.addHandler(stream)
 logger.info("init script")
 
 
