@@ -16,7 +16,7 @@ logging.basicConfig(
     datefmt='%d-%b-%y %H:%M:%S'
 )
 logger = logging.getLogger(__name__)
-logger.info("init script")
+logger.debug("init script")
 
 # import os
 # if not os.path.isdir("/home/ec2-user/asdf"):
