@@ -10,7 +10,7 @@ random.seed(100)
 
 import logging
 logging.basicConfig(
-    filename='smart_layout.log',
+    filename='/home/ec2-user/smart_layout.log',
     level=logging.DEBUG,
     format='%(levelname)s | %(asctime)s | %(name)s - %(message)s',
     datefmt='%d-%b-%y %H:%M:%S'
