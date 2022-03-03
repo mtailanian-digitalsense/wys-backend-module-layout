@@ -6,9 +6,11 @@ from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union
 
-from optimizer.DS_logger import logger as ds_logger
+from optimizer.DS_logger import get_logger
 
 random.seed(100)
+
+ds_logger = get_logger("smart_layout.log")
 ds_logger.info("init script")
 
 
