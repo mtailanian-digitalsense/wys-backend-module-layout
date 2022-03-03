@@ -15,12 +15,12 @@ logging.basicConfig(
     format='%(levelname)s | %(asctime)s | %(name)s | %(message)s',
     datefmt='%d-%b-%y %H:%M:%S'
 )
-stream = logging.StreamHandler()
-stream_format = logging.Formatter('%(levelname)s | %(asctime)s | %(name)s | %(message)s')
-stream.setFormatter(stream_format)
+# stream = logging.StreamHandler()
+# stream_format = logging.Formatter('%(levelname)s | %(asctime)s | %(name)s | %(message)s')
+# stream.setFormatter(stream_format)
 
 logger = logging.getLogger(__name__)
-logger.addHandler(stream)
+# logger.addHandler(stream)
 logger.info("init script")
 
 # import os
