@@ -1,25 +1,19 @@
 import time
-import logging
 import cv2 as cv
 from shapely.geometry.polygon import Polygon
 
+from optimizer.DS_logger import get_logger
 from optimizer.DS_layout_optimizer import LayoutOptimizer
 from optimizer.DS_unit import UNITS_TYPE_EQUIVALENCE_INVERSE
 
-logging.basicConfig(
-    filename='smart_layout.log',
-    level=logging.DEBUG,
-    format='%(levelname)s | %(asctime)s | %(name)s - %(message)s',
-    datefmt='%d-%b-%y %H:%M:%S'
-)
-logger = logging.getLogger(__name__)
-logger.info("init script")
+ds_logger = get_logger("smart_layout.log")
+ds_logger.info("init script")
 
 
 def Smart_Layout(dictionary, POP_SIZE=None, GENERATIONS=None, viz=False, viz_period=10):
 
     start_time = time.time()
-    logger.debug(f"Start: {round(time.time() - start_time, 2)}")
+    ds_logger.debug(f"Start: {round(time.time() - start_time, 2)}")
 
     # Get data
     planta, shafts, entrances, windows, circulations, cores, workspaces = get_input_cm(dictionary)
@@ -56,7 +50,7 @@ def get_input_cm(dictionary):
     Divides the polygons in the input dictionary by type
     Returns the point coordinates in centimeters
     """
-    logger.debug("\tget_input_cv start")
+    ds_logger.debug("\tget_input_cv start")
     floor_polygons = dictionary.get('selected_floor').get('polygons')
     workspaces = dictionary.get('workspaces')
 
@@ -77,13 +71,13 @@ def get_input_cm(dictionary):
         try:
             key_to_variable[name].append(polygon)
         except KeyError:
-            logger.error(f"[LOADING LAYOUT] No action taken for {name}")
+            ds_logger.error(f"[LOADING LAYOUT] No action taken for {name}")
 
     border_pts = list(zip(*outline[0].exterior.xy))
     holes_pts = [list(zip(*h.exterior.xy)) for h in holes]
     planta = Polygon(border_pts, holes_pts)
 
-    logger.debug("\tget_input_cv end")
+    ds_logger.debug("\tget_input_cv end")
     return planta, shafts, entrances, windows, circulations, cores, workspaces
 
 
