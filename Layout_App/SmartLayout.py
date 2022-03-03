@@ -6,10 +6,10 @@ from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
 from shapely.ops import unary_union
 
-from optimizer.DS_logger import logger
+from optimizer.DS_logger import logger as ds_logger
 
 random.seed(100)
-logger.info("init script")
+ds_logger.info("init script")
 
 
 def get_input(dictionary):
