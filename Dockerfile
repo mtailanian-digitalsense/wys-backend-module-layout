@@ -3,7 +3,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN apt-get -y update &&\
     apt-get -y upgrade &&\
-    apt-get install -y --force-yes git &&\
+    apt-get install -y --allow git &&\
     apt-get clean
 
 RUN apt-get -y install libspatialindex-dev
