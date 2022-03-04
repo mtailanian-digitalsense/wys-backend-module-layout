@@ -17,7 +17,7 @@ matplotlib
 redis
 rq
 requests
-#coloredlogs
+coloredlogs
 
 #certifi==2020.11.8
 #cffi==1.14.3

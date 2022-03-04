@@ -1,5 +1,5 @@
 import logging
-# import coloredlogs
+import coloredlogs
 from typing import Union
 
 
@@ -60,13 +60,13 @@ def get_logger(filename: Union[str, None] = None, log_to_console: bool = True, l
 			'filename': {'color': 'cyan'},
 			'funcName': {'color': 'blue'}
 		}
-		# coloredlogs.install(
-		# 	logger=logger,
-		# 	level=logging_level,
-		# 	fmt=logging_format,
-		# 	datefmt=logging_date_format,
-		# 	field_styles=field_style,
-		# 	level_styles=level_styles
-		# )
+		coloredlogs.install(
+			logger=logger,
+			level=logging_level,
+			fmt=logging_format,
+			datefmt=logging_date_format,
+			field_styles=field_style,
+			level_styles=level_styles
+		)
 
 	return logger
