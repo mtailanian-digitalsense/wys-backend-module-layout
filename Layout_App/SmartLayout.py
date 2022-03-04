@@ -257,7 +257,7 @@ start_time = time.time()
 
 def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
 
-    ds_logger.debug(round(time.time() - start_time, 2), 'Start!')
+    ds_logger.info(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
     voids = []
@@ -279,8 +279,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             else:
                 cat_area[cat_id] = total_area
 
-    ds_logger.debug(round(time.time() - start_time, 2), 'Load and compute all the inputs')
-    ds_logger.debug('Number of modules: ', N)
+    ds_logger.info(round(time.time() - start_time, 2), 'Load and compute all the inputs')
+    ds_logger.info('Number of modules: ', N)
 
     planta = Polygon(border, voids)
     As = []
