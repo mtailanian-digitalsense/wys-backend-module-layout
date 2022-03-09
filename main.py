@@ -1105,15 +1105,18 @@ def generate_layout_async():
     try:
         params = {'selected_floor', 'workspaces'}
         if request.json.keys() != params:
+            ds_logger.error("A required field is missing in the body")
             return "A required field is missing in the body", 400
         floor = request.json['selected_floor']
         floor_params = {'id', 'wys_id','rent_value','m2','elevators_number','image_link','active','building_id'}
         if floor.keys() != floor_params:
+            ds_logger.error("A floor data field is missing in the body")
             return "A floor data field is missing in the body", 400
 
         workspaces = request.json['workspaces']
 
         if len(workspaces) == 0:
+            ds_logger.error("No spaces were entered in the body.")
             return "No spaces were entered in the body.", 400
         workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap',
                             'right_gap','subcategory_id','points'}
@@ -1121,6 +1124,7 @@ def generate_layout_async():
         subcategories = get_subcategories(token)
         for workspace in workspaces:
             if workspace.keys() != workspace_params:
+                ds_logger.error("A space data field is missing in the body")
                 return "A space data field is missing in the body", 400
             found = False
             for category in subcategories:
@@ -1132,25 +1136,31 @@ def generate_layout_async():
                 if found:
                     break
             if not found:
+                ds_logger.error("A Space subcategory doesn't exist")
                 return "A Space subcategory doesn't exist", 404
 
         floor_polygons = get_floor_polygons_by_ids(floor['building_id'], floor['id'], token)
         if floor_polygons is None or len(floor_polygons) == 0:
+            ds_logger.error("The floor doesn't exist or not have a polygons.")
             return "The floor doesn't exist or not have a polygons.", 404
         floor['polygons'] = floor_polygons
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
         config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
 
+        ds_logger.info("Before redis queue")
         job = redis_queue.enqueue(smart_layout_async,
                                   args=(layout_data, config.pop_size, config.generations),
                                   job_timeout=1500)
+        ds_logger.info("After redis queue")
         return jsonify({'job_id': job.id}), 201
 
     except SQLAlchemyError as e:
+        ds_logger.error(f'Error saving data: {e}')
         msg = f'Error saving data: {e}'
         app.logger.error(msg)
         abort(500, description=msg)
     except Exception as exp:
+        ds_logger.error(f"Error: mesg ->{exp}")
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
         return msg, 500
