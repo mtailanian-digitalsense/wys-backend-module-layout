@@ -11,6 +11,7 @@ ds_logger.info("init script")
 
 
 def Smart_Layout(dictionary, POP_SIZE=None, GENERATIONS=None, viz=False, viz_period=10):
+    ds_logger.info("Smart_Layout")
 
     start_time = time.time()
     ds_logger.debug(f"Start: {round(time.time() - start_time, 2)}")
@@ -82,7 +83,9 @@ def get_input_cm(dictionary):
 
 
 def smart_layout_async(dictionary, POP_SIZE=50, GENERATIONS=50):
+    ds_logger.info("Start: smart_layout_async")
     result = Smart_Layout(dictionary, POP_SIZE, GENERATIONS)
+    ds_logger.info("End: smart_layout_async")
     return result, dictionary
 
 
