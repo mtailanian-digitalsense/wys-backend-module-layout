@@ -25,6 +25,12 @@ from lib import transform_coords, resize_base64_image, get_floor_elements_p
 from rq.job import Job
 from redis_resc import redis_conn, redis_queue
 
+ds_logger = get_logger("smart_layout.log")
+ds_logger.info("init script")
+
+ds_logger.error('Hola')
+ds_logger.error(__name__)
+
 # Loading Config Parameters
 DB_USER = os.getenv('DB_USER', 'root')#'wys')
 """Config Parameters"""
@@ -103,6 +109,11 @@ class LayoutGenerated(db.Model):
     - workspaces: Spaces selected and positioned by the user in the layout
     - zones : Zones created by the user within the layout
     """
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
+
     id = db.Column(db.Integer, primary_key=True)
     floor_id = db.Column(db.Integer, nullable=False)
     building_id = db.Column(db.Integer, nullable=False)
@@ -149,6 +160,9 @@ class LayoutGeneratedWorkspace(db.Model):
     - space_id: Foreign key of associated space
     - layout_gen_id: Foreign key of associated layout generated
     """
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
 
     id = db.Column(db.Integer, primary_key=True)
     position_x = db.Column(db.Float, nullable=False)
@@ -204,6 +218,9 @@ class LayoutZone(db.Model):
     - spaces_gen: List of spaces associated with this zone
     """
 
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(45), nullable=False)
     color = db.Column(db.String(20), nullable=False)
@@ -244,6 +261,9 @@ class LayoutConfig(db.Model):
     - pop_size: Value of pop size
     - generations: Value of number of generations
     """
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
 
     id = db.Column(db.Integer, primary_key=True)
     pop_size = db.Column(db.Integer, nullable=False)
@@ -288,6 +308,10 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 def get_project_by_id(project_id, token):
     """Returns the project by projectId"""
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     headers = {'Authorization': token}
     api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
     rv = requests.get(api_url, headers=headers)
@@ -300,6 +324,10 @@ def get_project_by_id(project_id, token):
 
 def update_project_by_id(project_id, data, token):
     """Update the project by projectId"""
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     headers = {'Authorization': token}
     api_url = PROJECTS_URL + PROJECTS_MODULE_API + str(project_id)
     rv = requests.put(api_url, json=data, headers=headers)
@@ -312,6 +340,10 @@ def update_project_by_id(project_id, data, token):
 
 def get_space_by_id(space_id, token):
     """Returns the space by spaceId"""
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     headers = {'Authorization': token}
     api_url = SPACES_URL + SPACES_MODULE_API + str(space_id)
     rv = requests.get(api_url, headers=headers)
@@ -324,6 +356,10 @@ def get_space_by_id(space_id, token):
 
 def get_floor_by_ids(building_id, floor_id, token):
     """Returns the floor by buildingId and floorId"""
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     headers = {'Authorization': token}
     api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + '/floors/'+ str(floor_id)
     rv = requests.get(api_url, headers=headers)
@@ -336,6 +372,10 @@ def get_floor_by_ids(building_id, floor_id, token):
 
 def get_floor_polygons_by_ids(building_id, floor_id, token):
     """Returns the polygons by buildingId and floorId"""
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     headers = {'Authorization': token}
     api_url = BUILDINGS_URL + BUILDINGS_MODULE_API + str(building_id) + '/floors/'+ str(floor_id) + '/polygons'
     rv = requests.get(api_url, headers=headers)
@@ -348,6 +388,10 @@ def get_floor_polygons_by_ids(building_id, floor_id, token):
 
 def get_subcategories(token):
     """Returns SubCategories of the Project"""
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     headers = {'Authorization': token}
     api_url = SPACES_URL + SPACES_MODULE_API + 'subcategories'
     rv = requests.get(api_url, headers=headers)
@@ -360,6 +404,10 @@ def get_subcategories(token):
 
 def token_required(f):
     """Function to get the token for the swagger"""
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     @wraps(f)
     def decorator(*args, **kwargs):
 
@@ -566,6 +614,10 @@ def generate_layout(project_id):
         500:
             description: Internal server error.
     """
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     try:
         params = {'selected_floor', 'workspaces'}
         if request.json.keys() != params:
@@ -606,8 +658,16 @@ def generate_layout(project_id):
         floor['polygons'] = floor_polygons
         config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
+
+        ds_logger.error('Before calling Smart_Layout')
+        ds_logger.error(__name__)
+
         layout_workspaces = Smart_Layout(layout_data, config.pop_size if config is not None else 20,
                                          config.generations if config is not None else 50)
+
+        ds_logger.error('After calling Smart_Layout')
+        ds_logger.error(__name__)
+
         workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
                                                              SPACES_URL+SPACES_MODULE_API, token)
     
@@ -1853,4 +1913,6 @@ def get_all_zones():
 
 
 if __name__ == '__main__':
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
     app.run(host=APP_HOST, port=APP_PORT, debug=True)
