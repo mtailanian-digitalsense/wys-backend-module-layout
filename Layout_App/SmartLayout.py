@@ -257,7 +257,7 @@ start_time = time.time()
 
 def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
 
-    ds_logger.info(round(time.time() - start_time, 2), 'Start!')
+    ds_logger.error(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
     voids = []
