@@ -20,7 +20,7 @@ from flask_cors import CORS
 from http import HTTPStatus
 from xlrd import open_workbook, XLRDError
 from mockup_layout import layout
-from Layout_App.SmartLayout import Smart_Layout, smart_layout_async
+from Layout_App.DS_SmartLayout import Smart_Layout, smart_layout_async
 from lib import transform_coords, resize_base64_image, get_floor_elements_p
 from rq.job import Job
 from redis_resc import redis_conn, redis_queue
@@ -1266,9 +1266,7 @@ def get_layout():
             description=f"No result found for job_id {job.id}. Try checking the job's status.",
         )
     try:
-        ds_logger.info("before get auth")
         token = request.headers.get('Authorization', None)
-        ds_logger.info("before get proj id")
         project = get_project_by_id(project_id, token)
         if project is None:
             ds_logger.error("project does not exists")
@@ -1276,10 +1274,8 @@ def get_layout():
 
         layout_workspaces, layout_data = job.result
 
-        ds_logger.info("before transform coords")
         workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
                                                              SPACES_URL + SPACES_MODULE_API, token)
-        ds_logger.info("after transform coords")
 
         floor = layout_data['selected_floor']
 
