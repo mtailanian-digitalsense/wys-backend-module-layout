@@ -1,4 +1,4 @@
-import cv2 as cv
+# import cv2 as cv
 import numpy as np
 from optimizer.DS_unit import UNIT_INFO
 from shapely.geometry import Polygon

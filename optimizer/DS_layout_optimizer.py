@@ -1,6 +1,6 @@
 import os
 import logging
-import cv2 as cv
+# import cv2 as cv
 import gurobipy as gp
 from gurobipy import GRB
 from optimizer.DS_layout import Layout

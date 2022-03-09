@@ -1,4 +1,4 @@
-import cv2 as cv
+# import cv2 as cv
 import numpy as np
 from optimizer.DS_feature import FeatureType
 from optimizer.DS_utils import get_angled_box

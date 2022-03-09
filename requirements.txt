@@ -18,6 +18,7 @@ redis
 rq
 requests
 coloredlogs
+gurobipy~=9.1.2
 
 #certifi==2020.11.8
 #cffi==1.14.3
