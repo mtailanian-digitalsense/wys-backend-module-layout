@@ -13,8 +13,15 @@ random.seed(100)
 ds_logger = get_logger("smart_layout.log")
 ds_logger.info("init script")
 
+ds_logger.error('Hola')
+ds_logger.error(__name__)
+
 
 def get_input(dictionary):
+
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     Planta = dictionary.get('selected_floor').get('polygons')
     Workspaces = dictionary.get('workspaces')
     plant = []
@@ -47,6 +54,9 @@ class Floor:
         self.outline = outline_points
         self.holes = holes_list
 
+        ds_logger.error('Hola')
+        ds_logger.error(__name__)
+
 
 class Module:
     def __init__(self, x, y, rotation, name, identificator, width_value, height_value, qty, fitval1, fitval2):
@@ -61,6 +71,9 @@ class Module:
         self.fitval1 = fitval1
         self.fitval2 = fitval2
 
+        ds_logger.error('Hola')
+        ds_logger.error(__name__)
+
     def show(self):
         print(self.name, self.x, self.y, self.rot, self.id, self.width, self.height, self.qty)
 
@@ -72,6 +85,9 @@ makeposcnt = 0
 curr_bx = []
 
 def makePos(planta, in_list, zones):
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
+
     make_time = time.time()
     global makeposcnt
     global curr_bx
@@ -149,6 +165,8 @@ def makePos(planta, in_list, zones):
             return mod
 
 def make_zones(planta, shafts, core, entrances, cat_area):
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
     zones = []
     s_zones = []
     e_zones = []
@@ -248,6 +266,8 @@ def make_zones(planta, shafts, core, entrances, cat_area):
 
 
 def smart_layout_async(dictionary, POP_SIZE=50, GENERATIONS=50):
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
     result = Smart_Layout(dictionary, POP_SIZE, GENERATIONS)
     return result, dictionary
 
@@ -256,7 +276,8 @@ start_time = time.time()
 
 
 def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
-
+    ds_logger.error('Hola')
+    ds_logger.error(__name__)
     ds_logger.error(round(time.time() - start_time, 2), 'Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
