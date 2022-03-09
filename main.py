@@ -1104,32 +1104,39 @@ def generate_layout_async():
     ds_logger.info("Generate layout async")
     try:
         params = {'selected_floor', 'workspaces'}
+        ds_logger.info("0")
         if request.json.keys() != params:
             ds_logger.error("A required field is missing in the body")
             return "A required field is missing in the body", 400
+        ds_logger.info("1")
         floor = request.json['selected_floor']
+        ds_logger.info("2")
         floor_params = {'id', 'wys_id','rent_value','m2','elevators_number','image_link','active','building_id'}
+        ds_logger.info("3")
         if floor.keys() != floor_params:
             ds_logger.error("A floor data field is missing in the body")
             return "A floor data field is missing in the body", 400
-
+        ds_logger.info("4")
         workspaces = request.json['workspaces']
-
+        ds_logger.info("5")
         if len(workspaces) == 0:
             ds_logger.error("No spaces were entered in the body.")
             return "No spaces were entered in the body.", 400
         workspace_params = {'id','quantity','name','height','width','active','regular','up_gap','down_gap','left_gap',
                             'right_gap','subcategory_id','points'}
         token = request.headers.get('Authorization', None)
+        ds_logger.info("6")
         subcategories = get_subcategories(token)
         for workspace in workspaces:
             if workspace.keys() != workspace_params:
                 ds_logger.error("A space data field is missing in the body")
                 return "A space data field is missing in the body", 400
             found = False
+            ds_logger.info("7")
             for category in subcategories:
                 for subcategory in category['subcategories']:
                     if subcategory['id'] == workspace['subcategory_id']:
+                        ds_logger.info("7-1")
                         workspace['category_id'] = category['id']
                         found = True
                         break
@@ -1139,14 +1146,17 @@ def generate_layout_async():
                 ds_logger.error("A Space subcategory doesn't exist")
                 return "A Space subcategory doesn't exist", 404
 
+        ds_logger.info("8")
         floor_polygons = get_floor_polygons_by_ids(floor['building_id'], floor['id'], token)
+        ds_logger.info("9")
         if floor_polygons is None or len(floor_polygons) == 0:
             ds_logger.error("The floor doesn't exist or not have a polygons.")
             return "The floor doesn't exist or not have a polygons.", 404
+        ds_logger.info("10")
         floor['polygons'] = floor_polygons
         layout_data = {'selected_floor': floor, 'workspaces': workspaces}
+        ds_logger.info("11")
         config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
-
         ds_logger.info("Before redis queue")
         job = redis_queue.enqueue(smart_layout_async,
                                   args=(layout_data, config.pop_size, config.generations),
