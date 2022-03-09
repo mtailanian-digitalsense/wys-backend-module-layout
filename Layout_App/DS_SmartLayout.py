@@ -1,5 +1,5 @@
 import time
-import cv2 as cv
+# import cv2 as cv
 from shapely.geometry.polygon import Polygon
 
 from optimizer.DS_logger import get_logger
@@ -30,9 +30,9 @@ def Smart_Layout(dictionary, POP_SIZE=None, GENERATIONS=None, viz=False, viz_per
     optimized_layout = layout_optimizer.draw(
         show_unit_name=True, show_contours=2, show_unit_art=False, show_features=True
     )
-    cv.namedWindow("Final Layout", cv.WINDOW_NORMAL)
-    cv.imshow("Final Layout", optimized_layout)
-    cv.waitKey()
+    # cv.namedWindow("Final Layout", cv.WINDOW_NORMAL)
+    # cv.imshow("Final Layout", optimized_layout)
+    # cv.waitKey()
 
     # TODO: Falta traducir a las coordenadas originales. sumar el origin y pasar a metros
     # Output Units
