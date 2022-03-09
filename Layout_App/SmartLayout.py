@@ -154,7 +154,7 @@ def makePos(planta, in_list, zones):
 
 def make_zones(planta, shafts, core, entrances, cat_area):
     ds_logger.error('Make zones')
-    
+
     zones = []
     s_zones = []
     e_zones = []

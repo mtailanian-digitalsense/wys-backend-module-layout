@@ -1247,6 +1247,7 @@ def get_layout():
     req_params = ["project_id", "job_id"]
     for param in req_params:
         if param not in request.json.keys():
+            ds_logger.error(f"{param} isn't in body")
             abort(400, description=f"{param} isn't in body")
 
     job_id = request.json["job_id"]
@@ -1255,23 +1256,30 @@ def get_layout():
     try:
         job = Job.fetch(job_id, connection=redis_conn)
     except Exception as exception:
+        ds_logger.error(exception)
         abort(500, description=exception)
 
     if not job.result:
+        ds_logger.error(f"No result found for job_id {job.id}. Try checking the job's status.")
         abort(
             404,
             description=f"No result found for job_id {job.id}. Try checking the job's status.",
         )
     try:
+        ds_logger.info("before get auth")
         token = request.headers.get('Authorization', None)
+        ds_logger.info("before get proj id")
         project = get_project_by_id(project_id, token)
         if project is None:
+            ds_logger.error("project does not exists")
             return "The project doesn't exist", 404
 
         layout_workspaces, layout_data = job.result
- 
+
+        ds_logger.info("before transform coords")
         workspaces_coords, floor_elements = transform_coords(layout_data, layout_workspaces,
                                                              SPACES_URL + SPACES_MODULE_API, token)
+        ds_logger.info("after transform coords")
 
         floor = layout_data['selected_floor']
 
@@ -1292,6 +1300,7 @@ def get_layout():
         db.session.commit()
         project = update_project_by_id(project_id, {'layout_gen_id': layout_gen.id}, token)
         if project is None:
+            ds_logger.error("the project could not be updated")
             return "The project could not be updated.", 404
 
         layout_gen = layout_gen.to_dict()
@@ -1303,6 +1312,7 @@ def get_layout():
 
         layout_gen['floor_elements'] = floor_elements
 
+        ds_logger.info("End get layout")
         return jsonify(layout_gen), 201
 
     except SQLAlchemyError as e:
