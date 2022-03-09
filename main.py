@@ -24,6 +24,7 @@ from Layout_App.SmartLayout import Smart_Layout, smart_layout_async
 from lib import transform_coords, resize_base64_image, get_floor_elements_p
 from rq.job import Job
 from redis_resc import redis_conn, redis_queue
+from optimizer.DS_logger import get_logger
 
 ds_logger = get_logger("smart_layout.log")
 ds_logger.info("init script")
