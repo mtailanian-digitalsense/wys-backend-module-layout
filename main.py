@@ -570,6 +570,7 @@ def generate_layout(project_id):
         500:
             description: Internal server error.
     """
+    ds_logger.info("Generate Layout")
     ds_logger.info("0")
     try:
         params = {'selected_floor', 'workspaces'}
@@ -648,6 +649,7 @@ def generate_layout(project_id):
 
         layout_gen['floor_elements'] = floor_elements
 
+        ds_logger.info("End generating layout")
         return jsonify(layout_gen), 201
 
     except SQLAlchemyError as e:
@@ -660,6 +662,7 @@ def generate_layout(project_id):
         msg = f"Error: mesg ->{exp}"
         app.logger.error(msg)
         return msg, 500
+
 
 @app.route("/api/layouts/inf/<project_id>", methods=['GET'])
 @token_required
@@ -843,6 +846,7 @@ def update_layout_by_project(project_id):
         500:
             description: Internal Error Server
     """
+    ds_logger.info("Update layout")
     try:
         params = {'id', 'space_id', 'rotation','height','width', 'position_x', 'position_y'}
         if not request.json:
@@ -899,6 +903,7 @@ def get_layout_config():
         500:
             description: "Database error"
     """
+    ds_logger.info("Get layout config")
     try:
         config = LayoutConfig.query.order_by(LayoutConfig.id.desc()).first()
         if config is None:
@@ -944,6 +949,7 @@ def update_layout_config():
         500:
             description: "Database error"
     """
+    ds_logger.info("Update layout config")
     try:
         params = {'pop_size', 'generations'}
         if not request.json:
@@ -1095,6 +1101,7 @@ def generate_layout_async():
         500:
             description: Internal server error.
     """
+    ds_logger.info("Generate layout async")
     try:
         params = {'selected_floor', 'workspaces'}
         if request.json.keys() != params:
@@ -1236,6 +1243,7 @@ def get_layout():
                 description: Job not found. The job doesn't exist or isn't ready.
     """
 
+    ds_logger.info("Get layout")
     req_params = ["project_id", "job_id"]
     for param in req_params:
         if param not in request.json.keys():
@@ -1330,6 +1338,8 @@ def get_db_layout(project_id):
             description: "Database error"
     """
     token = request.headers.get('Authorization', None)
+
+    ds_logger.info("Get db layout")
 
     try:
 
@@ -1462,6 +1472,7 @@ def update_db_layout(project_id):
             500:
                 description: Internal Error Server
     """
+    ds_logger.info("Update layout db")
     try:
 
         # Get project and layout data
@@ -1598,6 +1609,7 @@ def create_zones():
             404:
                 description: Job not found. The job doesn't exist or isn't ready.
     """
+    ds_logger.info("Create zones")
 
     req_params = ['w_spaces_id', 'name', 'color']
     for param in req_params:
@@ -1682,6 +1694,7 @@ def updated_zone(zone_id: int):
                 description: Updated
 
     """
+    ds_logger.info("Updated zone")
     try:
         zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
         if zone is None:
@@ -1804,6 +1817,7 @@ def get_zone(zone_id: int):
             description: Not Found
         """
     # Verify params
+    ds_logger.info("Get zone")
     try:
         zone: LayoutZone = db.session.query(LayoutZone).filter_by(id=zone_id).first()
         if zone is None:

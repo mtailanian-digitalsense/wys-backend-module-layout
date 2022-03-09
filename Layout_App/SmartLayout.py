@@ -13,14 +13,9 @@ random.seed(100)
 ds_logger = get_logger("smart_layout.log")
 ds_logger.info("init script")
 
-ds_logger.error('Hola')
-ds_logger.error(__name__)
-
 
 def get_input(dictionary):
-
-    ds_logger.error('Hola')
-    ds_logger.error(__name__)
+    ds_logger.info("get input")
 
     Planta = dictionary.get('selected_floor').get('polygons')
     Workspaces = dictionary.get('workspaces')
@@ -54,9 +49,6 @@ class Floor:
         self.outline = outline_points
         self.holes = holes_list
 
-        ds_logger.error('Hola')
-        ds_logger.error(__name__)
-
 
 class Module:
     def __init__(self, x, y, rotation, name, identificator, width_value, height_value, qty, fitval1, fitval2):
@@ -71,9 +63,6 @@ class Module:
         self.fitval1 = fitval1
         self.fitval2 = fitval2
 
-        ds_logger.error('Hola')
-        ds_logger.error(__name__)
-
     def show(self):
         print(self.name, self.x, self.y, self.rot, self.id, self.width, self.height, self.qty)
 
@@ -85,8 +74,7 @@ makeposcnt = 0
 curr_bx = []
 
 def makePos(planta, in_list, zones):
-    ds_logger.error('Hola')
-    ds_logger.error(__name__)
+    ds_logger.error('Make pos')
 
     make_time = time.time()
     global makeposcnt
@@ -165,8 +153,8 @@ def makePos(planta, in_list, zones):
             return mod
 
 def make_zones(planta, shafts, core, entrances, cat_area):
-    ds_logger.error('Hola')
-    ds_logger.error(__name__)
+    ds_logger.error('Make zones')
+    
     zones = []
     s_zones = []
     e_zones = []
