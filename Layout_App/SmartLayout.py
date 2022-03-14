@@ -74,7 +74,7 @@ makeposcnt = 0
 curr_bx = []
 
 def makePos(planta, in_list, zones):
-    ds_logger.error('Make pos')
+    ds_logger.debug('Make pos')
 
     make_time = time.time()
     global makeposcnt
@@ -153,7 +153,7 @@ def makePos(planta, in_list, zones):
             return mod
 
 def make_zones(planta, shafts, core, entrances, cat_area):
-    ds_logger.error('Make zones')
+    ds_logger.debug('Make zones')
 
     zones = []
     s_zones = []
@@ -254,8 +254,8 @@ def make_zones(planta, shafts, core, entrances, cat_area):
 
 
 def smart_layout_async(dictionary, POP_SIZE=50, GENERATIONS=50):
-    ds_logger.error('Hola')
-    ds_logger.error(__name__)
+    ds_logger.debug('Hola')
+    ds_logger.debug(__name__)
     result = Smart_Layout(dictionary, POP_SIZE, GENERATIONS)
     return result, dictionary
 
@@ -264,9 +264,9 @@ start_time = time.time()
 
 
 def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
-    ds_logger.error('Hola 2')
-    ds_logger.error(__name__)
-    ds_logger.error(round(time.time() - start_time, 2), 'Start!')
+    ds_logger.debug('Hola 2')
+    ds_logger.debug(__name__)
+    ds_logger.debug(f'{round(time.time() - start_time, 2)} Start!')
     outline, holes, areas, input_list = get_input(dictionary)
 
     voids = []
@@ -288,8 +288,8 @@ def Smart_Layout(dictionary, POP_SIZE, GENERATIONS, viz=False, viz_period=10):
             else:
                 cat_area[cat_id] = total_area
 
-    ds_logger.info(round(time.time() - start_time, 2), 'Load and compute all the inputs')
-    ds_logger.info('Number of modules: ', N)
+    ds_logger.info(f'{round(time.time() - start_time, 2)} Load and compute all the inputs')
+    ds_logger.info(f'Number of modules: {N}')
 
     planta = Polygon(border, voids)
     As = []
