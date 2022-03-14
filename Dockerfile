@@ -1,7 +1,6 @@
 FROM python:3.7
 WORKDIR /app
 COPY requirements.txt .
-COPY gurobi.lic .
 RUN apt-get -y update &&\
     apt-get -y upgrade &&\
     apt-get install -y --force-yes git &&\
